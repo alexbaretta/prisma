@@ -1,4 +1,4 @@
-import { Decimal } from '@prisma/client-runtime-utils'
+import { Decimal, LosslessNumber, normalizeJsonFieldText, parseJsonFieldValue } from '@prisma/client-runtime-utils'
 
 import { assertNever } from './utils'
 
@@ -34,6 +34,7 @@ export type JsOutputValue =
   | number
   | boolean
   | bigint
+  | LosslessNumber
   | Uint8Array
   | Date
   | Decimal
@@ -99,7 +100,7 @@ function normalizeTaggedValue({
     case 'Decimal':
       return { $type, value: String(new Decimal(value)) }
     case 'Json':
-      return { $type, value: JSON.stringify(JSON.parse(value)) }
+      return { $type, value: normalizeJsonFieldText(value) }
     case 'Raw':
       return { $type, value }
     case 'FieldRef':
@@ -162,7 +163,7 @@ function deserializeTaggedValue({ $type, value }: JsonInputTaggedValue | JsonOut
     case 'Decimal':
       return new Decimal(value)
     case 'Json':
-      return JSON.parse(value)
+      return parseJsonFieldValue(value) as JsOutputValue
     case 'Raw':
       return value as JsOutputValue
     case 'FieldRef':

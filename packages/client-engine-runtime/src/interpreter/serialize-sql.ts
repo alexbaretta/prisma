@@ -1,3 +1,4 @@
+import { parseJsonFieldValue } from '@prisma/client-runtime-utils'
 import { type ColumnType, ColumnTypeEnum, type SqlResultSet } from '@prisma/driver-adapter-utils'
 
 import { assertNever } from '../utils'
@@ -62,7 +63,7 @@ function serializeRawValue(value: unknown, type: ColumnType): unknown {
     case ColumnTypeEnum.Json:
       switch (typeof value) {
         case 'string':
-          return JSON.parse(value)
+          return parseJsonFieldValue(value)
         default:
           throw new Error(`Cannot serialize value of type ${typeof value} as Json`)
       }

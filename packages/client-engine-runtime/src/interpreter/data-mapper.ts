@@ -1,8 +1,13 @@
-import { Decimal } from '@prisma/client-runtime-utils'
+import {
+  Decimal,
+  isLosslessJsonNumber,
+  parseJsonFieldValue,
+  stringifyJsonFieldValue,
+} from '@prisma/client-runtime-utils'
 
 import { FieldScalarType, FieldType, ResultNode } from '../query-plan'
 import { UserFacingError } from '../user-facing-error'
-import { assertNever, safeJsonStringify } from '../utils'
+import { assertNever } from '../utils'
 import { PrismaObject, Value } from './scope'
 
 export class DataMapperError extends UserFacingError {
@@ -68,7 +73,7 @@ function mapArrayOrObject(
   if (typeof data === 'string') {
     let decodedData: Value
     try {
-      decodedData = JSON.parse(data)
+      decodedData = parseJsonFieldValue(data) as Value
     } catch (error) {
       throw new DataMapperError(`Expected an array or object, got a string that is not valid JSON`, {
         cause: error,
@@ -167,6 +172,10 @@ function mapValue(
     }
 
     case 'int': {
+      if (isLosslessJsonNumber(value)) {
+        value = value.toString()
+      }
+
       switch (typeof value) {
         case 'number': {
           return Math.trunc(value)
@@ -191,6 +200,10 @@ function mapValue(
     }
 
     case 'bigint': {
+      if (isLosslessJsonNumber(value)) {
+        value = value.toString()
+      }
+
       if (typeof value !== 'number' && typeof value !== 'string') {
         throw new DataMapperError(`Expected a bigint in column '${columnName}', got ${typeof value}: ${value}`)
       }
@@ -198,6 +211,10 @@ function mapValue(
     }
 
     case 'float': {
+      if (isLosslessJsonNumber(value)) {
+        value = value.toString()
+      }
+
       if (typeof value === 'number') return value
       if (typeof value === 'string') {
         const parsedValue = Number(value)
@@ -231,6 +248,10 @@ function mapValue(
     }
 
     case 'decimal':
+      if (isLosslessJsonNumber(value)) {
+        value = value.toString()
+      }
+
       if (typeof value !== 'number' && typeof value !== 'string' && !Decimal.isDecimal(value)) {
         throw new DataMapperError(`Expected a decimal in column '${columnName}', got ${typeof value}: ${value}`)
       }
@@ -247,14 +268,14 @@ function mapValue(
     }
 
     case 'object': {
-      return { $type: 'Json', value: safeJsonStringify(value) }
+      return { $type: 'Json', value: stringifyJsonFieldValue(value) }
     }
 
     case 'json': {
       // The value received here should normally be a string, but we cannot guarantee that,
       // because of SQLite databases like D1, which can return JSON scalars directly. We therefore
       // convert the value we receive to a string.
-      return { $type: 'Json', value: `${value}` }
+      return { $type: 'Json', value: typeof value === 'string' ? value : stringifyJsonFieldValue(value) }
     }
 
     case 'bytes': {

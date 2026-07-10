@@ -1,4 +1,4 @@
-import { Decimal } from '@prisma/client-runtime-utils'
+import { Decimal, isLosslessJsonNumber } from '@prisma/client-runtime-utils'
 import { describe, expect, test } from 'vitest'
 
 import { deserializeJsonObject } from './json-protocol'
@@ -35,8 +35,10 @@ describe('deserializeJsonObject', () => {
   })
 
   test('Json', () => {
-    const value = deserializeJsonObject({ $type: 'Json', value: '{"foo":123}' })
-    expect(value).toEqual({ foo: 123 })
+    const value = deserializeJsonObject({ $type: 'Json', value: '{"foo":123}' }) as { foo: unknown }
+
+    expect(isLosslessJsonNumber(value.foo)).toBe(true)
+    expect(String(value.foo)).toBe('123')
   })
 
   test('Json preserves loss-sensitive numeric tokens', () => {

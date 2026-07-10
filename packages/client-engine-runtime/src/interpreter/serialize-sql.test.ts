@@ -36,7 +36,7 @@ test('should preserve loss-sensitive JSON numbers in raw results', () => {
     rows: [[json, json]],
   })
 
-  const [row] = result.rows
+  const [row] = result.rows as unknown[][]
   const payload = row[0] as { large: unknown; decimal: unknown }
 
   expect(String(payload.large)).toBe('9007199254740993')

@@ -1,3 +1,5 @@
+import { isLosslessJsonNumber, parseJsonFieldValue } from '@prisma/client-runtime-utils'
+
 import { InMemoryOps, Pagination } from '../query-plan'
 import { doKeysMatch } from '../utils'
 
@@ -7,7 +9,7 @@ export function processRecords(value: unknown, ops: InMemoryOps): unknown {
   }
 
   if (typeof value === 'string') {
-    return processRecords(JSON.parse(value), ops)
+    return processRecords(parseJsonFieldValue(value), ops)
   }
 
   if (Array.isArray(value)) {
@@ -115,5 +117,11 @@ export function getRecordKey(record: {}, fields: readonly string[], mappers?: ((
   const array = fields.map((field, index) =>
     mappers?.[index] ? (record[field] !== null ? mappers[index](record[field]) : null) : record[field],
   )
-  return JSON.stringify(array)
+  return JSON.stringify(array, (_key, value) => {
+    if (isLosslessJsonNumber(value)) {
+      return { $type: 'LosslessNumber', value: value.toString() }
+    }
+
+    return value
+  })
 }
