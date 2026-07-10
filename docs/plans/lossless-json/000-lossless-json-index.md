@@ -112,7 +112,7 @@ uncertainty.
 | ID  | Tasklet | Priority | Status | Dependencies |
 | --- | ------- | -------- | ------ | ------------ |
 | 001 | [Inventory DB JSON API usage](./001-map-json-pipeline.md) | High | [DONE] | None |
-| 002 | [Audit generated JSON API usage](./002-add-failing-precision-tests.md) | High | [ ] | 001 |
+| 002 | [Audit generated JSON API usage](./002-add-failing-precision-tests.md) | High | [DONE] | 001 |
 | 003 | [Define lossless JSON contract](./003-introduce-internal-json-codec.md) | High | [ ] | 001, 002 |
 | 004 | [Map provider and raw-query boundaries](./004-patch-read-materialization.md) | High | [ ] | 001, 003 |
 
