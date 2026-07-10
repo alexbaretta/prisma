@@ -25,5 +25,6 @@ export const database = {
 } as Input<PG.Client>['database']
 
 function getConnectionString(ctx: Context) {
-  return process.env.TEST_POSTGRES_URI + `?schema=${ctx.id}&connection_limit=1`
+  const separator = process.env.TEST_POSTGRES_URI?.includes('?') ? '&' : '?'
+  return process.env.TEST_POSTGRES_URI + `${separator}schema=${ctx.id}&connection_limit=1&options=-c%20timezone%3DUTC`
 }

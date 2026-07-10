@@ -1,4 +1,4 @@
-import { Decimal } from '@prisma/client-runtime-utils'
+import { Decimal, LosslessNumber } from '@prisma/client-runtime-utils'
 
 import type { Input } from '../../__helpers__/integrationTest'
 
@@ -2018,7 +2018,14 @@ export const scenarios = [
     expect: {
       id: 1,
       title: 'Hello',
-      data: ['some', 'array', 1, 2, 3, { object: 'value' }],
+      data: [
+        'some',
+        'array',
+        new LosslessNumber('1'),
+        new LosslessNumber('2'),
+        new LosslessNumber('3'),
+        { object: 'value' },
+      ],
     },
   },
 ] as Input['scenarios']

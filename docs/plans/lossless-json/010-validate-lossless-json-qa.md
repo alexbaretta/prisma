@@ -287,3 +287,66 @@ Validation performed:
   skips for unavailable SQL Server, the locally timing-out CockroachDB
   suite, and Docker-only extension coverage (`33` suites, `352` tests,
   `2` skipped).
+
+## Validation Bug Review: Integration JSON Expectations And Local Skips
+
+Observed problem: root `pnpm test` reached
+`packages/integration-tests` and failed the PostgreSQL runtime scenario
+`findUnique - check typeof array for Json field with array` because the
+scenario still expected JSON array numbers as native JavaScript
+numbers. The same run also attempted SQL Server integration files even
+with `TEST_SKIP_MSSQL=1`, and PostgreSQL datetime scenarios were
+timezone-sensitive when the local PostgreSQL session timezone was
+`America/Los_Angeles`.
+
+Violated contract: integration tests that read a Prisma `Json` column
+through a JSON-preserving provider must expect `LosslessNumber` values
+for JSON numeric tokens. Local provider skips must happen before Jest
+loads snapshot-backed SQL Server integration files, and PostgreSQL
+integration connections must use the timezone those datetime fixtures
+assume.
+
+Owning layer: `packages/integration-tests` owns the legacy
+provider-backed integration fixtures and Jest discovery behavior. The
+lossless JSON runtime and adapter layers already returned the new
+contract value; this is stale test expectation and local test harness
+plumbing.
+
+Intended solution: update the PostgreSQL JSON array expectation to use
+`LosslessNumber`, teach the integration-tests Jest config to ignore
+SQL Server integration files when `TEST_SKIP_MSSQL=1`, and set the
+PostgreSQL integration connection timezone to UTC so existing datetime
+fixtures keep their pre-existing UTC assumptions.
+
+Rejected wrong-layer solution: do not convert `LosslessNumber` back to
+native numbers for legacy integration assertions, do not remove SQL
+Server snapshots, and do not grant dangerous database-reset consent to
+work around local test setup.
+
+Validation that proves the fix: rerun focused PostgreSQL integration
+runtime coverage, rerun the integration-tests package with the local
+SQL Server skip, then rerun root `pnpm test` with the documented local
+environment variables.
+
+Validation performed:
+
+- `TEST_POSTGRES_URI=postgres://alex@localhost:5432/tests pnpm
+--filter @prisma/integration-tests exec dotenv -e ../../.db.env --
+jest --maxWorkers=1 --silent
+src/__tests__/integration/postgresql/runtime.test.ts` passed (`70`
+  tests).
+- `TEST_SKIP_MSSQL=1
+TEST_POSTGRES_URI=postgres://alex@localhost:5432/tests pnpm --filter
+@prisma/integration-tests test` passed (`8` suites, `514` tests,
+  `514` snapshots).
+- `TERM=xterm GITHUB_REF_NAME=target-7.8.0-lossless
+TEST_SKIP_MSSQL=1 TEST_SKIP_COCKROACHDB=1 TEST_NO_DOCKER=1
+TEST_POSTGRES_URI=postgres://alex@localhost:5432/tests
+TEST_POSTGRES_URI_MIGRATE=postgres://alex@localhost:5432/tests-migrate
+TEST_POSTGRES_SHADOWDB_URI_MIGRATE=postgres://alex@localhost:5432/tests-migrate-shadowdb
+TEST_FUNCTIONAL_POSTGRES_URI=postgres://alex@localhost:5432/PRISMA_DB_NAME
+pnpm test` exited successfully. The run passed `@prisma/migrate`
+  (`33` suites, `352` tests, `2` skipped), `@prisma/client` (`40`
+  suites passed, `1` skipped, `671` tests passed), and
+  `@prisma/integration-tests` (`8` suites, `514` tests, `514`
+  snapshots), then completed the remaining root packages.
