@@ -1,178 +1,281 @@
-# Prisma Repository – Agent Field Notes
+# AGENTS.md
 
-> **Meta note**: This is the primary agent knowledge base file. `CLAUDE.md` and `GEMINI.md` are symlinks to this file—always edit `AGENTS.md` directly. When learning something new about the codebase that would help with future tasks, update this file immediately.
+Note: Also refer to *_AGENTS.md for additional instructions.
 
-- **Repository scope**: Monorepo for Prisma ORM, CLI, client, tests, etc. Many packages use TypeScript, Rust and WebAssembly (via engines), TSX, and Jest; automation relies on `pnpm`. Expect large fixture directories and generated files.
-- **Workspace layout**: Managed via pnpm workspaces and Turborepo (`turbo.json`). Node ^20.19 || ^22.12 || >=24.0 and pnpm >=10.15 <11 are required (see root `package.json`). Top-level scripts (`pnpm build`, `pnpm dev`, `pnpm test`) delegate into `scripts/ci/publish.ts`; package-specific commands run with `pnpm --filter @prisma/<pkg> <script>`. Turborepo caches builds; run `pnpm build` from root to build all packages in dependency order.
-- **Key packages**: `packages/cli` (Prisma CLI entry point), `packages/migrate` (migrate/db namespace + fixtures), `packages/client` (client runtime), `packages/client-generator-ts` (new `prisma-client` generator), `packages/client-generator-js` (traditional `prisma-client-js` generator), `packages/client-generator-registry` (generator registry for managing generators), `packages/client-engine-runtime` (the core part of the new Rust binary free client based on Wasm query compiler, used by `ClientEngine` class in `packages/client`), `packages/client-common` (shared client utilities), `packages/client-runtime-utils` (utility types and singletons for Prisma Client), `packages/config` (`PrismaConfigInternal` + loader), `packages/internals` (shared CLI + engine glue), `packages/engines` (Rust binaries download wrapper), `packages/integration-tests` (matrix suites), `packages/query-plan-executor` (standalone query plan executor service for Prisma Accelerate), `packages/credentials-store` (credential storage utilities), sqlcommenter packages under `packages/sqlcommenter*`, and numerous driver adapters under `packages/adapter-*`.
-- **Driver adapters & runtimes**: `packages/bundled-js-drivers` plus the `adapter-*` packages ship JS driver adapters: `adapter-pg`, `adapter-neon`, `adapter-libsql`, `adapter-planetscale`, `adapter-d1`, `adapter-better-sqlite3`, `adapter-mssql`, `adapter-mariadb`, `adapter-ppg` (Prisma Postgres Serverless). These are built on helpers in `driver-adapter-utils`; migrate/client fixtures exercise them, so adapter changes typically require fixture/test updates. CI tests driver adapters with flavors: `js_pg`, `js_neon`, `js_libsql`, `js_planetscale`, `js_d1`, `js_better_sqlite3`, `js_mssql`, `js_mariadb`, `js_pg_cockroachdb`.
-- **Build & tooling**: Typescript-first repo with WASM/Rust assets (downloaded by `@prisma/engines`). Multiple `tsconfig.*` drive bundle vs runtime builds. Lint via `pnpm lint`, format via `pnpm format`. Maintenance scripts live in `scripts/` (e.g. `bump-engines.ts`, `bench.ts`, `ci/publish.ts` orchestrates build/test/publish flows). Build configuration uses esbuild via `helpers/compile/build.ts` with configs in `helpers/compile/configs.ts`. Most packages use `bundledConfig` which bundles to both CJS and ESM with type declarations.
-- **Benchmarking**: Comprehensive performance benchmarks using Benchmark.js with CodSpeed integration. See `docs/benchmarking.md` for full documentation. Key commands:
-  - `pnpm bench` - Run all benchmarks (outputs to `output.txt`)
-  - `pnpm bench <pattern>` - Run benchmarks matching pattern
-  - Benchmark locations:
-    - End-to-end query performance: `packages/client/src/__tests__/benchmarks/query-performance/query-performance.bench.ts`
-    - Query compilation: `packages/client/src/__tests__/benchmarks/query-performance/compilation.bench.ts`
-    - Query interpreter/data mapper: `packages/client-engine-runtime/bench/interpreter.bench.ts`
-    - Client generation: `packages/client/src/__tests__/benchmarks/huge-schema/`, `packages/client/src/__tests__/benchmarks/lots-of-relations/`
-  - Benchmarks run automatically on CI via `.github/workflows/benchmark.yml`; CodSpeed tracks performance over time and alerts on >100% regression.
-- **Testing & databases**: `TESTING.md` covers Jest/Vitest usage. Most suites run as `pnpm --filter @prisma/<pkg> test <pattern>`. DB-backed tests expect `.db.env` and Docker services from `docker/docker-compose.yml` (`docker compose up -d`). Client functional tests sit in `packages/client/tests/functional`—run them via `pnpm --filter @prisma/client test:functional` (with typechecking) or `pnpm --filter @prisma/client test:functional:code` (code only); `helpers/functional-test/run-tests.ts` documents CLI flags to target providers, drivers, etc. Client e2e suites require a fresh `pnpm build` at repo root, then `pnpm --filter @prisma/client test:e2e --verbose --runInBand`. The legacy `pnpm --filter @prisma/client test` command primarily runs the older Jest unit tests plus `tsd` type checks. Migrate CLI suites live in `packages/migrate/src/__tests__`, the CLI runs both Jest (legacy suites) and Vitest (new subcommand coverage) via `pnpm --filter prisma test`, and end-to-end coverage lives in `packages/integration-tests`.
+## Purpose
+- Operate with strict typing, explicit contracts, surgical changes, and strong
+  verification.
+- zod schemas may not me anonymous. Always declare the zod schema as an exported
+  const object. Always git it an explicit type annotation.
+- Avoid speculative edits and AI-slop behavior.
+- End every full reply with a local timestamp in `YYYY-MM-DD HH:mm:ss`.
 
-- **Client functional tests structure**:
-  - Each test lives in its own folder under `packages/client/tests/functional/` (or `issues/` for regression tests).
-  - Required files: `_matrix.ts` (test configurations), `test.ts` or `tests.ts` (test code), `prisma/_schema.ts` (schema template).
-  - `_matrix.ts` defines provider/adapter combinations using `defineMatrix(() => [[{provider: Providers.POSTGRESQL}, ...]])`.
-  - `prisma/_schema.ts` exports `testMatrix.setupSchema(({ provider }) => ...)` returning a Prisma schema string.
-  - Test file uses `testMatrix.setupTestSuite(() => { test(...) }, { optOut: { from: [...], reason: '...' } })`.
-  - Run specific adapter: `pnpm --filter @prisma/client test:functional:code --adapter js_pg <pattern>` (adapters: `js_pg`, `js_neon`, `js_libsql`, `js_planetscale`, `js_d1`, `js_better_sqlite3`, `js_mssql`, `js_mariadb`, `js_pg_cockroachdb`).
-  - For error assertions, use `result.name === 'PrismaClientKnownRequestError'` and `result.code` (not `instanceof`).
-  - Use `idForProvider(provider)` from `_utils/idForProvider` for portable ID field definitions.
+## Operating Defaults
+- Be direct and technical.
+- Challenge incorrect assumptions with evidence.
+- Do not broaden scope without approval.
+- User owns git workflow unless a rule below explicitly says otherwise.
+- Make reasonable local decisions and continue autonomously unless a listed stop
+  condition is hit.
+- Progress updates are status reports, not handoff points.
+- Never delete a file unless you have the user's explicit authorization.
+- When the user points out that you made a procedural error, such as deleting a
+  file without authorization, do not attempt to correct it unless the user
+  explicitly requests that you do so. Otherwise, assume that the user is merely
+  providing feedback that you should abide by in subsequent prompts.
 
-- **Docs & references**: `ARCHITECTURE.md` contains dependency graphs (requires GraphViz to regenerate), `docker/README.md` explains local DB setup, `docs/benchmarking.md` covers performance benchmarking, `examples/` provides sample apps, and `sandbox/` hosts debugging helpers like the DMMF explorer. Planning documents live under `docs/plans/<topic>/` as a numbered index (`000-<topic>-index.md`) plus per-task files.
+## Stop Conditions
+- Stop if coding has not yet been approved for a multi-task plan.
+- Stop if required scope or acceptance criteria are still ambiguous.
+- Stop if a new long-lived plan is starting and the repo state violates the plan
+  prerequisites.
+- Stop if newly discovered work materially broadens scope.
+- Stop if a contract mismatch requires introducing a new correct contract and
+  that change is not already approved.
+- Stop if a concrete blocker cannot be resolved autonomously.
+- Stop before any edit or command that would create or modify
+  `schema.prisma` or any file under `packages/database/prisma/migrations/`,
+  unless the user explicitly authorized that exact database mutation in the
+  current prompt.
 
-- **Client architecture (Prisma 7)**:
-  - `ClientEngine` in `packages/client/src/runtime/core/engines/client/` orchestrates query execution using Wasm query compiler.
-  - Two executor implementations: `LocalExecutor` (driver adapters, direct DB) and `RemoteExecutor` (Accelerate/Data Proxy).
-  - `QueryInterpreter` class in `packages/client-engine-runtime/src/interpreter/query-interpreter.ts` executes query plans against `SqlQueryable` (driver adapter interface).
-  - Query flow: `PrismaClient` → `ClientEngine.request()` → query compiler → `executor.execute()` → `QueryInterpreter.run()` → driver adapter.
-  - `ExecutePlanParams` interface in `packages/client/src/runtime/core/engines/client/Executor.ts` defines what's passed through the execution chain.
-  - `TransactionManager` in `packages/client-engine-runtime/src/transaction-manager/transaction-manager.ts` owns interactive transaction IDs and implements nested transactions using savepoints. Savepoint SQL is provider-specific (e.g. PostgreSQL uses `ROLLBACK TO SAVEPOINT <name>`, MySQL/SQLite use `ROLLBACK TO <name>`, SQL Server uses `SAVE TRANSACTION <name>` / `ROLLBACK TRANSACTION <name>` and has no release statement).
-  - `Transaction` in `packages/driver-adapter-utils` models savepoint behavior as async methods (`createSavepoint`, `rollbackToSavepoint`, optional `releaseSavepoint`) instead of returning SQL via `savepoint(action, name)`. `TransactionManager` expects adapter methods for savepoints and does not synthesize provider fallback SQL.
-  - Fluent API `dataPath` is built in `packages/client/src/runtime/core/model/applyFluent.ts` by appending `['select', <relationName>]` on each hop; runtime unpacking in `packages/client/src/runtime/RequestHandler.ts` currently strips `'select'`/`'include'` segments before `deepGet`.
-  - In extension context resolution, `dataPath` should be interpreted as selector/field pairs (`select|include`, relation field). Do not strip by raw string value or relation fields literally named `select`/`include` get dropped.
+## Deployment Safety
+- Non-waivable rule: you may not create Cloud Run revisions through `gcloud`,
+  OpenTofu, the GCP Console, or any other manual process. Cloud Run revisions
+  may be created only by running the repo's build-push-deploy pipeline. The
+  user is not allowed to waive this rule.
+- You may not perform deployments to the `prod`, `app`, or `demo`
+  environments. The user is not allowed to waive this rule.
 
-- **Adding PrismaClient constructor options**:
-  - Runtime types: `PrismaClientOptions`, `PrismaClientBaseOptions`, `PrismaClientOptionsWithAdapter`, `PrismaClientOptionsWithAccelerateUrl` in `packages/client/src/runtime/getPrismaClient.ts`. `PrismaClientOptions` is a discriminated union (`PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter`) where each branch is `PrismaClientBaseOptions & { ... discriminator }`. Avoid going back to the older `(A | B) & C` shape: TypeScript reports errors against the named branches with the new layout (`not assignable to type 'PrismaClientOptionsWithAccelerateUrl'`) instead of expanding anonymous types like `{ accelerateUrl: string; adapter?: never; } & PrismaClientBaseOptions`.
-  - Validation: `packages/client/src/runtime/utils/validatePrismaClientOptions.ts` (add to `knownProperties` array and `validators` object).
-  - Engine config: `EngineConfig` interface in `packages/client/src/runtime/core/engines/common/Engine.ts`.
-  - Generated types: Update both `packages/client-generator-js/src/TSClient/PrismaClient.ts` (`buildClientOptions` method) and `packages/client-generator-ts/src/TSClient/file-generators/PrismaNamespaceFile.ts` (`buildClientOptions` function). The TS generator mirrors the runtime layout, emitting four exported types (`PrismaClientBaseOptions`, `PrismaClientOptionsWithAdapter`, `PrismaClientOptionsWithAccelerateUrl`, `PrismaClientOptions`); the JS generator keeps a single flat `PrismaClientOptions` interface for legacy compatibility.
-  - Use `@prisma/ts-builders` for generating TypeScript type declarations.
-  - Current known options: `errorFormat`, `adapter`, `accelerateUrl`, `log`, `transactionOptions`, `omit`, `comments`, `__internal`.
-  - The generated constructor parameter type is `Prisma.PrismaClientConstructorArgs<Options>` (defined in `packages/client-generator-js/src/TSClient/common.ts` for the JS generator, and emitted by `packages/client-generator-ts/src/TSClient/file-generators/PrismaNamespaceFile.ts` for the TS generator). It resolves to a plain `PrismaClientOptions` when `Options` defaults to `PrismaClientOptions` (the case when the user passes nothing or `{}`), and falls back to `Subset<Options, PrismaClientOptions>` otherwise. This keeps the "missing adapter" TypeScript error readable (`not assignable to parameter of type 'PrismaClientOptions'` instead of `Subset<...>`) while still rejecting unknown properties at the type level for the literal-argument case.
-  - **Union order matters.** `PrismaClientOptions` lists `PrismaClientOptionsWithAccelerateUrl` first and `PrismaClientOptionsWithAdapter` second. When `// @ts-nocheck` is present on the file that declares the union (and the generated `prismaNamespace.ts` _does_ keep `@ts-nocheck` for type-check performance), TypeScript's missing-property error elaboration for a discriminated union reports against the **second** union member. Putting the adapter branch second makes `new PrismaClient({ log: [...] })` say `Property 'adapter' is missing in type ... but required in type 'PrismaClientOptionsWithAdapter'` (the recommended option for most users) instead of suggesting `accelerateUrl`. Keep the same order in both the runtime types (`getPrismaClient.ts`) and the generator (`PrismaNamespaceFile.ts`).
-  - JSDoc on individual constructor option properties shows up via **autocomplete** (TypeScript's `getCompletionEntryDetails`) but not via **hover** on an already-written property name when the parameter type is generic. This is a TypeScript limitation that also affects query args like `where` / `select` / `take` (see microsoft/TypeScript#32542). Do not try to "fix" it by removing the generic parameter from the constructor signature — doing so breaks log/omit type inference.
-  - The "missing driver adapter" runtime error is raised from both `validatePrismaClientOptions` (constructor-level, primary user-facing message) and `ClientEngine` (defense-in-depth). When updating the wording, also update the inline snapshot in `packages/client/src/__tests__/validatePrismaClientOptions.test.ts`.
+## Investigation And Change Discipline
+- For bug work: gather evidence, form hypotheses, test hypotheses, then apply a
+  surgical fix after root cause is confirmed.
+- When the `project_tracker` submodule exists or work touches tracker data,
+  read `project_tracker/qa-tracker-guide/README.md` before creating, moving,
+  assigning, prioritizing, archiving, or executing tracker items.
+- If root cause is not confirmed, report uncertainty and continue
+  investigation instead of making speculative edits.
+- Do not make behavior-changing trial-and-error patches to diagnose bugs. Add
+  instrumentation or tests first, then change behavior only after the evidence
+  identifies the violated contract.
+- Prefer strong static typing. No `any` unless explicitly justified.
+- Prefer shared named types over repeated inline structural types.
+- Avoid dead code and unnecessary abstractions.
+- If two blocks share substantial logic, factor the shared logic instead of
+  duplicating it.
+- Do not brush a bug under the rug with compensating code at a different
+  boundary or layer. Fix the side that is violating the contract.
+- No silent fallbacks for contract-critical behavior. Fail fast with actionable
+  errors.
 
-- **Creating new packages**:
-  - Create directory under `packages/`, add `package.json`, `tsconfig.json`, `tsconfig.build.json`, and `helpers/build.ts`.
-  - Package is auto-discovered via `pnpm-workspace.yaml` glob `packages/*`.
-  - For type-only packages, use `bundledConfig` from `helpers/compile/configs.ts`.
-  - Add as dependency to consuming packages using `"workspace:*"` version.
-  - **Important**: Add resolution path to `tsconfig.build.bundle.json` under `compilerOptions.paths` for go-to-definition to work in editors.
-  - **Important**: If the package has tests, add it to `.github/workflows/test-template.yml`. Utility packages typically go in:
-    - `others` job (Linux, no Docker): includes `debug`, `generator-helper`, `get-platform`, `fetch-engine`, `engines`, `instrumentation`, `instrumentation-contract`, `schema-files-loader`, `config`, `dmmf`, `generator`, `credentials-store`, `sqlcommenter-*` packages.
-    - `client-packages` job: includes `client-common`, `client-engine-runtime`, `ts-builders`, `client-generator-js`, `client-generator-ts`, `client-generator-registry`.
-    - `driver-adapter-unit-tests` job: includes `adapter-libsql`, `adapter-mariadb`, `adapter-d1`, `adapter-pg`, `adapter-planetscale`, `adapter-mssql`, `adapter-neon`.
-    - `no-docker` job (Windows/macOS): mirrors the `others` and `client-packages` jobs for cross-platform testing.
+## Pre-Implementation Review Gate
+- Before implementing any non-trivial fix, describe the intended change in
+  plain English and review it as if it were proposed code.
+- Treat every problem/solution pair as requiring adversarial review. Attempt
+  to disprove the proposed solution before editing code by asking whether it
+  bypasses the product path, duplicates an existing mechanism, moves
+  responsibility to the wrong layer, hides a contract violation, or weakens a
+  trust boundary.
+- For each problem being solved, including unforeseen subproblems discovered
+  during implementation, identify:
+  - the observed problem,
+  - the violated contract or invariant,
+  - the layer that owns the fix,
+  - the intended solution,
+  - one rejected unsafe or wrong-layer solution,
+  - the validation that will prove the fix.
+- Capture the pre-implementation review in the active plan document before
+  editing code for that problem or subproblem.
+- Do not implement a solution that bypasses the product path being tested,
+  duplicates an existing mechanism, moves responsibility across trust
+  boundaries, or hides a contract violation at another layer.
+- After implementation, review the resulting code against the same criteria
+  before treating the tasklet as complete. Capture this post-implementation
+  review in the active plan document together with the validation evidence.
 
-- **Prisma 7 direction**: Migration from `schema.prisma` datasource URLs / `env()` to `prisma.config.ts`. Commands, tests, and fixtures should read connection settings from `PrismaConfigInternal.datasource` (or driver adapters) rather than CLI flags or environment loading. SQLite datasource URLs now resolve relative to the config file and not to the schema.
-- **Test helpers**: `ctx.setConfigFile('<name>')` (from `__helpers__/prismaConfig.ts`) overrides the config used for the next CLI invocation and is automatically reset after each test, so no explicit cleanup is needed. Many migrate fixtures now provide one config per schema variant (e.g. `invalid-url.config.ts` next to `prisma/invalid-url.prisma`) and tests swap them via `ctx.setConfigFile(...)`. `ctx.setDatasource`/`ctx.resetDatasource` continue to override connection URLs when needed.
+## Testing
+- Every bug fix must include unit tests that fail before the fix and pass after
+  it.
+- Every feature must include success-path and failure/edge-path unit tests.
+- Run relevant focused tests during implementation when feasible.
+- For Bash-only, deployment-script-only, infrastructure-script-only, or other
+  non-TypeScript tooling changes that do not affect TypeScript source,
+  generated TypeScript artifacts, package contracts, runtime product behavior,
+  or package manager/build-system configuration, do not run repo-root
+  `pnpm build` or `pnpm test` by default. Use focused validation instead, such
+  as `bash -n`, script-specific tests, targeted fixture tests, or `git diff`.
+- Before returning control to the user, run repo-root `pnpm build` when the
+  change can affect buildable product code, generated artifacts, package
+  contracts, runtime behavior, tests, scripts used by the build, or repo
+  configuration consumed by TypeScript, Vite, Electron, Prisma, Turbo, or
+  package tooling.
+- For documentation-only, tracker-only, skill-only, plan-only, or comment-only
+  changes that cannot affect the TypeScript/build pipeline, do not run
+  `pnpm build` by default. Instead, verify with a focused check appropriate to
+  the change, such as `git diff`, link/path checks, Markdown search, or the
+  relevant docs-specific validation if one exists.
+- If the impact is uncertain, explain the uncertainty and choose the narrowest
+  reasonable validation before escalating to `pnpm build`.
+- Before considering any tasklet complete, run and pass the relevant project
+  build. A tasklet is not complete while the build is failing.
 
-- **CLI commands**: Most commands already accept `--config` for custom config paths. Upcoming work removes `--schema` / `--url` in favour of config-based resolution. When editing CLI help text, keep examples aligned with new config-first workflow.
-  - For isolated Studio verification, you can run `packages/cli/src/Studio.ts` directly via `pnpm exec tsx` and pass a config object that preserves `loadedFromFile`; this keeps SQLite URLs resolving relative to the config file while avoiding unrelated `packages/cli/src/bin.ts` imports.
-  - Studio is now pre-bundled into `packages/cli/build/studio.js` and `packages/cli/build/studio.css`, served only through explicit routes in `packages/cli/src/Studio.ts` via the runtime-specific `packages/cli/src/studio-server.ts` bindings, and should keep listener-level coverage in `packages/cli/src/__tests__/studio-server.vitest.ts` because a past Node regression dropped `GET` bodies by treating them like `HEAD`.
-  - If Enter or click does not open a cell editor in Studio, verify that the current table and column are writable before assuming a keyboard regression; views/system tables and read-only columns legitimately stay non-editable.
-
-- **Driver adapters datasource**:
-  - Helper `ctx.setDatasource()` in tests overrides config.datasource for connection-specific scenarios.
-
-- **Testing patterns**:
-  - Tests rely on fixtures under `packages/**/src/__tests__/fixtures`; many now contain `prisma.config.ts`.
-  - Default Jest/Vitest runner is invoked via `pnpm --filter @prisma/<pkg> test <pattern>`; it wraps `dotenv` and expects `.db.env`.
-    - Some packages already use Vitest, `packages/cli` uses both for different tests as it's in the process of transition, older packages still use Jest.
-  - Functional generated clients in `packages/client/tests/functional/**/.generated` import `packages/client/runtime/client.js` directly; runtime changes in `src/runtime` may need corresponding runtime bundle updates to be exercised by functional tests.
-  - Client e2e `_steps.ts` files run inside `packages/client/tests/e2e/_utils/standard.dockerfile`; the startup script exports `NODE_PATH` for CommonJS and symlinks globally installed `zx` into `/test/node_modules` because ESM package resolution ignores `NODE_PATH`. Linux Docker runs may need SELinux-compatible bind mounts (`:z`) for mounted e2e files to be readable in the container.
-  - Each client e2e test is copied to `/test/<name>` in the container and `pnpm install`ed there as a standalone root (the e2e dir's `pnpm-workspace.yaml`/`.npmrc` are not copied along), so a per-test `pnpm.overrides` in the test's `package.json` takes effect. Use it to pin transitive deps that float via `^` ranges and can break tests out of the blue — e.g. the `prisma-client-imports-*` suites typecheck with `skipLibCheck: false` against pinned `@types/node@20` / TS 5.4, and a new `pg-protocol` release using generic `Buffer<T>` types broke the postgres suite that way. Note: `pnpm.overrides` in `package.json` works in pnpm 10 (what the container pins) but is ignored by pnpm 11.
-  - Inline snapshots can be sensitive to formatting; prefer concise expectations unless the exact message matters.
-
-- **Environment loading**: Prisma 7 removes automatic `.env` loading.
-
-- **Driver adapter error handling**:
-  - Database errors are mapped in each adapter's `errors.ts` (e.g., `packages/adapter-pg/src/errors.ts`).
-  - `MappedError` type in `packages/driver-adapter-utils/src/types.ts` defines all known error kinds.
-  - Known error kinds include: `GenericJs`, `UnsupportedNativeDataType`, `InvalidIsolationLevel`, `LengthMismatch`, `UniqueConstraintViolation`, `NullConstraintViolation`, `ForeignKeyConstraintViolation`, `DatabaseNotReachable`, `DatabaseDoesNotExist`, `DatabaseAlreadyExists`, `DatabaseAccessDenied`, `ConnectionClosed`, `TlsConnectionError`, `AuthenticationFailed`, `TransactionWriteConflict`, `TableDoesNotExist`, `ColumnNotFound`, `TooManyConnections`, `ValueOutOfRange`, `InvalidInputValue`, `MissingFullTextSearchIndex`, `SocketTimeout`, `InconsistentColumnData`, `TransactionAlreadyClosed`, and database-specific kinds (`postgres`, `mysql`, `sqlite`, `mssql`).
-  - `convertDriverError()` in each adapter maps database-specific error codes to `MappedError` kinds.
-  - `rethrowAsUserFacing()` in `packages/client-engine-runtime/src/user-facing-error.ts` maps `MappedError` kinds to Prisma error codes (P2xxx).
-  - To add a new error mapping: (1) add kind to `MappedError` in driver-adapter-utils, (2) map database error code in relevant adapter(s), (3) add Prisma code mapping in `getErrorCode()` and message in `renderErrorMessage()`.
-  - Raw queries (`$executeRaw`, `$queryRaw`) use `rethrowAsUserFacingRawError()` which always returns P2010; regular Prisma operations use `rethrowAsUserFacing()`.
-  - When no specific mapping exists for a database-specific kind (`postgres`, `mysql`, `sqlite`, `mssql`) — i.e. the adapter didn't recognize the underlying DB error code — `rethrowAsUserFacing()` falls back to a P2039 `UserFacingError` with the message `Database error. Code: <originalCode>. Message: <originalMessage>` carrying the raw `originalCode` / `originalMessage`. This keeps the DB error surface as `PrismaClientKnownRequestError` locally and as an HTTP 400 from the query plan executor (instead of HTTP 500, which Accelerate strips), so that schema-drift-style failures (stale migrations, stale generated client, etc.) remain debuggable. Raw queries keep the historical P2010 (`Raw query failed. Code: <originalCode>. Message: <originalMessage>`) via `rethrowAsUserFacingRawError()`; P2039 is used for non-raw queries so the message doesn't claim a regular Prisma operation was a raw query. Truly unknown `kind` values still fall through to `assertNever` so new driver-adapter variants surface clearly during development.
-  - Prisma error codes currently assigned outside the documented public Error Reference (P2000–P2037) are: **P2038** — used for the `PrismaClientInitializationError` raised by `ClientEngine` when no driver adapter is configured (see `CLIENT_ENGINE_ERROR` in `packages/client/src/runtime/core/engines/client/ClientEngine.ts`); **P2039** — used for unmapped database-specific driver-adapter errors as described above. Pick the next available code (P2040, …) for any new additions and document it here.
-
-- **SQL Commenter packages**:
-  - `@prisma/sqlcommenter`: Core types (`SqlCommenterPlugin`, `SqlCommenterContext`, `SqlCommenterQueryInfo`, `SqlCommenterTags`) for building sqlcommenter plugins.
-  - `@prisma/sqlcommenter-query-tags`: AsyncLocalStorage-based plugin for adding ad-hoc tags via `withQueryTags()` and `withMergedQueryTags()`.
-  - `@prisma/sqlcommenter-trace-context`: Plugin for adding W3C Trace Context `traceparent` header to queries.
-  - `@prisma/sqlcommenter-query-insights`: Plugin for adding parameterized query shapes to comments (format: `Model.action:base64Payload`).
-  - Plugins are registered via `PrismaClient({ comments: [plugin1(), plugin2()] })`.
-  - E2E tests for sqlcommenter plugins live in `packages/client/tests/e2e/sqlcommenter*` directories.
-  - `SqlCommenterQueryInfo` distinguishes `type: 'single'` (single query) vs `type: 'compacted'` (batched queries merged into one SQL statement). For non-raw client-engine queries, the SQL commenter context should receive parameterized query payloads so plugins such as query-insights never see user data values.
-
-- **AI agent safety checkpoint**: `packages/migrate/src/utils/ai-safety.ts` blocks `db drop`, `db push --force-reset`, `db push --accept-data-loss`, and `migrate reset` when an AI agent is detected, unless `PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION` is set. Do not replace the in-house detection with `@vercel/detect-agent` (rationale in the comment above `agentMatchers`). Its tests must clear inherited agent marker env vars in `beforeEach`, since the test process may itself run under an agent. The `prisma mcp` server (`packages/cli/src/mcp/MCP.ts`) deliberately exposes no `migrate-reset` tool — an agent that needs a reset must run the CLI, where the checkpoint applies. Do not add destructive tools to the MCP server.
-
-- **Codebase helpers to know**:
-  - `@prisma/internals` exports CLI utilities: `arg`, `loadSchemaContext` (less used now).
-  - `packages/migrate/src/__tests__/__helpers__/context.ts` sets up Jest helpers including config contributors.
-  - `packages/config` defines `PrismaConfigInternal`; inspect when validating config assumptions.
-  - `@prisma/ts-builders` provides a fluent API for generating TypeScript code (interfaces, types, properties with doc comments).
-  - `@prisma/driver-adapter-utils` defines core interfaces: `SqlQuery`, `SqlQueryable`, `SqlDriverAdapter`, `SqlDriverAdapterFactory`, `SqlMigrationAwareDriverAdapterFactory`, `MappedError` for error handling, `ConnectionInfo`, `Provider` type (`'mysql' | 'postgres' | 'sqlite' | 'sqlserver'`).
-  - `@prisma/client-engine-runtime` exports query interpreter, transaction manager, and related utilities.
-  - `@prisma/client-common` provides shared client utilities used by both generators and runtime.
-  - `@prisma/client-runtime-utils` provides utility types and singletons for Prisma Client.
-  - NPS survey infrastructure lives in `packages/cli/src/utils/nps/` (`survey.ts` orchestrates: TTY check via `isInteractive` from `@prisma/internals`, 30s prompt timeout, gating on `isCi`/`maybeInGitHook`/`isInNpmLifecycleHook`/`isInContainer`, once-per-timeframe persistence in `env-paths('prisma').config` as `nps.json`). Triggered only from `prisma generate` (suppressed by `--no-hints` and watch mode). Reuse this machinery for any new one-time interactive CLI prompt.
-  - `prisma mcp` (`packages/cli/src/mcp/MCP.ts`) is a stdio MCP server exposing `migrate-status`, `migrate-dev`, `migrate-reset`, and `Prisma-Studio` tools by shelling back into the CLI binary.
-
-- **Coding conventions**:
-  - Use **kebab-case** for new file names (e.g., `query-utils.ts`, `filter-operators.test.ts`).
-  - **Avoid creating barrel files** (`index.ts` that re-export from other modules). Import directly from the source file (e.g., `import { foo } from './utils/query-utils'` not `import { foo } from './utils'`), unless `./utils/index.ts` file already exists (in which case use it for consistency with surrounding code).
-  - **Avoid adding useless code comments that do not add new information for the reader**.
-    Inline code comments can be broadly categorized as answering one of the three questions:
-    - _What does this code do?_ — never write these because they do not and cannot convey any new information that's not obvious from the code. Not only they don't add value, they are actively harmful (getting out of sync with code, distracting human readers, wasting LLM tokens etc). Descriptions of units of code like functions, classes and methods must be limited to doc comments (and describe the contract of this unit and not the internal implementation details), never inline comments.
-    - _Why was this code written (in this particular way or at all)?_ — this is what inline comments are for. Only use them to include relevant context, background, GitHub issues, reasons behind decisions etc.
-    - _How does this code work?_ — these comments should be exceedingly rare and may indicate poorly written or confusing code. Prefer writing code in a way that makes such comments redundant, unless required for performance or other reasons, or when the complexity comes from outside systems or packages (in which case it's more of a "why" comment than a "how" comment anyway). For well known algorithms, prefer their names and references to papers, books or Wikipedia articles over long explanations.
-  - Do write documentation comments, and mainly do so for exported items (although intra-module documentation may sometimes be useful as well).
-  - The correct and official abbreviation of WebAssembly is "Wasm", not "WASM". There are instances of "WASM" in the codebase, but they are wrong and you should not repeat them. Fix the capitalization whenever you incidentally touch the corresponding lines or surrounding code for other reasons.
-  - Prefer native JavaScript private properties and methods (`#field`) over the `private` keyword in TypeScript.
-
-- **Workflow reminders**:
-  - Respect existing structure: modifications often require updating both command implementation and tests/fixtures.
-  - Keep changes ASCII unless a file already uses Unicode (docs sometimes include emojis).
-  - For new fixtures, prefer minimal config mirroring existing ones to ensure cross-platform compatibility.
-  - When adding features that span multiple packages, build from root (`pnpm build`) to ensure correct dependency order.
-  - Type-only imports from workspace packages work at runtime but IDE may show errors until `pnpm install` refreshes the workspace graph.
-  - Test files named `*.test.ts` are excluded from build output via esbuild config; place tests alongside source files.
-  - **Update this file** (`AGENTS.md`) whenever you learn something new about the codebase that would be valuable for future tasks.
-
-- **Knowledge reminders**:
-  - Your training data contains a lot of outdated information that doesn't apply to Prisma 7. Always analyze this codebase like you would analyze a project you are not familiar with, and prefer the learnings from this file and this codebase over your prior knowledge. In particular, remember:
-    - **There's no such thing as "query engine" in Prisma**
-    - **There are no database URLs in Prisma schema files**
-    - **Prisma uses JavaScript drivers**
-    - **Query execution code is written in TypeScript in Prisma**
-    - PSL parser and query compiler/planner is still written in Rust and compiled to WebAssembly. There are no native binaries or library addons in Prisma Client.
-    - Schema engine for Prisma Migrate still exists and is still a native binary.
-
-## Debugging and making changes to Rust/WebAssembly code
-
-When you need to check the code or make some changes in Rust codebase, assume the repository is checked out in the `prisma-engines` directory above the root of this repo. Determine the absolute path to the current project on the filesystem (e.g. `/home/user/work/prisma`) and infer the directory of the `prisma-engines` repo (e.g. `/home/user/work/prisma-engines`, let's call it `$PRISMA_ENGINES_ROOT`).
-
-After you make some changes there, use these commands in the prisma-engines repo to build the Wasm modules:
-
-```sh
-make build-schema-wasm
-make build-qc-wasm
+## Git And Change Scope
+- Do not commit, reset, rebase, merge, or change branches unless explicitly
+  asked, except as required by the approved long-lived-plan workflow below.
+- When creating a new file as part of requested work, stage only that new file
+  unless the user says otherwise.
+- Do not stage modified pre-existing files unless explicitly requested.
+- Make minimal, surgical changes that satisfy the request.
+- When making a commit stick to the following guidelines for the commit message:
 ```
-
-Then, back in `prisma` repo:
-
-```sh
-pnpm upgrade -r @prisma/prisma-schema-wasm@file:$PRISMA_ENGINES_ROOT/target/prisma-schema-wasm
-pnpm upgrade -r @prisma/query-compiler-wasm@file:$PRISMA_ENGINES_ROOT/query-compiler/query-compiler-wasm/pkg
-pnpm build
+Structure: Separate the subject from the body with a blank line.
+Subject Line: Limit to 50 characters, capitalize it, and avoid a trailing period.
+Tone: Use the imperative mood (e.g., "Fix bug" not "Fixed bug").
+Body: Wrap at 72 characters and focus on the "what" and "why" of the change.
 ```
+Do not introduce verbatim '\n' in the git commit message (literally a backslash
+character followed by an 'n'). By '\n' we mean a single byte ASCII newline
+character.
 
-You may only need to build and update one of these modules if your changes are isolated in scope:
+## Long-Lived Plans
+- For tasks spanning multiple implementation steps, create and maintain a plan
+  document in `docs/plans/<branch_name>/<plan_name>.md` or in
+  `pm/bugfixing/<YYYY>-<MM>-<DD>--<HHMM>` for a bugfixing plan to address a bug
+  reports in the same directory.
+- Ignore the `codex/` prefix in the branch name: the effective branch name is
+  only the text after `codex/`.
+- Do not start coding until the plan has been iterated with the user, scope and
+  acceptance criteria are explicit, and the feature branch name is recorded in
+  the plan.
+- Tasklet descriptions shal contain all implementation details and shall adopt a
+  72 character per line limit.
+- Once approved, execute the plan one tasklet at a time and continue
+  autonomously until completion or a listed stop condition.
+- Before starting a new plan, the repo must be clean except for untracked files
+  the user has explicitly approved to ignore.
+- A tasklet is completed when the required functionality has been implemented in
+  the codebase, the build succeeds, unit tests have been built or edited to test
+  both the successful cases and the error cases, and a selective run of those
+  unit tests passes.
+- Mark each completed tasklet `[DONE]` immediately, commit it using the tasklet
+  title, and reread the plan before starting the next tasklet.
+- The header of the commit message shall be
+  `[${branch_name_short}] {tasklet-title}`,
+  where tasklet-title is a short summary of the tasklet description.
+- The body of the commit message shall be the tasklet description, formatted to
+  observe a limit of 72 characters per line.
+- Rereading the plan is an internal sync step, not a handoff, where
+  branch_name_short is the first 3 words of the branch name.
+- If new required work is discovered, update the plan before proceeding. If the
+  work materially broadens scope, stop and get approval on the revised plan.
+- Before returning control to the user, ensure all plan items are `[DONE]` or
+  explicitly pending with a documented reason.
+- Do not return control to the user on a long-lived plan until repo-root
+  `pnpm build` has passed for the current tree.
+- Do not treat a full plan or a milestone as complete until `pnpm test` passes
+  from the repo root.
+- During testing and bugfixing we will use the following process: the user will
+  describe the bug, and you will diagnose it and document it in the plan as a
+  new tasklet. After the bug is fixed and approved by the user, you will mark
+  the bug tasklet DONE and you will commit.
+- After completing each tasklet and before deciding the next action, reread
+  AGENTS.md and the current plan document. Treat this as a mandatory internal
+  sync step, not a handoff point. Continue immediately unless a listed stop
+  condition is hit.
 
-1. Build only `prisma-schema-wasm` if your changes are isolated to schema and DMMF, and you are only going to run the CLI and generator tests, not Client.
-2. Build only `query-compiler-wasm` if your changes are related to query planning and execution but do not touch the schema or DMMF in any way.
+## Prisma And Migrations
+- Database schema changes are user-owned unless the user explicitly grants
+  permission in the current prompt.
+- Apply migrations to the local development environment only by running
+  `./scripts/setup_dev_environment.sh`. Do not use direct Prisma migration
+  commands or smaller local helper scripts for local development database
+  setup, reset, repair, or migration unless the user explicitly authorizes
+  that exact command in the current prompt.
+- The local superadmin account must always be configured with the
+  credentials recorded in `.local_admin_credentials`. When local setup or
+  database reset changes that account, restore the password from that file
+  before running local authenticated workflows.
+- Do not edit `packages/database/prisma/schema.prisma`.
+- Do not create, edit, regenerate, move, rename, or delete Prisma migration
+  files.
+- Do not run commands that create or modify Prisma migrations, including
+  `prisma migrate dev`, `prisma migrate diff`, or repo scripts that wrap them,
+  unless the user explicitly asks for that command in the current prompt.
+- Never edit pre-existing migrations. The user is not allowed to waive or
+  override this rule.
+- If a task appears to require a schema or migration change, stop before making
+  code edits and report:
+  - the required data model change,
+  - the application code that depends on it,
+  - the exact schema/migration work the user must perform or explicitly
+    authorize.
+- Do not mark a tasklet requiring schema or migration work `[DONE]` until the
+  user has applied the database change and the relevant validation passes.
 
-When in doubt, build both to avoid unexpected behavior. Time and cost of compilation is always less than of debugging.
+## Security And Contracts
+- `IPX` is the generic acronym for either `IPW` or `IPG`. Use `IPX`
+  when stating rules that apply uniformly to both families.
+- Never expose database primary keys across a trust boundary.
+- Internal database primary keys must never appear in:
+  - URLs
+  - external API contracts
+  - user-visible UI
+  - downloadable documents
+  - customer/merchant-facing logs or messages
+- Use UUIDs for anything that crosses a trust boundary.
+- Do not smuggle data across mismatched domains or type names.
+- If the name is wrong, the contract is wrong.
+- Use the same named TypeScript type and Zod schema to serialize and
+  deserialize persisted structured data. Do not create a separate reader type
+  that is narrower, broader, or otherwise different from the writer contract.
+- Do not serialize persisted structured data as `unknown`; serialize only
+  values that have first been validated as a well-defined type-safe TypeScript
+  contract.
+- Authentication, authorization, session, cookie, token, and credential changes
+  require extra scrutiny in the adversarial review. The review must identify
+  trust boundaries and reject any approach that manually moves
+  security-sensitive state across layers unless that movement is already an
+  explicit product contract.
+- Authorization decisions are made only by the backend.
+- Every controller endpoint must authenticate and enforce authorization.
+- All authorization logic belongs in `AuthorizationService`.
+- Do not add IPW-specific or IPG-specific logic to Samba core.
+  Provider-specific behavior belongs in loaded RPA workflow packages or
+  explicit app-layer integrations outside Samba core.
+
+## Controller / Service Architecture
+- Controllers are thin shims around services.
+- Business workflow orchestration belongs in services.
+- Keep transaction boundaries explicit and auditable.
+- Do not perform long-lived external calls inside database transactions.
+- Within a REST endpoint, do not open multiple database transactions except for
+  the narrow allowed pre-external-call / post-external-call persistence pattern.
+
+## UI Rule: Disallowed Operations
+- Display disallowed UX elements, such as textboxes, buttons, and hyperlinks,
+  using disabled styling. "Grayed out" is an idiomatic expression for CSS
+  styling that indicates a disabled UX element, not literally gray.
+- Disable user interaction with the disallowed element.
+- Add a tooltip explaining why the interaction is disallowed.
+- Rather than displaying an error after the user attempts an operation that is
+  not allowed, disable the functionality that would lead to that error.
+
+## UI Rule: Disabled Buttons
+- The only visual style change allowed for disabled buttons is
+  `opacity: 0.5`.
+- Do not change any other visual property in disabled selectors.
+- Non-visual disabled behavior such as `cursor: not-allowed` is allowed.
+
+## UI Rule: Survivable Errors
+- Errors should be detected and reported, but they must be survivable.
+- The React UX must not disappear entirely because of one exception or one HTTP
+  error status.
+- Use scoped error handling, recoverable error states, and localized fallback
+  UI so the rest of the page or workflow remains usable whenever possible.
+
+## Style rules
+- The authoritative source of coding style rules is docs/style_guide.md.
+
+## User-facing copy
+- Samba and PILLAR are engineering project names, not user-facing copy. These
+  words should not appear in any text rendered to the user.
+- The appropriate user-facing copy is Anchorbase App and Anchorbase Portal.
