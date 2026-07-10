@@ -207,3 +207,83 @@ does not exist|invalid database type|empty connection string"`
   expected `prisma` role and `tests`, `postgres`, and `template1`
   databases. This is a local test-environment issue, not a parser
   regression.
+
+## Validation Bug Review: Migrate AI Marker Inheritance
+
+Observed problem: root `pnpm test` reaches `@prisma/migrate` and then
+fails many reset, force-reset, and accept-data-loss tests because the
+Jest process inherits Codex agent marker environment variables. The
+tests intentionally exercise destructive-command behavior against
+fixtures, but the global test setup restores the inherited environment
+before each test and reintroduces those markers.
+
+Violated contract: migrate tests should run in a deterministic test
+environment. The AI safety unit tests own coverage for inherited agent
+markers; unrelated migrate command tests should not fail merely because
+the test runner itself is Codex.
+
+Owning layer: `packages/migrate/src/__tests__/setup.ts` owns shared
+test environment restoration for migrate Jest tests.
+
+Intended solution: after restoring the original test environment,
+delete all AI-agent marker variables and the dangerous-action consent
+variable in the shared migrate test setup. Individual AI safety tests
+can still set marker variables explicitly inside their own test bodies.
+
+Rejected wrong-layer solution: do not set
+`PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION` for the root test run and
+do not weaken the product AI safety checkpoint. The fix belongs in the
+test harness so tests decide which ambient markers are present.
+
+Validation that proves the fix: rerun the focused migrate AI safety
+unit tests and a focused destructive migrate command test, then rerun
+root `pnpm test` without granting dangerous-action consent.
+
+Validation performed:
+
+- `pnpm --filter @prisma/migrate exec dotenv -e ../../.db.env -- jest
+--runInBand src/__tests__/utils/ai-safety.test.ts` passed (`30`
+  tests), confirming explicit marker detection still works.
+- `pnpm --filter @prisma/migrate exec dotenv -e ../../.db.env -- jest
+--runInBand src/__tests__/MigrateReset.test.ts -t "should work
+\\(--force\\)|triggers the AI safety checkpoint|reset should error
+in unattended environment"` passed (`2` tests, `11` skipped),
+  confirming inherited Codex markers no longer block ordinary migrate
+  reset tests while existing safety assertions still run.
+
+## Validation Bug Review: Drop Database Success Detection
+
+Observed problem: after the AI-marker test setup fix, `DbDrop` tests
+run the schema engine successfully, but `dropDatabase` throws because
+the schema engine exits with code `0` and empty stderr instead of
+including the historical success text in stderr.
+
+Violated contract: a schema-engine command that exits successfully
+must be treated as success by the TypeScript helper. Human-readable
+stderr text is not the success contract.
+
+Owning layer: `packages/internals/src/schemaEngineCommands.ts` owns
+normalizing schema-engine process results for CLI callers.
+
+Intended solution: make `dropDatabase` return success for any
+non-throwing schema-engine invocation with exit code `0`; keep the
+existing structured error parsing for thrown failures.
+
+Rejected wrong-layer solution: do not adjust `DbDrop` snapshots or
+teach individual CLI command tests to compensate for helper-level
+success detection.
+
+Validation that proves the fix: rerun focused `DbDrop` success tests
+and the affected `@prisma/migrate` package tests.
+
+Validation performed:
+
+- `pnpm --filter @prisma/migrate exec dotenv -e ../../.db.env -- jest
+--runInBand src/__tests__/DbDrop.test.ts -t "should work"` passed
+  (`4` tests, `7` skipped).
+- `pnpm --filter @prisma/internals build` passed after the helper
+  change.
+- `pnpm --filter @prisma/migrate test` passed with local environment
+  skips for unavailable SQL Server, the locally timing-out CockroachDB
+  suite, and Docker-only extension coverage (`33` suites, `352` tests,
+  `2` skipped).

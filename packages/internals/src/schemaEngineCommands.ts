@@ -150,18 +150,13 @@ export async function createDatabase(connectionString: string, cwd = process.cwd
 
 export async function dropDatabase(connectionString: string, cwd = process.cwd(), schemaEnginePath?: string) {
   try {
-    const result = await execaCommand({
+    await execaCommand({
       connectionString,
       cwd,
       schemaEnginePath,
       engineCommandName: 'drop-database',
     })
-    if (result && result.exitCode === 0 && result.stderr.includes('The database was successfully dropped')) {
-      return true
-    } else {
-      // We should not arrive here normally
-      throw Error(`An error occurred during the drop: ${JSON.stringify(result, undefined, 2)}`)
-    }
+    return true
   } catch (e: any) {
     if (e.stderr) {
       const logs = parseJsonFromStderr(e.stderr)
