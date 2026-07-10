@@ -208,22 +208,24 @@ GITHUB_REF_NAME=target-7.8.0-lossless TERM=xterm-256color \
   TEST_SKIP_MSSQL=true pnpm test
 ```
 
-The command reaches package tests but fails in `@prisma/migrate`.
-Observed local-environment blockers:
+The command reaches package tests but still fails in `@prisma/migrate`.
+The current failure set is:
 
 - the SQL Server container `prisma-prisma-mssql-1` is crash-looping, so
   SQL Server tests were skipped with `TEST_SKIP_MSSQL=true`;
-- `TERM=dumb` makes `@prisma/internals` interactivity tests fail unless
-  `TERM` is set to a non-dumb value;
-- `localhost:5432` is a local Postgres server, not the repo's expected
-  Docker custom Postgres image, so migrate tests fail on missing
-  extension support, stale database ownership, missing test databases,
-  and schema permission errors;
-- using the reachable Postgres 16 container on `127.0.0.1:15432`
-  avoids some connectivity failures but changes expected `localhost:5432`
-  snapshots, so it is not acceptable as proof of the full root test gate;
-- two CockroachDB migrate tests can exceed their 10 second Jest timeout
-  in this local run.
+- the Homebrew Postgres listener on `localhost:5432` was stopped so the
+  repo's Docker Postgres image is now the endpoint used by tests;
+- `TERM=xterm-256color` is required because `TERM=dumb` makes
+  `@prisma/internals` interactivity tests fail;
+- the first rerun failed one `DbPush.test.ts` snapshot because the local
+  database `tests-migrate-prisma-config-extensions` already existed;
+- after dropping only that stale test database, `packages/migrate`
+  reran with that snapshot passing;
+- the remaining targeted `packages/migrate` failure is
+  `cockroachdb > draft migration and apply (--name)`, which exceeds
+  Jest's 10 second timeout at about 11.3 seconds in this local run.
 
 Do not treat the full plan as complete until repo-root `pnpm test`
-passes against the expected local test database environment.
+passes against the expected local test database environment, or until
+the user explicitly accepts a documented local-environment exception for
+the SQL Server skip and CockroachDB timeout.
