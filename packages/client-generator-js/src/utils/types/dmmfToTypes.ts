@@ -15,7 +15,7 @@ export function dmmfToTypes(dmmf: DMMF.Document) {
     datasources: [],
     clientVersion: '',
     engineVersion: '',
-    runtimeBase: '@prisma/client',
+    runtimeBase: '@prisma-lossless/client',
     runtimeName: 'client',
     runtimeSourcePath: path.join(__dirname, '../../../runtime'),
     schemaPath: '',

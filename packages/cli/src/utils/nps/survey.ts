@@ -41,7 +41,7 @@ export async function handleNpsSurvey() {
 
   if ('Deno' in globalThis) {
     // For some reason merely creating the readline interface on Deno
-    // doesn't allow `prisma generate` to finish until Enter is pressed.
+    // doesn't allow `prisma-lossless generate` to finish until Enter is pressed.
     return
   }
 

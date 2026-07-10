@@ -1,6 +1,9 @@
 import { getCommandWithExecutor } from '@prisma/internals'
 import { bold, dim, green, red } from 'kleur/colors'
 
+const PRISMA_CLI_PACKAGE_NAME = 'prisma-lossless'
+const PRISMA_CLIENT_PACKAGE_NAME = '@prisma-lossless/client'
+
 type StepResult = 'completed' | 'skipped' | 'not-applicable' | 'failed'
 
 export interface BootstrapStepStatus {
@@ -60,9 +63,11 @@ export function formatBootstrapOutput(opts: {
   if (opts.pendingDepsInstall) {
     lines.push(bold('Next steps:'))
     lines.push(
-      `  1. Install ${bold('@prisma/client')}, ${bold('dotenv')}, and ${bold('prisma')} with your package manager`,
+      `  1. Install ${bold(PRISMA_CLIENT_PACKAGE_NAME)}, ${bold('dotenv')}, and ${bold(
+        PRISMA_CLI_PACKAGE_NAME,
+      )} with your package manager`,
     )
-    lines.push(`  2. Re-run ${green('npx prisma@latest bootstrap')} to finish setup`)
+    lines.push(`  2. Re-run ${green(`npx ${PRISMA_CLI_PACKAGE_NAME}@latest bootstrap`)} to finish setup`)
     lines.push('')
     return lines.join('\n')
   }
@@ -75,17 +80,29 @@ export function formatBootstrapOutput(opts: {
     lines.push(
       `  1. Start querying: ${dim('https://www.prisma.io/docs/prisma-orm/quickstart/prisma-postgres#7-instantiate-prisma-client')}`,
     )
-    lines.push(`  2. Run ${green(getCommandWithExecutor('prisma studio'))} to view your data in the browser`)
+    lines.push(
+      `  2. Run ${green(getCommandWithExecutor(`${PRISMA_CLI_PACKAGE_NAME} studio`))} to view your data in the browser`,
+    )
   } else if (opts.hasModels) {
-    lines.push(`  1. Run ${green(getCommandWithExecutor('prisma generate'))} to generate the Prisma Client`)
+    lines.push(
+      `  1. Run ${green(getCommandWithExecutor(`${PRISMA_CLI_PACKAGE_NAME} generate`))} to generate the Prisma Client`,
+    )
     lines.push(
       `  2. Start querying: ${dim('https://www.prisma.io/docs/prisma-orm/quickstart/prisma-postgres#7-instantiate-prisma-client')}`,
     )
-    lines.push(`  3. Run ${green(getCommandWithExecutor('prisma studio'))} to view your data in the browser`)
+    lines.push(
+      `  3. Run ${green(getCommandWithExecutor(`${PRISMA_CLI_PACKAGE_NAME} studio`))} to view your data in the browser`,
+    )
   } else {
     lines.push(`  1. Define your data model in ${green('prisma/schema.prisma')}`)
-    lines.push(`  2. Run ${green(getCommandWithExecutor('prisma migrate dev'))} to create the database tables`)
-    lines.push(`  3. Run ${green(getCommandWithExecutor('prisma studio'))} to view your data in the browser`)
+    lines.push(
+      `  2. Run ${green(
+        getCommandWithExecutor(`${PRISMA_CLI_PACKAGE_NAME} migrate dev`),
+      )} to create the database tables`,
+    )
+    lines.push(
+      `  3. Run ${green(getCommandWithExecutor(`${PRISMA_CLI_PACKAGE_NAME} studio`))} to view your data in the browser`,
+    )
   }
 
   lines.push('')

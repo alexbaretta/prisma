@@ -76,10 +76,10 @@ const registry = {
 
 describe('generator', () => {
   test('minimal', async () => {
-    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma/client')
+    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma-lossless/client')
     // Make sure, that nothing is cached.
     await fsPromises.rm(prismaClientTarget, { recursive: true, force: true })
-    await getPackedPackage('@prisma/client', prismaClientTarget)
+    await getPackedPackage('@prisma-lossless/client', prismaClientTarget)
     await fsPromises.cp(path.join(__dirname, '../../client/runtime'), path.join(prismaClientTarget, 'runtime'), {
       recursive: true,
     })
@@ -106,7 +106,7 @@ describe('generator', () => {
 
     expect(manifest).toMatchInlineSnapshot(`
       {
-        "defaultOutput": "/project/node_modules/@prisma/client",
+        "defaultOutput": "/project/node_modules/@prisma-lossless/client",
         "prettyName": "Prisma Client",
         "requiresEngineVersion": "ENGINE_VERSION_TEST",
         "requiresEngines": [],
@@ -134,7 +134,7 @@ describe('generator', () => {
     `)
 
     expect(path.relative(__dirname, parseEnvValue(generator.options!.generator.output!))).toMatchInlineSnapshot(
-      `"node_modules/@prisma/client"`,
+      `"node_modules/@prisma-lossless/client"`,
     )
 
     await generator.generate()
@@ -155,7 +155,7 @@ describe('generator', () => {
   })
 
   test('with custom output', async () => {
-    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma/client')
+    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma-lossless/client')
     await fsPromises.rm(prismaClientTarget, { recursive: true, force: true })
     await fsPromises.cp(path.join(__dirname, '../../client/runtime'), path.join(prismaClientTarget, 'runtime'), {
       recursive: true,
@@ -179,7 +179,7 @@ describe('generator', () => {
 
     expect(manifest).toMatchInlineSnapshot(`
       {
-        "defaultOutput": "/project/node_modules/@prisma/client",
+        "defaultOutput": "/project/node_modules/@prisma-lossless/client",
         "prettyName": "Prisma Client",
         "requiresEngineVersion": "ENGINE_VERSION_TEST",
         "requiresEngines": [],
@@ -224,10 +224,10 @@ describe('generator', () => {
 
   test('denylist from engine validation', async () => {
     expect.assertions(1)
-    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma/client')
+    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma-lossless/client')
     // Make sure, that nothing is cached.
     await fsPromises.rm(prismaClientTarget, { recursive: true, force: true })
-    await getPackedPackage('@prisma/client', prismaClientTarget)
+    await getPackedPackage('@prisma-lossless/client', prismaClientTarget)
 
     if (!fs.existsSync(prismaClientTarget)) {
       throw new Error(`Prisma Client didn't get packed properly 🤔`)
@@ -268,10 +268,10 @@ describe('generator', () => {
   })
 
   test('schema path does not exist', async () => {
-    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma/client')
+    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma-lossless/client')
     // Make sure, that nothing is cached.
     await fsPromises.rm(prismaClientTarget, { recursive: true, force: true })
-    await getPackedPackage('@prisma/client', prismaClientTarget)
+    await getPackedPackage('@prisma-lossless/client', prismaClientTarget)
 
     if (!fs.existsSync(prismaClientTarget)) {
       throw new Error(`Prisma Client didn't get packed properly 🤔`)
@@ -298,26 +298,26 @@ describe('generator', () => {
     })
 
     await expect(generator.generate()).rejects.toThrowErrorMatchingInlineSnapshot(`
-      [Error: Generating client into /project/__fixture__/@prisma/client is not allowed.
-      This package is used by \`prisma generate\` and overwriting its content is dangerous.
+      [Error: Generating client into /project/__fixture__/@prisma-lossless/client is not allowed.
+      This package is used by \`prisma-lossless generate\` and overwriting its content is dangerous.
 
       Suggestion:
       In /project/main-package-override.prisma replace:
 
-      7 output   = "./__fixture__/@prisma/client"
+      7 output   = "./__fixture__/@prisma-lossless/client"
       with
       7 output   = "./__fixture__/.prisma/client"
 
       You won't need to change your imports.
-      Imports from \`@prisma/client\` will be automatically forwarded to \`.prisma/client\`]
+      Imports from \`@prisma-lossless/client\` will be automatically forwarded to \`.prisma/client\`]
     `)
   })
 
   test('mongo', async () => {
-    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma/client')
+    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma-lossless/client')
     // Make sure, that nothing is cached.
     await fsPromises.rm(prismaClientTarget, { recursive: true, force: true })
-    await getPackedPackage('@prisma/client', prismaClientTarget)
+    await getPackedPackage('@prisma-lossless/client', prismaClientTarget)
 
     if (!fs.existsSync(prismaClientTarget)) {
       throw new Error(`Prisma Client didn't get packed properly 🤔`)
@@ -339,7 +339,7 @@ describe('generator', () => {
 
     expect(manifest).toMatchInlineSnapshot(`
       {
-        "defaultOutput": "/project/node_modules/@prisma/client",
+        "defaultOutput": "/project/node_modules/@prisma-lossless/client",
         "prettyName": "Prisma Client",
         "requiresEngineVersion": "ENGINE_VERSION_TEST",
         "requiresEngines": [],
@@ -367,7 +367,7 @@ describe('generator', () => {
     `)
 
     expect(path.relative(__dirname, parseEnvValue(generator.options!.generator.output!))).toMatchInlineSnapshot(
-      `"node_modules/@prisma/client"`,
+      `"node_modules/@prisma-lossless/client"`,
     )
 
     await generator.generate()
@@ -380,10 +380,10 @@ describe('generator', () => {
   })
 
   test('cockroachdb generates the expected WASM file', async () => {
-    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma/client')
+    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma-lossless/client')
     // Make sure, that nothing is cached.
     await fsPromises.rm(prismaClientTarget, { recursive: true, force: true })
-    await getPackedPackage('@prisma/client', prismaClientTarget)
+    await getPackedPackage('@prisma-lossless/client', prismaClientTarget)
     await fsPromises.cp(path.join(__dirname, '../../client/runtime'), path.join(prismaClientTarget, 'runtime'), {
       recursive: true,
     })

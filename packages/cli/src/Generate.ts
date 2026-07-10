@@ -34,9 +34,10 @@ import { handleNpsSurvey } from './utils/nps/survey'
 import { simpleDebounce } from './utils/simpleDebounce'
 
 const pkg = eval(`require('../package.json')`)
+const PRISMA_CLIENT_PACKAGE_NAME = '@prisma-lossless/client'
 
 /**
- * $ prisma generate
+ * $ prisma-lossless generate
  */
 export class Generate implements Command {
   surveyHandler: () => Promise<void>
@@ -54,7 +55,7 @@ Generate artifacts (e.g. Prisma Client)
 
 ${bold('Usage')}
 
-  ${dim('$')} prisma generate [options]
+  ${dim('$')} prisma-lossless generate [options]
 
 ${bold('Options')}
           -h, --help   Display this help message
@@ -69,16 +70,16 @@ ${bold('Options')}
 ${bold('Examples')}
 
   With an existing Prisma schema
-    ${dim('$')} prisma generate
+    ${dim('$')} prisma-lossless generate
 
   Or specify a schema
-    ${dim('$')} prisma generate --schema=./schema.prisma
+    ${dim('$')} prisma-lossless generate --schema=./schema.prisma
 
   Run the command with multiple specific generators
-    ${dim('$')} prisma generate --generator client1 --generator client2
+    ${dim('$')} prisma-lossless generate --generator client1 --generator client2
 
   Watch Prisma schema file and rerun after each change
-    ${dim('$')} prisma generate --watch
+    ${dim('$')} prisma-lossless generate --watch
 
 `)
 
@@ -221,7 +222,7 @@ ${bold('Examples')}
     if (printBreakingChangesMessage && logger.should.warn()) {
       // skipping generate
       return `There have been breaking changes in Prisma Client since you updated last time.
-Please run \`prisma generate\` manually.`
+Please run \`prisma-lossless generate\` manually.`
     }
 
     const watchingText = `\n${green('Watching...')} ${dim(schemaContext.schemaRootDir)}\n`
@@ -245,8 +246,8 @@ ${breakingChangesMessage}`
         const versionsOutOfSync = clientGeneratorVersion && pkg.version !== clientGeneratorVersion
         const versionsWarning =
           versionsOutOfSync && logger.should.warn()
-            ? `\n\n${yellow(bold('warn'))} Versions of ${bold(`prisma@${pkg.version}`)} and ${bold(
-                `@prisma/client@${clientGeneratorVersion}`,
+            ? `\n\n${yellow(bold('warn'))} Versions of ${bold(`${pkg.name}@${pkg.version}`)} and ${bold(
+                `${PRISMA_CLIENT_PACKAGE_NAME}@${clientGeneratorVersion}`,
               )} don't match.
 This might lead to unexpected behavior.
 Please make sure they have the same version.`

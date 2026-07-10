@@ -1,6 +1,6 @@
 {
   "version": "0.0.0",
-  "name": "prisma",
+  "name": "prisma-lossless",
   "description": "Prisma is an open-source database toolkit. It includes a JavaScript/TypeScript ORM for Node.js, migrations and a modern GUI to view and edit the data in your database. You can use Prisma in new projects or add it to an existing one.",
   "keywords": [
     "CLI",
@@ -70,7 +70,7 @@
     ]
   },
   "bin": {
-    "prisma": "build/index.js"
+    "prisma-lossless": "build/index.js"
   },
   "types": "./dist/cli/src/types.d.ts",
   "exports": {
@@ -113,7 +113,7 @@
     "@opentelemetry/context-async-hooks": "2.1.0",
     "@opentelemetry/sdk-trace-base": "2.1.0",
     "@prisma/adapter-libsql": "workspace:*",
-    "@prisma/client": "workspace:*",
+    "@prisma-lossless/client": "workspace:*",
     "@prisma/client-generator-registry": "workspace:*",
     "@prisma/credentials-store": "workspace:*",
     "@prisma/debug": "workspace:*",

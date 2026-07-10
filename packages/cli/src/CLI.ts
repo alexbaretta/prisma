@@ -154,25 +154,25 @@ ${this.boxedTryPdpMessage}
     ${bold('Examples')}
 
       Set up a new local Prisma Postgres \`prisma dev\`-ready project
-      ${dim('$')} prisma init
+      ${dim('$')} prisma-lossless init
 
       Start a local Prisma Postgres server for development
-      ${dim('$')} prisma dev
+      ${dim('$')} prisma-lossless dev
 
       Generate artifacts (e.g. Prisma Client)
-      ${dim('$')} prisma generate
+      ${dim('$')} prisma-lossless generate
 
       Browse your data
-      ${dim('$')} prisma studio
+      ${dim('$')} prisma-lossless studio
 
       Create migrations from your Prisma schema, apply them to the database, generate artifacts (e.g. Prisma Client)
-      ${dim('$')} prisma migrate dev
+      ${dim('$')} prisma-lossless migrate dev
 
       Pull the schema from an existing database, updating the Prisma schema
-      ${dim('$')} prisma db pull
+      ${dim('$')} prisma-lossless db pull
 
       Push the Prisma schema state to the database
-      ${dim('$')} prisma db push
+      ${dim('$')} prisma-lossless db push
 
       Validate your Prisma schema
       ${dim('$')} prisma validate

@@ -5,7 +5,9 @@
     "moduleResolution": "bundler",
     "paths": {
       "@prisma/client": ["./packages/client/src"],
+      "@prisma-lossless/client": ["./packages/client/src"],
       "@prisma/client/runtime/client": ["./packages/client/src/runtime"],
+      "@prisma-lossless/client/runtime/client": ["./packages/client/src/runtime"],
       "@prisma/client-common": ["./packages/client-common/src"],
       "@prisma/client-engine-runtime": ["./packages/client-engine-runtime/src"],
       "@prisma/client-generator-js": ["./packages/client-generator-js/src"],
@@ -21,6 +23,7 @@
       "@prisma/generator-helper": ["./packages/generator-helper/src"],
       "@prisma/debug": ["./packages/debug/src"],
       "prisma": ["./packages/cli/src"],
+      "prisma-lossless": ["./packages/cli/src"],
       "@prisma/get-platform": ["./packages/get-platform/src"],
       "@prisma/fetch-engine": ["./packages/fetch-engine/src"],
       "@prisma/engines": ["./packages/engines/src"],

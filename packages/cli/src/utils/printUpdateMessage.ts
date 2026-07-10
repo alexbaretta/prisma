@@ -3,6 +3,7 @@ import type { Check } from 'checkpoint-client'
 import { blue, bold } from 'kleur/colors'
 
 const isPrismaInstalledGlobally = isCurrentBinInstalledGlobally()
+const PRISMA_CLIENT_PACKAGE_NAME = '@prisma-lossless/client'
 
 export function printUpdateMessage(checkResult: Check.Result | 0 | void): void {
   const shouldHide = process.env.PRISMA_HIDE_UPDATE_MESSAGE
@@ -17,7 +18,7 @@ export function printUpdateMessage(checkResult: Check.Result | 0 | void): void {
   const latestVersionAvailable = checkResult.data.current_version
 
   const prismaCLICommand = makeInstallCommand(checkResult.data.package, checkResult.data.release_tag)
-  const prismaClientCommand = makeInstallCommand('@prisma/client', checkResult.data.release_tag, {
+  const prismaClientCommand = makeInstallCommand(PRISMA_CLIENT_PACKAGE_NAME, checkResult.data.release_tag, {
     canBeGlobal: false,
     canBeDev: false,
   })

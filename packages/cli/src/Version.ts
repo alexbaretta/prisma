@@ -22,6 +22,8 @@ import { getInstalledPrismaClientVersion } from './utils/getClientVersion'
 
 const packageJson = require('../package.json')
 
+const PRISMA_CLIENT_PACKAGE_NAME = '@prisma-lossless/client'
+
 /**
  * $ prisma version
  */
@@ -81,7 +83,7 @@ export class Version implements Command {
 
     const rows = [
       [packageJson.name, packageJson.version],
-      ['@prisma/client', prismaClientVersion ?? 'Not found'],
+      [PRISMA_CLIENT_PACKAGE_NAME, prismaClientVersion ?? 'Not found'],
       ['Operating System', os.platform()],
       ['Architecture', os.arch()],
       ['Node.js', process.version],

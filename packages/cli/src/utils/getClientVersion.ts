@@ -2,6 +2,8 @@ import fs from 'fs'
 import Module from 'module'
 import { packageUp } from 'package-up'
 
+const PRISMA_CLIENT_PACKAGE_NAME = '@prisma-lossless/client'
+
 /**
  * Try reading the installed Prisma Client version
  */
@@ -14,7 +16,7 @@ export async function getInstalledPrismaClientVersion(cwd: string = process.cwd(
  */
 async function getPrismaClientVersionFromNodeModules(cwd: string = process.cwd()): Promise<string | null> {
   try {
-    const pkgJsonPath = requireResolveFrom('@prisma/client/package.json', cwd)
+    const pkgJsonPath = requireResolveFrom(`${PRISMA_CLIENT_PACKAGE_NAME}/package.json`, cwd)
 
     if (!pkgJsonPath) {
       return null
@@ -46,7 +48,8 @@ async function getPrismaClientVersionFromLocalPackageJson(cwd: string = process.
 
     const pkgJsonString = await fs.promises.readFile(pkgJsonPath, 'utf-8')
     const pkgJson = JSON.parse(pkgJsonString)
-    const clientVersion = pkgJson.dependencies?.['@prisma/client'] ?? pkgJson.devDependencies?.['@prisma/client']
+    const clientVersion =
+      pkgJson.dependencies?.[PRISMA_CLIENT_PACKAGE_NAME] ?? pkgJson.devDependencies?.[PRISMA_CLIENT_PACKAGE_NAME]
 
     if (!clientVersion) {
       return null

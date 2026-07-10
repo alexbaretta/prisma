@@ -30,12 +30,16 @@ import {
   promptTemplateSelection,
 } from './template-scaffold'
 
+const PRISMA_CLI_PACKAGE_NAME = 'prisma-lossless'
+const PRISMA_CLIENT_PACKAGE_NAME = '@prisma-lossless/client'
+const PRISMA_CLIENT_NODE_MODULES_PATH = ['node_modules', '@prisma-lossless', 'client']
+
 /**
- * Locates the user's locally installed `prisma` binary in node_modules.
+ * Locates the user's locally installed Prisma binary in node_modules.
  * Returns the absolute path if found, null otherwise.
  */
 function findLocalPrismaBin(baseDir: string): string | null {
-  const candidate = path.join(baseDir, 'node_modules', '.bin', 'prisma')
+  const candidate = path.join(baseDir, 'node_modules', '.bin', PRISMA_CLI_PACKAGE_NAME)
   return fs.existsSync(candidate) ? candidate : null
 }
 
@@ -63,7 +67,7 @@ Bootstrap a Prisma Postgres project from scratch or connect an existing one.
 
 ${bold('Usage')}
 
-  ${dim('$')} prisma bootstrap [options]
+  ${dim('$')} prisma-lossless bootstrap [options]
 
 ${bold('Options')}
 
@@ -76,13 +80,13 @@ ${bold('Options')}
 ${bold('Examples')}
 
   Interactive (opens browser, guides you through setup)
-  ${dim('$')} prisma bootstrap
+  ${dim('$')} prisma-lossless bootstrap
 
   Non-interactive with explicit credentials
-  ${dim('$')} prisma bootstrap --api-key "<your-api-key>" --database "db_..."
+  ${dim('$')} prisma-lossless bootstrap --api-key "<your-api-key>" --database "db_..."
 
   With a starter template
-  ${dim('$')} prisma bootstrap --template nextjs
+  ${dim('$')} prisma-lossless bootstrap --template nextjs
 `)
 
   public async parse(argv: string[], config: PrismaConfigInternal, baseDir: string): Promise<string | Error> {
@@ -204,12 +208,12 @@ ${bold('Examples')}
             templateScaffolded = steps.template === 'completed'
             if (!templateScaffolded) {
               return new HelpError(
-                `\n${bold(red('!'))} Template download failed and no project exists to fall back to.\n\nInitialize a project first, then re-run ${bold('prisma bootstrap')}:\n  ${dim('$')} npm init -y ${dim('  (or pnpm init / yarn init / bun init)')}\n  ${dim('$')} npx prisma bootstrap`,
+                `\n${bold(red('!'))} Template download failed and no project exists to fall back to.\n\nInitialize a project first, then re-run ${bold(`${PRISMA_CLI_PACKAGE_NAME} bootstrap`)}:\n  ${dim('$')} npm init -y ${dim('  (or pnpm init / yarn init / bun init)')}\n  ${dim('$')} npx ${PRISMA_CLI_PACKAGE_NAME} bootstrap`,
               )
             }
           } else {
             return new HelpError(
-              `\n${bold(red('!'))} Cannot proceed without a project.\n\nInitialize a project first, then re-run ${bold('prisma bootstrap')}:\n  ${dim('$')} npm init -y ${dim('  (or pnpm init / yarn init / bun init)')}\n  ${dim('$')} npx prisma bootstrap`,
+              `\n${bold(red('!'))} Cannot proceed without a project.\n\nInitialize a project first, then re-run ${bold(`${PRISMA_CLI_PACKAGE_NAME} bootstrap`)}:\n  ${dim('$')} npm init -y ${dim('  (or pnpm init / yarn init / bun init)')}\n  ${dim('$')} npx ${PRISMA_CLI_PACKAGE_NAME} bootstrap`,
             )
           }
         } else if (templateName) {
@@ -274,7 +278,9 @@ ${bold('Examples')}
           installSpinner.fail(`Dependency install failed: ${sanitizeErrorMessage(msg)}`)
           await emitStepFailed(telemetryCtx, 'install_deps', sanitizeErrorMessage(msg))
           return new HelpError(
-            `\n${bold(red('!'))} Dependency installation failed. Please install dependencies manually and re-run ${bold('prisma bootstrap')}.`,
+            `\n${bold(red('!'))} Dependency installation failed. Please install dependencies manually and re-run ${bold(
+              `${PRISMA_CLI_PACKAGE_NAME} bootstrap`,
+            )}.`,
           )
         }
       }
@@ -309,13 +315,13 @@ ${bold('Examples')}
       const missingDevDeps: string[] = []
       const missingDeps: string[] = []
       if (!templateScaffolded) {
-        for (const pkg of ['dotenv', 'prisma']) {
+        for (const pkg of ['dotenv', PRISMA_CLI_PACKAGE_NAME]) {
           if (!fs.existsSync(path.join(baseDir, 'node_modules', pkg))) {
             missingDevDeps.push(pkg)
           }
         }
-        if (!fs.existsSync(path.join(baseDir, 'node_modules', '@prisma', 'client'))) {
-          missingDeps.push('@prisma/client')
+        if (!fs.existsSync(path.join(baseDir, ...PRISMA_CLIENT_NODE_MODULES_PATH))) {
+          missingDeps.push(PRISMA_CLIENT_PACKAGE_NAME)
         }
       }
 
@@ -339,7 +345,7 @@ ${bold('Examples')}
                 : `${pm} add -D ${missingDevDeps.join(' ')}`
             console.log(`  ${dim('$')} ${installHint}`)
           }
-          console.log(`  ${dim('$')} npx prisma@latest bootstrap`)
+          console.log(`  ${dim('$')} npx ${PRISMA_CLI_PACKAGE_NAME}@latest bootstrap`)
 
           return formatBootstrapOutput({
             databaseId: telemetryCtx.linkResult?.databaseId ?? databaseId ?? 'unknown',
@@ -400,12 +406,12 @@ ${bold('Examples')}
       // it uses the Management API shipped with this CLI version.
       //
       // `migrate` and `seed` are ORM concerns that depend on the user's local Prisma setup.
-      // A user may run `npx prisma@latest bootstrap` on a project that has an older Prisma
+      // A user may run `npx prisma-lossless@latest bootstrap` on a project that has an older Prisma
       // version installed locally (e.g., Prisma 6 with `url` in schema.prisma instead of
       // prisma.config.ts). Running migrate in-process would force this CLI's engine version
       // on their project, causing version mismatches or hard failures.
       //
-      // When a local `prisma` binary exists in node_modules, we shell out to it so that
+      // When a local Prisma binary exists in node_modules, we shell out to it so that
       // migrate/seed run with the user's own Prisma version and configuration. We only fall
       // back to in-process execution for fresh projects where `init` just scaffolded Prisma 7
       // files and no local binary exists yet.
@@ -418,7 +424,7 @@ ${bold('Examples')}
         const modelSummary =
           modelCount > 0 ? ` ${modelCount} model${modelCount === 1 ? '' : 's'} (${modelNames.join(', ')})` : ' schema'
         const shouldMigrate = await confirm({
-          message: `Apply${modelSummary} to database with prisma migrate dev?`,
+          message: `Apply${modelSummary} to database with ${PRISMA_CLI_PACKAGE_NAME} migrate dev?`,
           default: true,
         })
 
