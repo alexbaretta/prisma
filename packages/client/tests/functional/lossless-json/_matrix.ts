@@ -6,5 +6,8 @@ export default defineMatrix(() => [
     {
       provider: Providers.POSTGRESQL,
     },
+    {
+      provider: Providers.SQLITE,
+    },
   ],
 ])
