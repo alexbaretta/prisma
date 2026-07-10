@@ -36,5 +36,8 @@
   "files": [
     "dist"
   ],
-  "sideEffects": false
+  "sideEffects": false,
+  "dependencies": {
+    "lossless-json": "4.3.0"
+  }
 }

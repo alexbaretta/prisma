@@ -1153,6 +1153,10 @@ importers:
         version: 0.0.33
 
   packages/client-runtime-utils:
+    dependencies:
+      lossless-json:
+        specifier: 4.3.0
+        version: 4.3.0
     devDependencies:
       decimal.js:
         specifier: 10.5.0
@@ -6710,6 +6714,9 @@ packages:
 
   long@5.3.2:
     resolution: {integrity: sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA==}
+
+  lossless-json@4.3.0:
+    resolution: {integrity: sha512-ToxOC+SsduRmdSuoLZLYAr5zy1Qu7l5XhmPWM3zefCZ5IcrzW/h108qbJUKfOlDlhvhjUK84+8PSVX0kxnit0g==}
 
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
@@ -14007,6 +14014,8 @@ snapshots:
       wrap-ansi: 9.0.0
 
   long@5.3.2: {}
+
+  lossless-json@4.3.0: {}
 
   lru-cache@10.4.3: {}
 
