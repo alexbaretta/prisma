@@ -187,3 +187,43 @@ The plan is complete when:
   containing loss-sensitive numeric tokens;
 - the plan documents any behavior that remains intentionally
   incompatible with upstream Prisma defaults.
+
+## Completion Validation Status
+
+Tasklets 001 through 014 are `[DONE]` and committed. Repo-root build
+validation passed after rerunning outside the sandbox:
+
+```sh
+pnpm build
+```
+
+The first sandboxed build failed at `tsx` IPC socket creation under
+`/var/folders/...`; the escalated rerun passed with `44 successful, 44
+total`.
+
+Repo-root test validation has not passed in this local environment:
+
+```sh
+GITHUB_REF_NAME=target-7.8.0-lossless TERM=xterm-256color \
+  TEST_SKIP_MSSQL=true pnpm test
+```
+
+The command reaches package tests but fails in `@prisma/migrate`.
+Observed local-environment blockers:
+
+- the SQL Server container `prisma-prisma-mssql-1` is crash-looping, so
+  SQL Server tests were skipped with `TEST_SKIP_MSSQL=true`;
+- `TERM=dumb` makes `@prisma/internals` interactivity tests fail unless
+  `TERM` is set to a non-dumb value;
+- `localhost:5432` is a local Postgres server, not the repo's expected
+  Docker custom Postgres image, so migrate tests fail on missing
+  extension support, stale database ownership, missing test databases,
+  and schema permission errors;
+- using the reachable Postgres 16 container on `127.0.0.1:15432`
+  avoids some connectivity failures but changes expected `localhost:5432`
+  snapshots, so it is not acceptable as proof of the full root test gate;
+- two CockroachDB migrate tests can exceed their 10 second Jest timeout
+  in this local run.
+
+Do not treat the full plan as complete until repo-root `pnpm test`
+passes against the expected local test database environment.
