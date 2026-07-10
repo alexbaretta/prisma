@@ -137,7 +137,7 @@ without conflicting with stock Prisma packages.
 
 | ID  | Tasklet                                                                  | Priority | Status | Dependencies |
 | --- | ------------------------------------------------------------------------ | -------- | ------ | ------------ |
-| 011 | [Document fork behavior](./011-document-fork-contract.md)                | Medium   | [ ]    | 010          |
+| 011 | [Document fork behavior](./011-document-fork-contract.md)                | Medium   | [DONE] | 010          |
 | 012 | [Rename npm packages for local fork](./012-rename-npm-packages.md)       | High     | [ ]    | 011          |
 | 013 | [Build fork npm package artifacts](./013-build-npm-package-artifacts.md) | High     | [ ]    | 012          |
 | 014 | [Install fork locally and smoke test](./014-install-local-package.md)    | High     | [ ]    | 013          |
