@@ -46,6 +46,12 @@ export type Decimal = runtime.Decimal
 export type DecimalJsLike = runtime.DecimalJsLike
 
 /**
+ * Lossless JSON number
+ */
+export const LosslessNumber = runtime.LosslessNumber
+export type LosslessNumber = runtime.LosslessNumber
+
+/**
 * Extensions
 */
 export type Extension = runtime.Types.Extensions.UserArgs

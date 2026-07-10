@@ -19,6 +19,11 @@ test('can use decimal.js', () => {
   expect(num.floor().toNumber()).toEqual(15)
 })
 
+test('can use LosslessNumber', () => {
+  const num = new Prisma.LosslessNumber('9007199254740993')
+  expect(String(num)).toEqual('9007199254740993')
+})
+
 test('can use utility types', () => {
   expect(typeof Prisma.DbNull).toEqual('object')
   expect(typeof Prisma.AnyNull).toEqual('object')
@@ -33,14 +38,16 @@ test('can access model names', () => {
 
 test('can use json utility types', () => {
   // verify json utility type imports work
-  const a: Prisma.JsonValue = 56
+  const lossless = new Prisma.LosslessNumber('56')
+  const a: Prisma.JsonValue = lossless
   const b: Prisma.JsonObject = {
-    a: 56,
+    a: lossless,
   }
-  const c: Prisma.JsonArray = [56, 56]
+  const c: Prisma.JsonArray = [lossless, lossless]
   const d: Prisma.InputJsonObject = { foo: 'bar' }
   const e: Prisma.InputJsonArray = ['foo']
   const f: Prisma.InputJsonValue = 56
+  const g: Prisma.InputJsonValue = lossless
 })
 
 export {}

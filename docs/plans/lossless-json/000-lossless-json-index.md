@@ -127,7 +127,7 @@ functional, generated-type, and provider coverage.
 | 006 | [Introduce internal JSON codec](./006-update-json-types-and-generators.md)     | High     | [DONE] | 005           |
 | 007 | [Patch model and raw read materialization](./007-validate-json-semantics.md)   | High     | [DONE] | 006           |
 | 008 | [Patch write parameterization](./008-add-cross-provider-coverage.md)           | High     | [DONE] | 006           |
-| 009 | [Update JSON types and generators](./009-document-fork-contract.md)            | High     | [ ]    | 007, 008      |
+| 009 | [Update JSON types and generators](./009-document-fork-contract.md)            | High     | [DONE] | 007, 008      |
 | 010 | [Validate semantics and provider coverage](./010-validate-lossless-json-qa.md) | High     | [ ]    | 007, 008, 009 |
 
 ### Sprint 2: Fork Packaging And Local Adoption

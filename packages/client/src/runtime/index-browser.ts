@@ -12,6 +12,6 @@ export {
   JsonNull,
   NullTypes,
 } from '@prisma/client-runtime-utils'
-export { Decimal } from '@prisma/client-runtime-utils'
+export { Decimal, LosslessNumber } from '@prisma/client-runtime-utils'
 
 export { Public }

@@ -643,7 +643,7 @@ test('args - LosslessNumber', () => {
     serialize({
       modelName: 'User',
       action: 'findMany',
-      args: { where: { jsonColumn: new LosslessNumber('9007199254740993') as never } },
+      args: { where: { jsonColumn: new LosslessNumber('9007199254740993') } },
     }),
   ).toMatchInlineSnapshot(`
     "{
@@ -675,7 +675,7 @@ test('args - nested LosslessNumber', () => {
       args: {
         where: {
           jsonColumn: {
-            large: new LosslessNumber('9007199254740993') as never,
+            large: new LosslessNumber('9007199254740993'),
           },
         },
       },

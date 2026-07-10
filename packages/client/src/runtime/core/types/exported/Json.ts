@@ -1,3 +1,5 @@
+import type { LosslessNumber } from '@prisma/client-runtime-utils'
+
 /**
  * From https://github.com/sindresorhus/type-fest/
  * Matches a JSON object.
@@ -15,7 +17,7 @@ export interface JsonArray extends Array<JsonValue> {}
  * From https://github.com/sindresorhus/type-fest/
  * Matches any valid JSON value.
  */
-export type JsonValue = string | number | boolean | JsonObject | JsonArray | null
+export type JsonValue = string | LosslessNumber | boolean | JsonObject | JsonArray | null
 
 /**
  * Matches a JSON object.
@@ -42,4 +44,11 @@ export interface InputJsonArray extends ReadonlyArray<InputJsonValue | null> {}
  *
  * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
  */
-export type InputJsonValue = string | number | boolean | InputJsonObject | InputJsonArray | { toJSON(): unknown }
+export type InputJsonValue =
+  | string
+  | number
+  | LosslessNumber
+  | boolean
+  | InputJsonObject
+  | InputJsonArray
+  | { toJSON(): unknown }

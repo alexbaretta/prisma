@@ -17,6 +17,7 @@ ${
     ? `
 const {
   Decimal,
+  LosslessNumber,
   DbNull,
   JsonNull,
   AnyNull,
@@ -41,6 +42,7 @@ const {
   raw,
   skip,
   Decimal,
+  LosslessNumber,
   Debug,
   DbNull,
   JsonNull,
@@ -77,6 +79,7 @@ Prisma.PrismaClientRustPanicError = ${notSupportOnBrowser('PrismaClientRustPanic
 Prisma.PrismaClientInitializationError = ${notSupportOnBrowser('PrismaClientInitializationError', browser)}
 Prisma.PrismaClientValidationError = ${notSupportOnBrowser('PrismaClientValidationError', browser)}
 Prisma.Decimal = Decimal
+Prisma.LosslessNumber = LosslessNumber
 
 /**
  * Re-export of sql-template-tag
@@ -167,6 +170,11 @@ ${buildPrismaSkipTs(generator.previewFeatures)}
 export import Decimal = runtime.Decimal
 
 export type DecimalJsLike = runtime.DecimalJsLike
+
+/**
+ * Lossless JSON number
+ */
+export import LosslessNumber = runtime.LosslessNumber
 
 /**
 * Extensions

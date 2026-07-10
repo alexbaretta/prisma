@@ -48,7 +48,7 @@ export {
   NullTypes,
   ObjectEnumValue,
 } from '@prisma/client-runtime-utils'
-export { Decimal } from '@prisma/client-runtime-utils'
+export { Decimal, LosslessNumber } from '@prisma/client-runtime-utils'
 export { Debug } from '@prisma/debug'
 export * as DMMF from '@prisma/dmmf'
 export type { SqlDriverAdapterFactory } from '@prisma/driver-adapter-utils'

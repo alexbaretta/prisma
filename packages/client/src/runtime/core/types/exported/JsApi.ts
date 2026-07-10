@@ -1,4 +1,4 @@
-import { ObjectEnumValue } from '@prisma/client-runtime-utils'
+import { LosslessNumber, ObjectEnumValue } from '@prisma/client-runtime-utils'
 import type * as DMMF from '@prisma/dmmf'
 
 import { DecimalJsLike } from './DecimalJsLike'
@@ -19,6 +19,7 @@ export type JsInputValue =
   | Uint8Array // covers node Buffer as well, but does not introduce dependency on Node typings
   | Date
   | DecimalJsLike
+  | LosslessNumber
   | ObjectEnumValue
   | RawParameters
   | JsonConvertible

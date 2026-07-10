@@ -6,6 +6,12 @@ async function main() {
 
   const x = await prisma.user.findMany()
   const info: Prisma.JsonValue = x[0].info
+  const losslessNumber = new Prisma.LosslessNumber('9007199254740993')
+  const losslessJsonValue: Prisma.JsonValue = losslessNumber
+  const losslessJsonObject: Prisma.JsonObject = { value: losslessNumber }
+  const losslessJsonArray: Prisma.JsonArray = [losslessNumber]
+  const losslessInput: Prisma.InputJsonValue = losslessNumber
+  const numberInput: Prisma.InputJsonValue = 1
 
   type OptionalObject = {
     value?: string | undefined
@@ -18,6 +24,16 @@ async function main() {
     data: {
       info: y,
       email: '...',
+    },
+  })
+
+  await prisma.user.create({
+    data: {
+      info: {
+        large: losslessInput,
+        ordinary: numberInput,
+      },
+      email: 'lossless@example.org',
     },
   })
 

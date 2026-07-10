@@ -25,6 +25,12 @@ async function main() {
       },
     },
   })
+  if (a) {
+    const intValue: number = a.int
+    const bigIntValue: bigint = a.bInt
+    void intValue
+    void bigIntValue
+  }
 
   const b = await prisma.b.findFirst({
     where: {

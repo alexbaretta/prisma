@@ -26,6 +26,7 @@ export type * from '${context.importFileName(`../models`)}'
 export type * from '${context.importFileName(`./prismaNamespace`)}'
 
 export const Decimal = runtime.Decimal
+export const LosslessNumber = runtime.LosslessNumber
 
 ${nullTypes}
 
