@@ -6,6 +6,7 @@
  * both schema rules and runtime value types agree.
  */
 
+import { normalizeJsonFieldText, stringifyJsonFieldValue } from '@prisma/client-runtime-utils'
 import type {
   JsonArgumentValue,
   JsonBatchQuery,
@@ -20,7 +21,6 @@ import type { InputEdge, InputNode } from '@prisma/param-graph'
 import { EdgeFlag, getScalarMask, hasFlag, ParamGraph, ScalarMask } from '@prisma/param-graph'
 
 import { deserializeJsonObject } from '../json-protocol'
-import { safeJsonStringify } from '../utils'
 import { classifyValue, isPlainObject, isTaggedValue, ValueClass } from './classify'
 
 /**
@@ -238,13 +238,14 @@ class Parameterizer {
       return value
     }
 
+    if (mask & ScalarMask.Json) {
+      const type: PlaceholderType = { type: 'Json' }
+      return this.#getOrCreatePlaceholder(stringifyJsonFieldValue(value), type)
+    }
+
     const type = getPrimitivePlaceholderType(value)
     if (!matchesPrimitiveMask(type, mask)) {
       return value
-    }
-
-    if (mask & ScalarMask.Json) {
-      value = JSON.stringify(value)
     }
 
     return this.#getOrCreatePlaceholder(value, type)
@@ -264,7 +265,7 @@ class Parameterizer {
     }
 
     const type = getTaggedPlaceholderType(tagged.$type)!
-    const decoded = decodeTaggedValue(tagged)
+    const decoded = tag === 'Json' ? normalizeJsonFieldText(tagged.value as string) : decodeTaggedValue(tagged)
 
     return this.#getOrCreatePlaceholder(decoded, type)
   }
@@ -274,7 +275,7 @@ class Parameterizer {
    */
   #handleArray(items: unknown[], originalValue: unknown, edge: InputEdge): unknown {
     if (hasFlag(edge, EdgeFlag.ParamScalar) && getScalarMask(edge) & ScalarMask.Json) {
-      const jsonValue = safeJsonStringify(deserializeJsonObject(items))
+      const jsonValue = stringifyJsonFieldValue(deserializeJsonObject(items))
       const type: PlaceholderType = { type: 'Json' }
       return this.#getOrCreatePlaceholder(jsonValue, type)
     }
@@ -325,7 +326,7 @@ class Parameterizer {
 
     const mask = getScalarMask(edge)
     if (mask & ScalarMask.Json) {
-      const jsonValue = safeJsonStringify(deserializeJsonObject(obj))
+      const jsonValue = stringifyJsonFieldValue(deserializeJsonObject(obj))
       const type: PlaceholderType = { type: 'Json' }
       return this.#getOrCreatePlaceholder(jsonValue, type)
     }

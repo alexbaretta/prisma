@@ -36,6 +36,8 @@ describe('parameterizeQuery', () => {
       'status',
       'Status',
       'createdAt',
+      'profile',
+      'profileCopy',
     ],
     inputNodes: [
       // Node 0: UserWhereInput
@@ -68,6 +70,8 @@ describe('parameterizeQuery', () => {
           1: { flags: EdgeFlag.ParamScalar, scalarMask: ScalarMask.String }, // id
           2: { flags: EdgeFlag.ParamScalar, scalarMask: ScalarMask.String }, // email
           3: { flags: EdgeFlag.ParamScalar, scalarMask: ScalarMask.String }, // name
+          14: { flags: EdgeFlag.ParamScalar, scalarMask: ScalarMask.Json }, // profile
+          15: { flags: EdgeFlag.ParamScalar, scalarMask: ScalarMask.Json }, // profileCopy
         },
       },
       // Node 4: CreateUserArgs
@@ -427,6 +431,107 @@ describe('parameterizeQuery', () => {
         '%1': '123',
         '%2': 'test@example.com',
         '%3': 'John',
+      })
+    })
+  })
+
+  describe('JSON parameterization', () => {
+    it('parameterizes primitive JSON values as JSON placeholder text', () => {
+      const query: JsonQuery = {
+        modelName: 'User',
+        action: 'createOne',
+        query: {
+          arguments: { data: { profile: 'literal string' } },
+          selection: { $scalars: true },
+        },
+      }
+
+      const result = parameterizeQuery(query, paramGraph)
+
+      expect(result.placeholderValues).toEqual({
+        '%1': '"literal string"',
+      })
+      expect(result.parameterizedQuery.query.arguments).toEqual({
+        data: { profile: { $type: 'Param', value: { name: '%1', type: 'Json' } } },
+      })
+    })
+
+    it('parameterizes nested lossless JSON numbers as unquoted tokens', () => {
+      const query: JsonQuery = {
+        modelName: 'User',
+        action: 'createOne',
+        query: {
+          arguments: {
+            data: {
+              profile: {
+                large: { $type: 'Json', value: '9007199254740993' },
+                decimal: { $type: 'Json', value: '0.12345678901234567890123456789' },
+              },
+            },
+          },
+          selection: { $scalars: true },
+        },
+      }
+
+      const result = parameterizeQuery(query, paramGraph)
+
+      expect(result.placeholderValues).toEqual({
+        '%1': '{"large":9007199254740993,"decimal":0.12345678901234567890123456789}',
+      })
+      expect(result.parameterizedQuery.query.arguments).toEqual({
+        data: { profile: { $type: 'Param', value: { name: '%1', type: 'Json' } } },
+      })
+    })
+
+    it('parameterizes top-level lossless JSON numbers as unquoted tokens', () => {
+      const query: JsonQuery = {
+        modelName: 'User',
+        action: 'createOne',
+        query: {
+          arguments: {
+            data: {
+              profile: { $type: 'Json', value: '9007199254740993' },
+            },
+          },
+          selection: { $scalars: true },
+        },
+      }
+
+      const result = parameterizeQuery(query, paramGraph)
+
+      expect(result.placeholderValues).toEqual({
+        '%1': '9007199254740993',
+      })
+      expect(result.parameterizedQuery.query.arguments).toEqual({
+        data: { profile: { $type: 'Param', value: { name: '%1', type: 'Json' } } },
+      })
+    })
+
+    it('reuses placeholders for equivalent lossless JSON protocol values', () => {
+      const query: JsonQuery = {
+        modelName: 'User',
+        action: 'createOne',
+        query: {
+          arguments: {
+            data: {
+              profile: { $type: 'Json', value: '9007199254740993' },
+              profileCopy: { $type: 'Json', value: '9007199254740993' },
+            },
+          },
+          selection: { $scalars: true },
+        },
+      }
+
+      const result = parameterizeQuery(query, paramGraph)
+
+      expect(result.placeholderValues).toEqual({
+        '%1': '9007199254740993',
+      })
+      expect(result.parameterizedQuery.query.arguments).toEqual({
+        data: {
+          profile: { $type: 'Param', value: { name: '%1', type: 'Json' } },
+          profileCopy: { $type: 'Param', value: { name: '%1', type: 'Json' } },
+        },
       })
     })
   })

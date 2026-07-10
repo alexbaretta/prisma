@@ -1,4 +1,4 @@
-import { AnyNull, DbNull, Decimal, JsonNull } from '@prisma/client-runtime-utils'
+import { AnyNull, DbNull, Decimal, JsonNull, LosslessNumber } from '@prisma/client-runtime-utils'
 
 import { field, model, runtimeDataModel } from '../../../testUtils/dataModelBuilder'
 import { MergedExtensionsList } from '../extensions/MergedExtensionsList'
@@ -627,6 +627,72 @@ test('args - object with toJSON method', () => {
         "arguments": {
           "where": {
             "name": "Horsey McHorseface"
+          }
+        },
+        "selection": {
+          "$composites": true,
+          "$scalars": true
+        }
+      }
+    }"
+  `)
+})
+
+test('args - LosslessNumber', () => {
+  expect(
+    serialize({
+      modelName: 'User',
+      action: 'findMany',
+      args: { where: { jsonColumn: new LosslessNumber('9007199254740993') as never } },
+    }),
+  ).toMatchInlineSnapshot(`
+    "{
+      "modelName": "User",
+      "action": "findMany",
+      "query": {
+        "arguments": {
+          "where": {
+            "jsonColumn": {
+              "$type": "Json",
+              "value": "9007199254740993"
+            }
+          }
+        },
+        "selection": {
+          "$composites": true,
+          "$scalars": true
+        }
+      }
+    }"
+  `)
+})
+
+test('args - nested LosslessNumber', () => {
+  expect(
+    serialize({
+      modelName: 'User',
+      action: 'findMany',
+      args: {
+        where: {
+          jsonColumn: {
+            large: new LosslessNumber('9007199254740993') as never,
+          },
+        },
+      },
+    }),
+  ).toMatchInlineSnapshot(`
+    "{
+      "modelName": "User",
+      "action": "findMany",
+      "query": {
+        "arguments": {
+          "where": {
+            "jsonColumn": {
+              "large": {
+                "$type": "Json",
+                "value": "9007199254740993"
+              }
+            }
           }
         },
         "selection": {

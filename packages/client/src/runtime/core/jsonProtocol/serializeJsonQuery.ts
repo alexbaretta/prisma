@@ -1,5 +1,5 @@
 import { RuntimeDataModel, RuntimeModel, uncapitalize } from '@prisma/client-common'
-import { isObjectEnumValue } from '@prisma/client-runtime-utils'
+import { isLosslessJsonNumber, isObjectEnumValue } from '@prisma/client-runtime-utils'
 import { assertNever } from '@prisma/internals'
 
 import { ErrorFormat } from '../../getPrismaClient'
@@ -322,6 +322,10 @@ function serializeArgumentsValue(
 
   if (isDecimalJsLike(jsValue)) {
     return { $type: 'Decimal', value: jsValue.toFixed() }
+  }
+
+  if (isLosslessJsonNumber(jsValue)) {
+    return { $type: 'Json', value: jsValue.toString() }
   }
 
   if (isObjectEnumValue(jsValue)) {
