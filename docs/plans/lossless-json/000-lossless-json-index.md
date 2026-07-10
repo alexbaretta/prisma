@@ -109,38 +109,38 @@ the need has been confirmed by a failing test or type boundary.
 Sprint 0 is complete only when implementation can start without open
 uncertainty.
 
-| ID  | Tasklet | Priority | Status | Dependencies |
-| --- | ------- | -------- | ------ | ------------ |
-| 001 | [Inventory DB JSON API usage](./001-map-json-pipeline.md) | High | [DONE] | None |
-| 002 | [Audit generated JSON API usage](./002-add-failing-precision-tests.md) | High | [DONE] | 001 |
-| 003 | [Define lossless JSON contract](./003-introduce-internal-json-codec.md) | High | [DONE] | 001, 002 |
-| 004 | [Map provider and raw-query boundaries](./004-patch-read-materialization.md) | High | [DONE] | 001, 003 |
+| ID  | Tasklet                                                                      | Priority | Status | Dependencies |
+| --- | ---------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 001 | [Inventory DB JSON API usage](./001-map-json-pipeline.md)                    | High     | [DONE] | None         |
+| 002 | [Audit generated JSON API usage](./002-add-failing-precision-tests.md)       | High     | [DONE] | 001          |
+| 003 | [Define lossless JSON contract](./003-introduce-internal-json-codec.md)      | High     | [DONE] | 001, 002     |
+| 004 | [Map provider and raw-query boundaries](./004-patch-read-materialization.md) | High     | [DONE] | 001, 003     |
 
 ### Sprint 1: Implementation And QA
 
 Sprint 1 implements the migration and all available unit, integration,
 functional, generated-type, and provider coverage.
 
-| ID  | Tasklet | Priority | Status | Dependencies |
-| --- | ------- | -------- | ------ | ------------ |
-| 005 | [Add failing precision tests](./005-patch-write-parameterization.md) | High | [ ] | Sprint 0 |
-| 006 | [Introduce internal JSON codec](./006-update-json-types-and-generators.md) | High | [ ] | 005 |
-| 007 | [Patch model and raw read materialization](./007-validate-json-semantics.md) | High | [ ] | 006 |
-| 008 | [Patch write parameterization](./008-add-cross-provider-coverage.md) | High | [ ] | 006 |
-| 009 | [Update JSON types and generators](./009-document-fork-contract.md) | High | [ ] | 007, 008 |
-| 010 | [Validate semantics and provider coverage](./010-validate-lossless-json-qa.md) | High | [ ] | 007, 008, 009 |
+| ID  | Tasklet                                                                        | Priority | Status | Dependencies  |
+| --- | ------------------------------------------------------------------------------ | -------- | ------ | ------------- |
+| 005 | [Add failing precision tests](./005-patch-write-parameterization.md)           | High     | [DONE] | Sprint 0      |
+| 006 | [Introduce internal JSON codec](./006-update-json-types-and-generators.md)     | High     | [ ]    | 005           |
+| 007 | [Patch model and raw read materialization](./007-validate-json-semantics.md)   | High     | [ ]    | 006           |
+| 008 | [Patch write parameterization](./008-add-cross-provider-coverage.md)           | High     | [ ]    | 006           |
+| 009 | [Update JSON types and generators](./009-document-fork-contract.md)            | High     | [ ]    | 007, 008      |
+| 010 | [Validate semantics and provider coverage](./010-validate-lossless-json-qa.md) | High     | [ ]    | 007, 008, 009 |
 
 ### Sprint 2: Fork Packaging And Local Adoption
 
 Sprint 2 packages the fork safely so local projects can install it
 without conflicting with stock Prisma packages.
 
-| ID  | Tasklet | Priority | Status | Dependencies |
-| --- | ------- | -------- | ------ | ------------ |
-| 011 | [Document fork behavior](./011-document-fork-contract.md) | Medium | [ ] | 010 |
-| 012 | [Rename npm packages for local fork](./012-rename-npm-packages.md) | High | [ ] | 011 |
-| 013 | [Build fork npm package artifacts](./013-build-npm-package-artifacts.md) | High | [ ] | 012 |
-| 014 | [Install fork locally and smoke test](./014-install-local-package.md) | High | [ ] | 013 |
+| ID  | Tasklet                                                                  | Priority | Status | Dependencies |
+| --- | ------------------------------------------------------------------------ | -------- | ------ | ------------ |
+| 011 | [Document fork behavior](./011-document-fork-contract.md)                | Medium   | [ ]    | 010          |
+| 012 | [Rename npm packages for local fork](./012-rename-npm-packages.md)       | High     | [ ]    | 011          |
+| 013 | [Build fork npm package artifacts](./013-build-npm-package-artifacts.md) | High     | [ ]    | 012          |
+| 014 | [Install fork locally and smoke test](./014-install-local-package.md)    | High     | [ ]    | 013          |
 
 ## Execution Order
 

@@ -39,6 +39,22 @@ describe('deserializeJsonObject', () => {
     expect(value).toEqual({ foo: 123 })
   })
 
+  test('Json preserves loss-sensitive numeric tokens', () => {
+    const value = deserializeJsonObject({
+      $type: 'Json',
+      value: '{"large":9007199254740993,"decimal":0.12345678901234567890123456789,"nested":[9007199254740995,null]}',
+    }) as {
+      large: unknown
+      decimal: unknown
+      nested: [unknown, null]
+    }
+
+    expect(String(value.large)).toBe('9007199254740993')
+    expect(String(value.decimal)).toBe('0.12345678901234567890123456789')
+    expect(String(value.nested[0])).toBe('9007199254740995')
+    expect(value.nested[1]).toBeNull()
+  })
+
   test('object', () => {
     expect(
       deserializeJsonObject({

@@ -1,7 +1,7 @@
 import { ColumnTypeEnum } from '@prisma/driver-adapter-utils'
 import { expect, test } from 'vitest'
 
-import { serializeSql } from './serialize-sql'
+import { serializeRawSql, serializeSql } from './serialize-sql'
 
 test('should serialize empty rows', () => {
   const result = serializeSql({
@@ -25,4 +25,21 @@ test('should serialize a flat list of rows', () => {
     { id: 1, name: 'Alice' },
     { id: 2, name: 'Bob' },
   ])
+})
+
+test('should preserve loss-sensitive JSON numbers in raw results', () => {
+  const json = '{"large":9007199254740993,"decimal":0.12345678901234567890123456789}'
+
+  const result = serializeRawSql({
+    columnTypes: [ColumnTypeEnum.Json, ColumnTypeEnum.Text],
+    columnNames: ['payload', 'payload_text'],
+    rows: [[json, json]],
+  })
+
+  const [row] = result.rows
+  const payload = row[0] as { large: unknown; decimal: unknown }
+
+  expect(String(payload.large)).toBe('9007199254740993')
+  expect(String(payload.decimal)).toBe('0.12345678901234567890123456789')
+  expect(row[1]).toBe(json)
 })
