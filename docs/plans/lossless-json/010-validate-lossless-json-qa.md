@@ -158,3 +158,52 @@ execution gap is a local harness/environment limitation documented
 above; the committed suite is ready to run in an environment with the
 expected PostgreSQL role and explicit Prisma test-database setup
 consent where driver-adapter reuse is required.
+
+## Validation Bug Review: Schema Engine Log Parsing
+
+Observed problem: root `pnpm test` and fresh functional-test database
+setup fail in `@prisma/internals` because `canConnectToDatabase`
+throws `Schema engine error:` with an empty message when the schema
+engine writes a single JSON error line to stderr.
+
+Violated contract: schema-engine command helpers must preserve
+structured schema-engine error codes such as `P1001`, `P1003`, and
+`P1013` so callers can distinguish missing databases, unreachable
+servers, invalid URLs, and real command failures.
+
+Owning layer: `packages/internals/src/schemaEngineCommands.ts` owns
+schema-engine stderr parsing. Functional tests and Prisma Migrate
+commands should not compensate for parser output loss.
+
+Intended solution: make `parseJsonFromStderr` parse all non-empty JSON
+stderr lines and tolerate a non-JSON prelude before the first JSON log
+line, instead of unconditionally discarding the first line.
+
+Rejected wrong-layer solution: do not weaken the lossless-json
+functional tests, bypass Prisma's AI safety checkpoint, or special-case
+functional test setup around a parser bug.
+
+Validation that proves the fix: rerun
+`pnpm --filter @prisma/internals test schemaEngineCommands.test.ts`,
+then rerun root `pnpm test` with `TERM=xterm` so the existing
+interactive TTY test is not invalidated by Codex's default
+`TERM=dumb` environment.
+
+Validation performed:
+
+- `TERM=xterm pnpm --filter @prisma/internals exec dotenv -e
+../../.db.env -- vitest run --silent=true
+schemaEngineCommands.test.ts -t "sqlite - cannot|postgresql - server
+does not exist|invalid database type|empty connection string"`
+  passed (`5` tests, `11` skipped). These cases failed before the
+  parser fix because single-line schema-engine JSON stderr was dropped
+  before callers could see `P1001`, `P1003`, or `P1013`.
+- Full `schemaEngineCommands.test.ts` still depends on local database
+  services. MySQL passes when run outside the sandbox. SQL Server is
+  unavailable because the local `mssql` Docker service repeatedly
+  restarts with an `Invalid mapping of address` server startup error.
+  PostgreSQL host port `5432` resolves to a different local server with
+  no `prisma` role even though the compose container itself has the
+  expected `prisma` role and `tests`, `postgres`, and `template1`
+  databases. This is a local test-environment issue, not a parser
+  regression.

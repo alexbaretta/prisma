@@ -47,18 +47,26 @@ export interface ConnectionError {
 }
 
 function parseJsonFromStderr(stderr: string): SchemaEngineLogLine[] {
-  // split by new line
-  const lines = stderr.split(/\r?\n/).slice(1) // Remove first element
-  const logs: any = []
+  const lines = stderr.split(/\r?\n/)
+  const logs: SchemaEngineLogLine[] = []
+  let hasSeenJsonLog = false
 
   for (const line of lines) {
     const data = String(line)
+    if (data.trim() === '') {
+      continue
+    }
+
     try {
       const json: SchemaEngineLogLine = JSON.parse(data)
       logs.push(json)
     } catch (e) {
+      if (!hasSeenJsonLog && !data.trimStart().startsWith('{')) {
+        continue
+      }
       throw new Error(`Could not parse schema engine response: ${e}`)
     }
+    hasSeenJsonLog = true
   }
 
   return logs
