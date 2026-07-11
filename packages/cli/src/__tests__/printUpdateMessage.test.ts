@@ -14,7 +14,7 @@ function printUpdateMessageFromTo(from: string, to: string): void {
       current_release_date: Date.now(),
       current_download_url: '',
       current_changelog_url: '',
-      package: 'prisma',
+      package: 'prisma-lossless',
       release_tag: to,
       install_command: '',
       project_website: '',
@@ -44,8 +44,8 @@ test('normal release', () => {
     "┌─────────────────────────────────────────────────────────┐
     │  Update available 4.5.0 -> 4.6.0                        │
     │  Run the following to update                            │
-    │    npm i --save-dev prisma@4.6.0                        │
-    │    npm i @prisma/client@4.6.0                           │
+    │    npm i --save-dev prisma-lossless@4.6.0               │
+    │    npm i @prisma-lossless/client@4.6.0                  │
     └─────────────────────────────────────────────────────────┘"
   `)
 })
@@ -56,8 +56,8 @@ test('integration version with long name', () => {
     "┌───────────────────────────────────────────────────────────────────────────────┐
     │  Update available 4.5.0-integration-use-keep-alive-for-node-fetch.1 -> 4.6.0  │
     │  Run the following to update                                                  │
-    │    npm i --save-dev prisma@4.6.0                                              │
-    │    npm i @prisma/client@4.6.0                                                 │
+    │    npm i --save-dev prisma-lossless@4.6.0                                     │
+    │    npm i @prisma-lossless/client@4.6.0                                        │
     └───────────────────────────────────────────────────────────────────────────────┘"
   `)
 })

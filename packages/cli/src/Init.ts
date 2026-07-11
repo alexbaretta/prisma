@@ -745,7 +745,7 @@ ${writer.format({
 ${warnings.length > 0 && logger.should.warn() ? `\n${warnings.join('\n')}\n` : ''}
 ${setupDatabaseSection}
 
-Then, define your models in ${green('prisma/schema.prisma')} and run ${green(getCommandWithExecutor('prisma migrate dev'))} to apply your schema.
+Then, define your models in ${green('prisma/schema.prisma')} and run ${green(getCommandWithExecutor('prisma-lossless migrate dev'))} to apply your schema.
 
 Learn more: ${link('https://pris.ly/getting-started')}
  `

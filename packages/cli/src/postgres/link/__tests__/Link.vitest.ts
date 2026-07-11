@@ -159,8 +159,8 @@ model User {
     )
 
     const output = result as string
-    expect(output).toContain('prisma generate')
-    expect(output).toContain('prisma migrate dev')
+    expect(output).toContain('prisma-lossless generate')
+    expect(output).toContain('prisma-lossless migrate dev')
   })
 
   test('shows next steps for schema without models', async () => {

@@ -24,14 +24,14 @@ describe('update available message', () => {
         data: {
           previous_version: '2.6.1-dev.18',
           current_version: '2.16.0-dev.8',
-          package: 'prisma',
+          package: 'prisma-lossless',
           release_tag: 'dev',
           outdated: true,
         },
       })
       const message = ctx.mocked['console.error'].mock.calls[0][0]
-      expect(message).toContain('npm i --save-dev prisma@dev')
-      expect(message).toContain('npm i @prisma/client@dev')
+      expect(message).toContain('npm i --save-dev prisma-lossless@dev')
+      expect(message).toContain('npm i @prisma-lossless/client@dev')
       expect(message).toMatchSnapshot()
     })
 
@@ -42,15 +42,15 @@ describe('update available message', () => {
         data: {
           previous_version: '2.6.1-dev.18',
           current_version: '3.0.1-dev.8',
-          package: 'prisma',
+          package: 'prisma-lossless',
           release_tag: 'dev',
           outdated: true,
         },
       })
       const message = ctx.mocked['console.error'].mock.calls[0][0]
       expect(message).toContain('This is a major update')
-      expect(message).toContain('npm i --save-dev prisma@dev')
-      expect(message).toContain('npm i @prisma/client@dev')
+      expect(message).toContain('npm i --save-dev prisma-lossless@dev')
+      expect(message).toContain('npm i @prisma-lossless/client@dev')
       expect(message).toMatchSnapshot()
     })
 
@@ -61,14 +61,14 @@ describe('update available message', () => {
         data: {
           previous_version: '2.6.1',
           current_version: '2.16.0',
-          package: 'prisma',
+          package: 'prisma-lossless',
           release_tag: 'latest',
           outdated: true,
         },
       })
       const message = ctx.mocked['console.error'].mock.calls[0][0]
-      expect(message).toContain('npm i --save-dev prisma@latest')
-      expect(message).toContain('npm i @prisma/client@latest')
+      expect(message).toContain('npm i --save-dev prisma-lossless@latest')
+      expect(message).toContain('npm i @prisma-lossless/client@latest')
       expect(message).toMatchSnapshot()
     })
 
@@ -79,15 +79,15 @@ describe('update available message', () => {
         data: {
           previous_version: '2.6.1',
           current_version: '3.0.0',
-          package: 'prisma',
+          package: 'prisma-lossless',
           release_tag: 'latest',
           outdated: true,
         },
       })
       const message = ctx.mocked['console.error'].mock.calls[0][0]
       expect(message).toContain('This is a major update')
-      expect(message).toContain('npm i --save-dev prisma@latest')
-      expect(message).toContain('npm i @prisma/client@latest')
+      expect(message).toContain('npm i --save-dev prisma-lossless@latest')
+      expect(message).toContain('npm i @prisma-lossless/client@latest')
       expect(message).toMatchSnapshot()
     })
   })

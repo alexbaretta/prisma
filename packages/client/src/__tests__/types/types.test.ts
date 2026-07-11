@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { getPackedPackage } from '@prisma/internals'
+import copy from '@timsuchanek/copy'
 import tsd, { formatter } from 'tsd'
 
 import { compileFile } from '../../utils/compileFile'
@@ -11,7 +12,7 @@ jest.setTimeout(300_000)
 
 let packageSource: string
 beforeAll(async () => {
-  packageSource = (await getPackedPackage('@prisma/client')) as string
+  packageSource = (await getPackedPackage('@prisma-lossless/client')) as string
 })
 
 describe('valid types', () => {
@@ -27,6 +28,7 @@ describe('valid types', () => {
       projectDir: dir,
       packageSource,
     })
+    await installLosslessClientAlias(dir)
 
     const indexPath = path.join(dir, 'test.ts')
     const tsdTestPath = path.join(dir, 'index.test-d.ts')
@@ -63,6 +65,18 @@ async function runTsd(dir: string) {
   if (diagnostics && diagnostics.length > 0) {
     throw new Error(formatter(diagnostics))
   }
+}
+
+async function installLosslessClientAlias(dir: string) {
+  const aliasDir = path.join(dir, 'node_modules/@prisma-lossless/client')
+  await fs.promises.rm(aliasDir, { force: true, recursive: true })
+  await copy({
+    from: packageSource,
+    to: aliasDir,
+    recursive: true,
+    parallelJobs: 20,
+    overwrite: true,
+  })
 }
 
 function getSubDirs(dir: string): string[] {

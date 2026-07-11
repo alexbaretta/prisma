@@ -12,17 +12,17 @@ describe('version', () => {
     const data = await ctx.cli('version')
     expect(data.exitCode).toBe(0)
     expect(cleanSnapshot(data.stdout)).toMatchInlineSnapshot(`
-      "prisma               : 0.0.0
-      @prisma/client       : 0.0.0
-      Operating System     : OS
-      Architecture         : ARCHITECTURE
-      Node.js              : NODEJS_VERSION
-      TypeScript           : TYPESCRIPT_VERSION
-      Query Compiler       : enabled
-      PSL                  : @prisma/prisma-schema-wasm CLI_VERSION.ENGINE_VERSION
-      Schema Engine        : schema-engine-cli ENGINE_VERSION (at sanitized_path/schema-engine-TEST_PLATFORM)
-      Default Engines Hash : ENGINE_VERSION
-      Studio               : STUDIO_VERSION"
+      "prisma-lossless         : 0.0.0
+      @prisma-lossless/client : 0.0.0
+      Operating System        : OS
+      Architecture            : ARCHITECTURE
+      Node.js                 : NODEJS_VERSION
+      TypeScript              : TYPESCRIPT_VERSION
+      Query Compiler          : enabled
+      PSL                     : @prisma/prisma-schema-wasm CLI_VERSION.ENGINE_VERSION
+      Schema Engine           : schema-engine-cli ENGINE_VERSION (at sanitized_path/schema-engine-TEST_PLATFORM)
+      Default Engines Hash    : ENGINE_VERSION
+      Studio                  : STUDIO_VERSION"
     `)
     expect(cleanSnapshot(data.stderr)).toMatchInlineSnapshot(`
       "Loaded Prisma config from prisma.config.ts.

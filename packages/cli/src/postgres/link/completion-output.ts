@@ -16,13 +16,15 @@ export function formatCompletionOutput(opts: LinkResult): string {
 
   if (opts.hasModels) {
     lines.push(`  1. Run ${green(getCommandWithExecutor('prisma-lossless generate'))} to generate the Prisma Client`)
-    lines.push(`  2. Run ${green(getCommandWithExecutor('prisma migrate dev'))} to apply your schema to the database`)
+    lines.push(
+      `  2. Run ${green(getCommandWithExecutor('prisma-lossless migrate dev'))} to apply your schema to the database`,
+    )
     lines.push(
       `  3. Start querying: ${dim('https://www.prisma.io/docs/getting-started/quickstart#4-explore-how-to-send-queries-to-your-database-with-prisma-client')}`,
     )
   } else {
     lines.push(`  1. Define your data model in ${green('prisma/schema.prisma')}`)
-    lines.push(`  2. Run ${green(getCommandWithExecutor('prisma migrate dev'))} to create the database tables`)
+    lines.push(`  2. Run ${green(getCommandWithExecutor('prisma-lossless migrate dev'))} to create the database tables`)
     lines.push(`  3. Run ${green(getCommandWithExecutor('prisma-lossless generate'))} and start querying`)
   }
 
