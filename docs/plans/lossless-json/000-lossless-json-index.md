@@ -2,9 +2,9 @@
 
 Branch: `target-7.8.0-lossless`
 
-Status: Draft plan for implementation in the Prisma fork. Production
-code must not change until Sprint 0 is complete and the implementation
-scope has been approved.
+Status: Lossless JSON implementation and local tarball adoption are
+complete. Private first-party registry release work is pending as a
+separate distribution sprint.
 
 ## Purpose
 
@@ -142,6 +142,23 @@ without conflicting with stock Prisma packages.
 | 013 | [Build fork npm package artifacts](./013-build-npm-package-artifacts.md) | High     | [DONE] | 012          |
 | 014 | [Install fork locally and smoke test](./014-install-local-package.md)    | High     | [DONE] | 013          |
 
+### Sprint 3: Private First-Party Release
+
+Sprint 3 publishes this fork to a private npm-protocol registry so a
+separate first-party project can consume exact package versions without
+local tarball paths, workspace links, sibling checkouts, Git
+dependencies, pnpm overrides, or public npm publication.
+
+Sprint 3 does not reopen the lossless JSON runtime migration. It is
+required only for reproducible first-party consumption outside this
+repository's local tarball smoke path.
+
+| ID  | Tasklet                                                                           | Priority | Status | Dependencies |
+| --- | --------------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 015 | [Define private registry contract](./015-define-private-registry-contract.md)     | High     | [ ]    | 014          |
+| 016 | [Build private release graph](./016-build-private-release-graph.md)               | High     | [ ]    | 015          |
+| 017 | [Publish and validate private release](./017-publish-validate-private-release.md) | High     | [ ]    | 016          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This
@@ -185,6 +202,10 @@ The plan is complete when:
 - the fork package can be built, installed locally without conflicting
   with stock Prisma packages, and smoke-tested against a JSON payload
   containing loss-sensitive numeric tokens;
+- a separate first-party consumer can install exact immutable versions
+  from the approved private registry without local tarball paths,
+  workspace links, sibling checkouts, Git dependencies, pnpm overrides,
+  or public npm publication;
 - the plan documents any behavior that remains intentionally
   incompatible with upstream Prisma defaults.
 
@@ -242,6 +263,19 @@ lossless-json product failure:
 - the local CockroachDB migrate suite previously exceeded Jest's 10
   second timeout at about 11.3 seconds, so CockroachDB tests were
   skipped with `TEST_SKIP_COCKROACHDB=true`.
+
+## Pending Private Distribution Status
+
+Tasklets 015 through 017 are pending. They are required only if an
+external first-party project must consume this fork through ordinary
+registry semantics rather than local tarball paths or a sibling
+checkout.
+
+The current local tarball path proves local downstream install and
+lossless JSON behavior. It does not provide a reproducible dependency
+model for a separate project, CI job, or Docker image build host. The
+private registry sprint closes that distribution gap without publishing
+to the worldwide npm registry.
 
 ## Validation Bug Review: Client Type Harness Package Rename
 
