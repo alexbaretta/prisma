@@ -156,7 +156,7 @@ repository's local tarball smoke path.
 | ID  | Tasklet                                                                           | Priority | Status | Dependencies |
 | --- | --------------------------------------------------------------------------------- | -------- | ------ | ------------ |
 | 015 | [Define private registry contract](./015-define-private-registry-contract.md)     | High     | [DONE] | 014          |
-| 016 | [Build private release graph](./016-build-private-release-graph.md)               | High     | [ ]    | 015          |
+| 016 | [Build private release graph](./016-build-private-release-graph.md)               | High     | [DONE] | 015          |
 | 017 | [Publish and validate private release](./017-publish-validate-private-release.md) | High     | [ ]    | 016          |
 
 ## Execution Order
