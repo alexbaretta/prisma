@@ -79,6 +79,143 @@ The review must identify:
 - one rejected approach that relies on local tarballs, workspace links,
   public npm fallback, or mutable versions.
 
+## Pre-Implementation Review Record
+
+Observed problem: Tasklet 016 produced immutable private release
+candidates, but no separate project has proven it can resolve, install,
+generate, build, and run the fork from registry metadata. Without that
+proof, first-party adoption can still accidentally rely on tarballs,
+workspace links, stale locks, public npm fallback, or stock Prisma
+substitution.
+
+Violated contract or invariant: Sprint 3 requires an external
+first-party consumer to use exact immutable versions from the approved
+private registry without local tarball paths, workspace membership,
+sibling checkouts, Git dependencies, pnpm overrides, or public npm
+publication.
+
+Owning layer: private release tooling owns guarded publication,
+overwrite refusal, and registry metadata inspection. The isolated
+consumer owns install, lockfile, generation, build, and PostgreSQL
+smoke validation. The registry runtime owns credentials and package
+storage outside tracked source.
+
+Intended solution: publish the Tasklet 016 manifest in dependency
+order through the Tasklet 015 allowlisted registry guard, using npm
+credentials stored only in the external registry runtime userconfig.
+Then create an ignored consumer under `tmp/`, install exact
+`prisma-lossless` and `@prisma-lossless/client` versions from the
+private registry with `npm`, generate the client with the installed CLI,
+build the consumer, and run a PostgreSQL lossless JSON smoke suite.
+
+The registry trust boundary is `http://127.0.0.1:4873/` for publish
+and local install. Docker or public-network hostnames are not publish
+targets. Credential state stays under
+`/private/tmp/prisma-lossless-private-registry/` and is not written to
+tracked files, package manifests, lockfiles, or command arguments.
+
+The compatible adapter decision starts with the stock
+`@prisma/adapter-pg` package. If generation, build, or smoke execution
+proves that public adapter cannot satisfy this fork, the failing
+boundary must be documented before broadening the private package
+closure.
+
+Rejected unsafe or wrong-layer solution: do not install from the
+Tasklet 016 tarball paths, do not use pnpm workspace links or overrides,
+do not use Git dependencies or branch specifiers, do not publish to the
+worldwide npm registry, and do not accept a mutable or overwritten
+version as release evidence.
+
+## Adapter Substitution Subproblem Review
+
+Observed problem: the first isolated `npm install` with stock
+`@prisma/adapter-pg@7.8.0` succeeded, but lockfile inspection showed
+stock `@prisma/driver-adapter-utils@7.8.0` and stock
+`@prisma/debug@7.8.0` in the installed graph. That violates the Sprint
+3 dependency-substitution check even though the direct fork packages
+resolved from the private registry.
+
+Violated contract or invariant: the first-party consumer must not
+silently substitute stock Prisma packages for the fork runtime closure.
+The adapter boundary participates in the runtime path, so its private
+closure must be published when stock adapter installation pulls stock
+internal Prisma packages.
+
+Owning layer: release graph tooling owns adding the proven-required
+PostgreSQL adapter closure. The consumer owns depending on the exact
+private adapter version once stock adapter substitution has been
+proven.
+
+Intended solution: extend the private release graph with
+`@prisma/driver-adapter-utils` and `@prisma/adapter-pg`, rebuild a new
+immutable private prerelease, publish it, and make the isolated
+consumer install exact `7.8.0-lossless.<N>` versions for the CLI,
+client, and PostgreSQL adapter.
+
+Rejected unsafe or wrong-layer solution: do not hide the stock
+substitution with npm overrides, do not accept the stock adapter after
+the lockfile proved stock internal dependencies, and do not mutate the
+consumer lockfile by hand.
+
+Validation that proves the fix: the isolated npm lockfile must show
+private-registry `7.8.0-lossless.<N>` resolution and integrity metadata
+for `@prisma/adapter-pg`, `@prisma/driver-adapter-utils`, and the fork
+runtime closure, with no `file:`, `workspace:`, `link:`, Git, branch,
+checkout, or home-directory dependency references.
+
+## Publish Tag Subproblem Review
+
+Observed problem: the guarded publish path failed before uploading the
+first tarball because npm `11.12.1` requires an explicit `--tag` when
+publishing a prerelease version.
+
+Violated contract or invariant: private publication must be automated
+through the guarded release path and must not accidentally assign the
+fork prerelease to the normal `latest` tag.
+
+Owning layer: `scripts/lossless-private-registry.ts` owns the guarded
+`npm publish` command shape.
+
+Intended solution: add a named private release tag and pass
+`--tag lossless` from the guarded publish helper and command plan.
+
+Rejected unsafe or wrong-layer solution: do not publish with
+`--tag latest`, do not bypass the helper with an ad hoc unguarded
+`npm publish`, and do not rename the version to avoid npm's prerelease
+tag protection.
+
+Validation that proves the fix: focused registry helper tests must
+prove the publish command includes the private tag, and the publish
+command must succeed against the local private registry.
+
+## Registry Body Limit Subproblem Review
+
+Observed problem: publication succeeded for the first six packages but
+failed for `@prisma-lossless/client` with `413 Payload Too Large`. The
+packed client tarball is about `28.0 MB` because it includes runtime
+Wasm compiler assets.
+
+Violated contract or invariant: the local private registry contract
+must accept the package artifacts that the fork actually publishes.
+Rejecting the client tarball prevents the external first-party install
+path from being validated.
+
+Owning layer: the Verdaccio runtime configuration generated by
+`scripts/lossless-private-registry.ts` owns local registry upload
+limits.
+
+Intended solution: set an explicit local `max_body_size` high enough
+for the fork client tarball, regenerate the Verdaccio config, and
+restart the local registry before retrying publication.
+
+Rejected unsafe or wrong-layer solution: do not strip Wasm runtime
+assets from the client tarball merely to fit a registry default, and do
+not publish the client through an unguarded alternate registry path.
+
+Validation that proves the fix: focused registry config tests must
+prove the body-size setting exists, and the private registry publish
+must succeed for `@prisma-lossless/client`.
+
 ## Validation
 
 Run the focused package suites, repo-root build, and repo-root tests
@@ -87,3 +224,208 @@ required by the Prisma plan and repository instructions.
 Do not mark this tasklet `[DONE]` until the private registry publish,
 overwrite refusal, isolated consumer install, smoke suite, failure
 coverage, and validation evidence are committed.
+
+## Post-Implementation Review Record
+
+The implementation keeps publication behind the existing private
+registry allowlist and does not add public npm, tarball, Git,
+workspace, sibling-checkout, or override adoption paths.
+
+The release graph now includes the PostgreSQL adapter closure because
+the isolated consumer proved that stock `@prisma/adapter-pg@7.8.0`
+would otherwise install stock `@prisma/driver-adapter-utils` and stock
+`@prisma/debug`. The fix belongs in release graph construction because
+dependency substitution is a package-publication concern, not a
+consumer lockfile workaround.
+
+The guarded publish helper now passes `--tag lossless`, avoiding npm's
+prerelease publish guard and avoiding accidental `latest` tagging. The
+Verdaccio config now sets `max_body_size: 200mb`, which is required for
+the 28 MB client tarball that includes Wasm runtime assets.
+
+Rejected after implementation: do not call the stock adapter compatible
+after the lockfile showed stock internal dependencies, do not publish
+with `latest`, do not shrink the client tarball by removing required
+Wasm assets, and do not hand-edit the consumer lockfile as adoption
+evidence.
+
+## Validation Evidence
+
+Private registry:
+
+- registry: `http://127.0.0.1:4873/`;
+- runtime root: `/private/tmp/prisma-lossless-private-registry`;
+- credentials: external npm userconfig only, not tracked;
+- publish tag: `lossless`;
+- upload limit: `max_body_size: 200mb`.
+
+Published immutable version:
+
+- version: `7.8.0-lossless.2`;
+- source commit: `c7c603cd9ae636e1ccc217e92ea087511e990d6c`;
+- manifest path under
+  `tmp/lossless-json-tasklet-016/runs/`;
+- manifest run directory:
+  `1784331035380-c7c603cd9ae6`;
+- manifest file: `private-release-manifest.json`.
+
+Published packages:
+
+- `@prisma/debug`;
+- `@prisma/driver-adapter-utils`;
+- `@prisma/get-platform`;
+- `@prisma/fetch-engine`;
+- `@prisma/engines`;
+- `@prisma/config`;
+- `@prisma/client-runtime-utils`;
+- `@prisma/adapter-pg`;
+- `@prisma-lossless/client`;
+- `prisma-lossless`.
+
+Registry metadata inspection passed for the install-critical packages:
+
+```sh
+npm view @prisma-lossless/client@7.8.0-lossless.2 \
+  name version dist.integrity dist.tarball \
+  --registry http://127.0.0.1:4873/
+
+npm view prisma-lossless@7.8.0-lossless.2 \
+  name version dist.integrity dist.tarball \
+  --registry http://127.0.0.1:4873/
+
+npm view @prisma/adapter-pg@7.8.0-lossless.2 \
+  name version dist.integrity dist.tarball \
+  --registry http://127.0.0.1:4873/
+```
+
+Result: all returned exact version `7.8.0-lossless.2`, private
+registry tarball URLs, and sha512 integrity metadata.
+
+Downloaded package content inspection passed:
+
+```sh
+npm pack @prisma-lossless/client@7.8.0-lossless.2 \
+  --registry http://127.0.0.1:4873/ \
+  --pack-destination tmp/lossless-json-tasklet-017/downloads
+
+npm pack prisma-lossless@7.8.0-lossless.2 \
+  --registry http://127.0.0.1:4873/ \
+  --pack-destination tmp/lossless-json-tasklet-017/downloads
+
+npm pack @prisma/adapter-pg@7.8.0-lossless.2 \
+  --registry http://127.0.0.1:4873/ \
+  --pack-destination tmp/lossless-json-tasklet-017/downloads
+```
+
+Result: package manifests inside the downloaded tarballs recorded
+`7.8.0-lossless.2` and `prismaLosslessRelease.sourceCommit`. The
+client tarball recorded `@prisma/client-runtime-utils` and peer
+`prisma-lossless` at `7.8.0-lossless.2`. The adapter tarball recorded
+`@prisma/driver-adapter-utils` at `7.8.0-lossless.2`.
+
+Overwrite refusal passed:
+
+```sh
+ROOT=/private/tmp/prisma-lossless-private-registry
+PRISMA_LOSSLESS_REGISTRY_ROOT="$ROOT" \
+  pnpm exec tsx scripts/lossless-private-registry.ts publish \
+  http://127.0.0.1:4873/ \
+  tmp/lossless-json-tasklet-017/downloads/\
+prisma-lossless-client-7.8.0-lossless.2.tgz
+```
+
+Result: expected `E409 Conflict` because the package version is already
+present.
+
+Isolated consumer:
+
+- location: `tmp/lossless-json-tasklet-017/consumer`;
+- package manager: `npm`;
+- dependencies: exact `7.8.0-lossless.2` versions for
+  `prisma-lossless`, `@prisma-lossless/client`, and
+  `@prisma/adapter-pg`;
+- no `file:`, `workspace:`, `link:`, Git, sibling checkout, or home
+  directory references in `package-lock.json`.
+
+Consumer validation passed:
+
+```sh
+npm install
+npm exec -- prisma-lossless generate
+npm exec -- tsc -p tsconfig.json
+npm run smoke
+```
+
+The generated-client banner still reports internal client version
+`0.0.0`, but installed package manifests remain
+`7.8.0-lossless.2`.
+
+The PostgreSQL smoke suite passed:
+
+- generated client import from `@prisma-lossless/client`;
+- model read JSON large integer, decimal, nested array, and JSON null;
+- model write `LosslessNumber` parameters, nested array, and JSON
+  null;
+- raw JSON read;
+- raw JSON text cast.
+
+Dependency-substitution validation passed. The consumer lockfile
+resolves these package entries from `http://127.0.0.1:4873/` at
+`7.8.0-lossless.2`:
+
+- `node_modules/prisma-lossless`;
+- `node_modules/@prisma-lossless/client`;
+- `node_modules/@prisma/adapter-pg`;
+- `node_modules/@prisma/driver-adapter-utils`;
+- `node_modules/@prisma/debug`;
+- `node_modules/@prisma/client-runtime-utils`;
+- `node_modules/@prisma/config`;
+- `node_modules/@prisma/engines`;
+- `node_modules/@prisma/fetch-engine`;
+- `node_modules/@prisma/engines/node_modules/@prisma/get-platform`;
+- `node_modules/@prisma/fetch-engine/node_modules/@prisma/get-platform`.
+
+Failure coverage passed:
+
+- public npm lookup for
+  `@prisma-lossless/client@7.8.0-lossless.2` returned `E404`;
+- local private lookup for
+  `@prisma-lossless/client@7.8.0-lossless.999` returned `E404`;
+- stale lockfile fixture returned `EUSAGE` because locked
+  `@prisma-lossless/client@7.8.0-lossless.1` did not satisfy exact
+  `7.8.0-lossless.2`;
+- unavailable registry lookup at `http://127.0.0.1:59999/` returned
+  `ECONNREFUSED`.
+
+Focused repo validation passed:
+
+```sh
+pnpm exec vitest run scripts/lossless-private-release.test.ts \
+  scripts/lossless-private-registry.test.ts --reporter=dot
+
+pnpm exec eslint scripts/lossless-private-release.ts \
+  scripts/lossless-private-release.test.ts \
+  scripts/lossless-private-registry.ts \
+  scripts/lossless-private-registry.test.ts
+
+pnpm build
+```
+
+Repo-root test status:
+
+```sh
+CI=true GITHUB_REF_NAME=target-7.8.0-lossless \
+  TERM=xterm-256color TEST_SKIP_MSSQL=true \
+  TEST_SKIP_COCKROACHDB=true pnpm test
+```
+
+Result: failed in the existing `@prisma/migrate` PostgreSQL test
+environment after all tasklet-relevant packages passed. The first
+root-test run failed because the MySQL Docker filesystem was full. A
+Docker build-cache prune reclaimed about 8.9 GB and the MySQL tests
+then passed. The remaining failures are local PostgreSQL test
+environment issues: stale databases with wrong ownership, missing
+PostgreSQL test databases, and missing `vector` extension support.
+
+Tasklet 017 remains open until repo-root `pnpm test` passes from a
+valid local database baseline.

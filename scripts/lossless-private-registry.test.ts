@@ -10,6 +10,8 @@ import {
   DEFAULT_REGISTRY_URL,
   getRegistryRuntimePaths,
   normalizeRegistryUrl,
+  PRIVATE_REGISTRY_MAX_BODY_SIZE,
+  PRIVATE_RELEASE_DIST_TAG,
   VERDACCIO_VERSION,
 } from './lossless-private-registry'
 
@@ -48,6 +50,8 @@ describe('lossless private registry contract', () => {
       expect(command.join(' ')).not.toContain('registry.npmjs.org')
       expect(command.join(' ')).not.toContain('_authToken')
     }
+    expect(commands.publish).toContain('--tag')
+    expect(commands.publish).toContain(PRIVATE_RELEASE_DIST_TAG)
   })
 
   test('keeps lossless public packages private in Verdaccio config', () => {
@@ -55,6 +59,7 @@ describe('lossless private registry contract', () => {
 
     expect(config).toContain("'@prisma-lossless/*':")
     expect(config).toContain("'prisma-lossless':")
+    expect(config).toContain(`max_body_size: ${PRIVATE_REGISTRY_MAX_BODY_SIZE}`)
     expect(config).toMatch(
       /'@prisma-lossless\/\*':\n {4}access: \$all\n {4}publish: \$authenticated\n {4}unpublish: \$authenticated\n {2}'prisma-lossless':/,
     )

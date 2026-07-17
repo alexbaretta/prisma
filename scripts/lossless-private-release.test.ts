@@ -29,11 +29,13 @@ describe('lossless private release graph', () => {
   test('keeps the runtime closure in publish dependency order', () => {
     expect(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name)).toEqual([
       '@prisma/debug',
+      '@prisma/driver-adapter-utils',
       '@prisma/get-platform',
       '@prisma/fetch-engine',
       '@prisma/engines',
       '@prisma/config',
       '@prisma/client-runtime-utils',
+      '@prisma/adapter-pg',
       '@prisma-lossless/client',
       'prisma-lossless',
     ])
@@ -130,6 +132,17 @@ describe('lossless private release graph', () => {
       },
       prisma: {
         prismaCommit: sourceCommit,
+      },
+      prismaLosslessRelease: {
+        version: releaseVersion,
+        sourceCommit,
+      },
+    })
+
+    expect(packageJsons.get('@prisma/adapter-pg')).toMatchObject({
+      version: releaseVersion,
+      dependencies: {
+        '@prisma/driver-adapter-utils': releaseVersion,
       },
       prismaLosslessRelease: {
         version: releaseVersion,

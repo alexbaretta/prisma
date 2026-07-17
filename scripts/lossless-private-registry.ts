@@ -6,6 +6,8 @@ import path from 'node:path'
 export const VERDACCIO_VERSION = '6.8.0'
 export const DEFAULT_REGISTRY_URL = 'http://127.0.0.1:4873/'
 export const DEFAULT_DOCKER_REGISTRY_URL = 'http://host.docker.internal:4873/'
+export const PRIVATE_RELEASE_DIST_TAG = 'lossless'
+export const PRIVATE_REGISTRY_MAX_BODY_SIZE = '200mb'
 
 const DEFAULT_ROOT = path.join(os.tmpdir(), 'prisma-lossless-private-registry')
 const PUBLIC_REGISTRY_HOSTS = new Set(['registry.npmjs.org', 'npmjs.org', 'www.npmjs.com'])
@@ -98,6 +100,7 @@ export function assertApprovedPublishRegistry(registry: string): string {
 
 export function buildVerdaccioConfig(paths: RegistryRuntimePaths): string {
   return `storage: ${paths.storageDir}
+max_body_size: ${PRIVATE_REGISTRY_MAX_BODY_SIZE}
 auth:
   htpasswd:
     file: ${path.join(paths.authDir, 'htpasswd')}
@@ -152,7 +155,17 @@ export function buildCommandPlan(registry = DEFAULT_REGISTRY_URL): RegistryComma
       '--userconfig',
       '<userconfig>',
     ],
-    publish: ['npm', 'publish', '<package>', '--registry', approvedRegistry, '--userconfig', '<userconfig>'],
+    publish: [
+      'npm',
+      'publish',
+      '<package>',
+      '--registry',
+      approvedRegistry,
+      '--userconfig',
+      '<userconfig>',
+      '--tag',
+      PRIVATE_RELEASE_DIST_TAG,
+    ],
     inspect: ['npm', 'view', '<package>', '--registry', approvedRegistry, '--json', '--userconfig', '<userconfig>'],
     stop: ['kill', '<pid>'],
   }
@@ -216,7 +229,16 @@ export function publishPackage(
   paths = getRegistryRuntimePaths(),
 ): void {
   const approvedRegistry = assertApprovedPublishRegistry(registry)
-  runNpm(['publish', packagePath, '--registry', approvedRegistry, '--userconfig', paths.npmUserConfigFile])
+  runNpm([
+    'publish',
+    packagePath,
+    '--registry',
+    approvedRegistry,
+    '--userconfig',
+    paths.npmUserConfigFile,
+    '--tag',
+    PRIVATE_RELEASE_DIST_TAG,
+  ])
 }
 
 export function inspectPackage(

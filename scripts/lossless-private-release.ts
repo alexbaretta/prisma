@@ -47,22 +47,26 @@ const DEPENDENCY_SECTIONS: readonly DependencySection[] = [
 
 const RELEASE_PACKAGE_NAMES = new Set([
   '@prisma/debug',
+  '@prisma/driver-adapter-utils',
   '@prisma/get-platform',
   '@prisma/fetch-engine',
   '@prisma/engines',
   '@prisma/config',
   '@prisma/client-runtime-utils',
+  '@prisma/adapter-pg',
   '@prisma-lossless/client',
   'prisma-lossless',
 ])
 
 export const RELEASE_PACKAGES: readonly ReleasePackage[] = [
   { name: '@prisma/debug', sourceDir: 'packages/debug' },
+  { name: '@prisma/driver-adapter-utils', sourceDir: 'packages/driver-adapter-utils' },
   { name: '@prisma/get-platform', sourceDir: 'packages/get-platform' },
   { name: '@prisma/fetch-engine', sourceDir: 'packages/fetch-engine' },
   { name: '@prisma/engines', sourceDir: 'packages/engines' },
   { name: '@prisma/config', sourceDir: 'packages/config' },
   { name: '@prisma/client-runtime-utils', sourceDir: 'packages/client-runtime-utils' },
+  { name: '@prisma/adapter-pg', sourceDir: 'packages/adapter-pg' },
   { name: '@prisma-lossless/client', sourceDir: 'packages/client' },
   { name: 'prisma-lossless', sourceDir: 'packages/cli' },
 ]
