@@ -1,4 +1,5 @@
 import type { PrismaValue } from '@prisma/client-engine-runtime'
+import { parseJsonFieldValue } from '@prisma/client-runtime-utils'
 import type { ArgScalarType, ArgType } from '@prisma/driver-adapter-utils'
 
 type RawParameters = {
@@ -11,6 +12,7 @@ const tagToArgScalarType: Record<string, ArgScalarType> = {
   date: 'datetime',
   decimal: 'decimal',
   bytes: 'bytes',
+  json: 'json',
 }
 
 export function deserializeRawParameters(serializedParameters: string): RawParameters {
@@ -37,6 +39,9 @@ function decodeParameter(parameter: unknown): PrismaValue {
     if (!('prisma__type' in parameter)) {
       throw new Error('Invalid serialized parameter, prisma__type should be present when prisma__value is present')
     }
+    if (parameter.prisma__type === 'json') {
+      return decodeJsonParameter(parameter.prisma__value)
+    }
     return `${parameter.prisma__value}`
   }
 
@@ -45,6 +50,21 @@ function decodeParameter(parameter: unknown): PrismaValue {
   }
 
   return parameter as PrismaValue
+}
+
+function decodeJsonParameter(value: unknown): string {
+  if (typeof value !== 'string') {
+    throw new Error('Invalid serialized JSON parameter: prisma__value must be a string')
+  }
+
+  try {
+    parseJsonFieldValue(value)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    throw new Error(`Invalid serialized JSON parameter: ${message}`)
+  }
+
+  return value
 }
 
 function getArgType(parameter: unknown): ArgType {

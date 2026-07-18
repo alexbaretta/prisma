@@ -9,6 +9,8 @@ declare let Prisma: typeof PrismaNamespace
 const losslessJsonText =
   '{"large":9007199254740993,"decimal":0.12345678901234567890123456789,"nested":{"array":[9007199254740995,null]},"jsonNull":null}'
 
+const canonicalExponent = '1234567890123456789000000000000'
+
 function expectLosslessPayload(value: unknown) {
   const payload = value as {
     large: unknown
@@ -22,6 +24,44 @@ function expectLosslessPayload(value: unknown) {
   expect(String(payload.nested.array[0])).toBe('9007199254740995')
   expect(payload.nested.array[1]).toBeNull()
   expect(payload.jsonNull).toBeNull()
+}
+
+function rawJsonParameterInput(Prisma: typeof PrismaNamespace): PrismaNamespace.InputJsonObject {
+  return {
+    unsafePositive: new Prisma.LosslessNumber('9007199254740993'),
+    unsafeNegative: new Prisma.LosslessNumber('-9007199254740993'),
+    preciseDecimal: new Prisma.LosslessNumber('0.12345678901234567890123456789'),
+    exponent: new Prisma.LosslessNumber('1.234567890123456789e+30'),
+    safeInteger: new Prisma.LosslessNumber('42'),
+    safeDecimal: new Prisma.LosslessNumber('1.25'),
+    nested: {
+      values: [new Prisma.LosslessNumber('9007199254740993'), null],
+    },
+    quoted: '9007199254740993',
+  }
+}
+
+function expectRawJsonPrecisionPayload(value: unknown) {
+  const payload = value as {
+    unsafePositive: unknown
+    unsafeNegative: unknown
+    preciseDecimal: unknown
+    exponent: unknown
+    safeInteger: unknown
+    safeDecimal: unknown
+    nested: { values: [unknown, null] }
+    quoted: string
+  }
+
+  expect(String(payload.unsafePositive)).toBe('9007199254740993')
+  expect(String(payload.unsafeNegative)).toBe('-9007199254740993')
+  expect(String(payload.preciseDecimal)).toBe('0.12345678901234567890123456789')
+  expect(String(payload.exponent)).toBe(canonicalExponent)
+  expect(String(payload.safeInteger)).toBe('42')
+  expect(String(payload.safeDecimal)).toBe('1.25')
+  expect(String(payload.nested.values[0])).toBe('9007199254740993')
+  expect(payload.nested.values[1]).toBeNull()
+  expect(payload.quoted).toBe('9007199254740993')
 }
 
 testMatrix.setupTestSuite(
@@ -70,7 +110,94 @@ testMatrix.setupTestSuite(
 
       expect(String(payload.large)).toBe('9007199254740993')
       expect(String(payload.decimal)).toBe('0.12345678901234567890123456789')
-      expect(payload.ordinary).toBe(1.5)
+      expect(String(payload.ordinary)).toBe('1.5')
+    })
+
+    testIf(provider === Providers.POSTGRESQL)('parameterizes raw JSON objects losslessly', async () => {
+      const input = rawJsonParameterInput(Prisma)
+
+      const rows = await prisma.$queryRaw<
+        Array<{
+          value: PrismaNamespace.JsonValue
+          unsafePositiveText: string
+          unsafePositiveType: string
+          unsafeNegativeText: string
+          preciseDecimalText: string
+          exponentText: string
+          safeIntegerText: string
+          safeDecimalText: string
+          nestedText: string
+          quotedType: string
+        }>
+      >`
+        WITH parameter(value) AS (
+          VALUES (${input}::jsonb)
+        )
+        SELECT
+          value,
+          value ->> 'unsafePositive' AS "unsafePositiveText",
+          jsonb_typeof(value -> 'unsafePositive') AS "unsafePositiveType",
+          value ->> 'unsafeNegative' AS "unsafeNegativeText",
+          value ->> 'preciseDecimal' AS "preciseDecimalText",
+          value ->> 'exponent' AS "exponentText",
+          value ->> 'safeInteger' AS "safeIntegerText",
+          value ->> 'safeDecimal' AS "safeDecimalText",
+          value #>> '{nested,values,0}' AS "nestedText",
+          jsonb_typeof(value -> 'quoted') AS "quotedType"
+        FROM parameter
+      `
+
+      expect(rows[0].unsafePositiveText).toBe('9007199254740993')
+      expect(rows[0].unsafePositiveType).toBe('number')
+      expect(rows[0].unsafeNegativeText).toBe('-9007199254740993')
+      expect(rows[0].preciseDecimalText).toBe('0.12345678901234567890123456789')
+      expect(rows[0].exponentText).toBe(canonicalExponent)
+      expect(rows[0].safeIntegerText).toBe('42')
+      expect(rows[0].safeDecimalText).toBe('1.25')
+      expect(rows[0].nestedText).toBe('9007199254740993')
+      const value = rows[0].value as { unsafePositive: unknown }
+
+      expect(rows[0].quotedType).toBe('string')
+      expect(value.unsafePositive).toBeInstanceOf(Prisma.LosslessNumber)
+      expectRawJsonPrecisionPayload(value)
+    })
+
+    testIf(provider === Providers.POSTGRESQL)('executes raw JSON object parameters losslessly', async () => {
+      const input = rawJsonParameterInput(Prisma)
+
+      await prisma.$executeRaw`
+        INSERT INTO "Entry" ("id", "json", "requiredJson")
+        VALUES (${'raw-execute'}, ${input}::jsonb, ${input}::jsonb)
+      `
+
+      const entry = await prisma.entry.findUniqueOrThrow({
+        where: { id: 'raw-execute' },
+      })
+
+      expectRawJsonPrecisionPayload(entry.json)
+      expectRawJsonPrecisionPayload(entry.requiredJson)
+
+      const rows = await prisma.$queryRaw<
+        Array<{
+          unsafePositiveText: string
+          unsafePositiveType: string
+          quotedType: string
+          exponentText: string
+        }>
+      >`
+        SELECT
+          "requiredJson" ->> 'unsafePositive' AS "unsafePositiveText",
+          jsonb_typeof("requiredJson" -> 'unsafePositive') AS "unsafePositiveType",
+          jsonb_typeof("requiredJson" -> 'quoted') AS "quotedType",
+          "requiredJson" ->> 'exponent' AS "exponentText"
+        FROM "Entry"
+        WHERE "id" = ${'raw-execute'}
+      `
+
+      expect(rows[0].unsafePositiveText).toBe('9007199254740993')
+      expect(rows[0].unsafePositiveType).toBe('number')
+      expect(rows[0].quotedType).toBe('string')
+      expect(rows[0].exponentText).toBe(canonicalExponent)
     })
   },
   {

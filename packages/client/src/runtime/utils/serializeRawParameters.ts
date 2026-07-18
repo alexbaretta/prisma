@@ -1,4 +1,4 @@
-import { Decimal } from '@prisma/client-runtime-utils'
+import { Decimal, isLosslessJsonNumber, stringifyJsonFieldValue } from '@prisma/client-runtime-utils'
 
 import { isDate } from './date'
 
@@ -17,6 +17,10 @@ function serializeRawParametersInternal(parameters: any[], objectSerialization: 
 }
 
 function encodeParameter(parameter: any, objectSerialization: 'fast' | 'slow'): unknown {
+  if (isLosslessJsonNumber(parameter)) {
+    return encodeJsonParameter(parameter)
+  }
+
   if (Array.isArray(parameter)) {
     return parameter.map((item) => encodeParameter(item, objectSerialization))
   }
@@ -63,11 +67,22 @@ function encodeParameter(parameter: any, objectSerialization: 'fast' | 'slow'): 
     }
   }
 
+  if (isRawJsonObjectParameter(parameter)) {
+    return encodeJsonParameter(parameter)
+  }
+
   if (typeof parameter === 'object' && objectSerialization === 'slow') {
     return preprocessObject(parameter)
   }
 
   return parameter
+}
+
+function encodeJsonParameter(parameter: unknown): { prisma__type: 'json'; prisma__value: string } {
+  return {
+    prisma__type: 'json',
+    prisma__value: stringifyJsonFieldValue(parameter),
+  }
 }
 
 function isArrayBufferLike(value: any): value is ArrayBufferLike {
@@ -80,6 +95,45 @@ function isArrayBufferLike(value: any): value is ArrayBufferLike {
   }
 
   return false
+}
+
+function isRawJsonObjectParameter(value: unknown): boolean {
+  return isPlainObject(value) && objectContainsLosslessJsonNumber(value)
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  const prototype = Object.getPrototypeOf(value)
+  return prototype === Object.prototype || prototype === null
+}
+
+function objectContainsLosslessJsonNumber(value: unknown, seen = new WeakSet<object>()): boolean {
+  if (isLosslessJsonNumber(value)) {
+    return true
+  }
+
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  if (seen.has(value)) {
+    return false
+  }
+
+  seen.add(value)
+
+  if (Array.isArray(value)) {
+    return value.some((item) => objectContainsLosslessJsonNumber(item, seen))
+  }
+
+  if (!isPlainObject(value)) {
+    return false
+  }
+
+  return Object.values(value).some((item) => objectContainsLosslessJsonNumber(item, seen))
 }
 
 function preprocessObject(obj: any): unknown {

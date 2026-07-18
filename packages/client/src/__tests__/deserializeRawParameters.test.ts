@@ -1,10 +1,23 @@
-import { Decimal } from '@prisma/client-runtime-utils'
+import { Decimal, LosslessNumber } from '@prisma/client-runtime-utils'
 
 import { deserializeRawParameters } from '../runtime/utils/deserializeRawParameters'
 import { serializeRawParameters } from '../runtime/utils/serializeRawParameters'
 
 function roundTrip(data: any[]) {
   return deserializeRawParameters(serializeRawParameters(data))
+}
+
+const losslessRawJsonParameter = {
+  unsafePositive: new LosslessNumber('9007199254740993'),
+  unsafeNegative: new LosslessNumber('-9007199254740993'),
+  preciseDecimal: new LosslessNumber('0.12345678901234567890123456789'),
+  exponent: new LosslessNumber('1.234567890123456789e+30'),
+  safeInteger: new LosslessNumber('42'),
+  safeDecimal: new LosslessNumber('1.25'),
+  nested: {
+    values: [new LosslessNumber('9007199254740993'), null],
+  },
+  quoted: '9007199254740993',
 }
 
 describe('deserializeRawParameters', () => {
@@ -116,6 +129,32 @@ describe('deserializeRawParameters', () => {
     expect(result.argTypes).toEqual(expectedTypes)
   })
 
+  test('LosslessNumber JSON object roundtrip', () => {
+    const result = roundTrip([losslessRawJsonParameter])
+
+    expect(result.args).toEqual([expect.stringContaining('"unsafePositive":9007199254740993')])
+    expect(result.argTypes).toEqual([{ scalarType: 'json', arity: 'scalar' }])
+
+    const json = result.args[0] as string
+    expect(json).toContain('"unsafeNegative":-9007199254740993')
+    expect(json).toContain('"preciseDecimal":0.12345678901234567890123456789')
+    expect(json).toContain('"exponent":1.234567890123456789e+30')
+    expect(json).toContain('"safeInteger":42')
+    expect(json).toContain('"safeDecimal":1.25')
+    expect(json).toContain('"quoted":"9007199254740993"')
+    expect(json).not.toContain('isLosslessNumber')
+    expect(json).not.toContain('"value":"9007199254740993"')
+  })
+
+  test('root LosslessNumber JSON parameter roundtrip', () => {
+    const result = roundTrip([new LosslessNumber('9007199254740993')])
+
+    expect(result).toEqual({
+      args: ['9007199254740993'],
+      argTypes: [{ scalarType: 'json', arity: 'scalar' }],
+    })
+  })
+
   test('throws error for invalid JSON', () => {
     expect(() => deserializeRawParameters('not valid json')).toThrow()
   })
@@ -131,5 +170,10 @@ describe('deserializeRawParameters', () => {
     expect(() => deserializeRawParameters(serialized)).toThrow(
       'Invalid serialized parameter, prisma__type should be present when prisma__value is present',
     )
+  })
+
+  test('throws error for malformed tagged JSON parameter', () => {
+    const serialized = JSON.stringify([{ prisma__type: 'json', prisma__value: '{"unterminated":' }])
+    expect(() => deserializeRawParameters(serialized)).toThrow('Invalid serialized JSON parameter')
   })
 })

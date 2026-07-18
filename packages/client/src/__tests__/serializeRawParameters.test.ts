@@ -1,9 +1,22 @@
-import { Decimal } from '@prisma/client-runtime-utils'
+import { Decimal, LosslessNumber } from '@prisma/client-runtime-utils'
 
 import { serializeRawParameters } from '../runtime/utils/serializeRawParameters'
 
 function serialize(data: any[]) {
   return JSON.parse(serializeRawParameters(data))
+}
+
+const losslessRawJsonParameter = {
+  unsafePositive: new LosslessNumber('9007199254740993'),
+  unsafeNegative: new LosslessNumber('-9007199254740993'),
+  preciseDecimal: new LosslessNumber('0.12345678901234567890123456789'),
+  exponent: new LosslessNumber('1.234567890123456789e+30'),
+  safeInteger: new LosslessNumber('42'),
+  safeDecimal: new LosslessNumber('1.25'),
+  nested: {
+    values: [new LosslessNumber('9007199254740993'), null],
+  },
+  quoted: '9007199254740993',
 }
 
 describe('serializeRawParameters', () => {
@@ -45,6 +58,15 @@ describe('serializeRawParameters', () => {
       {
         prisma__type: 'decimal',
         prisma__value: '1.1',
+      },
+    ])
+  })
+
+  test('root LosslessNumber JSON parameter', () => {
+    expect(serialize([new LosslessNumber('9007199254740993')])).toEqual([
+      {
+        prisma__type: 'json',
+        prisma__value: '9007199254740993',
       },
     ])
   })
@@ -184,6 +206,28 @@ describe('serializeRawParameters', () => {
         },
         [123, { prisma__type: 'bigint', prisma__value: '321804719213721' }],
       ])
+    })
+
+    test('with LosslessNumber JSON values', () => {
+      const result = serialize([losslessRawJsonParameter])
+
+      expect(result).toEqual([
+        {
+          prisma__type: 'json',
+          prisma__value: expect.any(String),
+        },
+      ])
+
+      const json = result[0].prisma__value
+      expect(json).toContain('"unsafePositive":9007199254740993')
+      expect(json).toContain('"unsafeNegative":-9007199254740993')
+      expect(json).toContain('"preciseDecimal":0.12345678901234567890123456789')
+      expect(json).toContain('"exponent":1.234567890123456789e+30')
+      expect(json).toContain('"safeInteger":42')
+      expect(json).toContain('"safeDecimal":1.25')
+      expect(json).toContain('"quoted":"9007199254740993"')
+      expect(json).not.toContain('isLosslessNumber')
+      expect(json).not.toContain('"value":"9007199254740993"')
     })
   })
 })
