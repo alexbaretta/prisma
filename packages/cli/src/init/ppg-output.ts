@@ -66,11 +66,11 @@ ${bold('--- Next steps ---')}
 Go to ${link('https://pris.ly/ppg-init')} for detailed instructions.
 
 ${bold('1. Install the Postgres adapter')}
-${green('npm install @prisma/adapter-pg')}
+${green('npm install @prisma-lossless/adapter-pg')}
 
 ...and add it to your Prisma Client instance:
 
-${green('import { PrismaPg } from "@prisma/adapter-pg";')}
+${green('import { PrismaPg } from "@prisma-lossless/adapter-pg";')}
 ${green('import { PrismaClient } from "./generated/prisma/client";')}
 
 ${green('const connectionString = `${process.env.DATABASE_URL}`;')}

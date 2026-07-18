@@ -206,6 +206,7 @@ const officialPrismaAdapters = [
   '@prisma/adapter-libsql',
   '@prisma/adapter-better-sqlite3',
   '@prisma/adapter-d1',
+  '@prisma-lossless/adapter-pg',
   '@prisma/adapter-pg',
   '@prisma/adapter-mssql',
   '@prisma/adapter-mariadb',

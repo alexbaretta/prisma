@@ -185,7 +185,7 @@ export interface PrismaClientOptionsWithAccelerateUrl extends PrismaClientBaseOp
 export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions {
   /**
    * A driver adapter that PrismaClient uses to connect to your database,
-   * such as the ones provided by `@prisma/adapter-pg`,
+   * such as the ones provided by `@prisma-lossless/adapter-pg`,
    * `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
    *
    * A driver adapter is **required** unless you connect to your database
@@ -195,7 +195,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
    *
    * @example
    * ```ts
-   * import { PrismaPg } from '@prisma/adapter-pg'
+   * import { PrismaPg } from '@prisma-lossless/adapter-pg'
    * import { PrismaClient } from './generated/prisma/client'
    *
    * const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
@@ -393,7 +393,7 @@ PrismaClient was instantiated without any options. A driver adapter is required 
 
 Pass a driver adapter to the PrismaClient constructor, for example:
 
-  import { PrismaPg } from '@prisma/adapter-pg'
+  import { PrismaPg } from '@prisma-lossless/adapter-pg'
   import { PrismaClient } from './generated/prisma/client'
 
   const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })

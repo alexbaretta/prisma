@@ -621,7 +621,7 @@ export type TransactionClient = Omit<Prisma.DefaultPrismaClient, ${transactionCl
     ) {
       clientOptions.add(
         ts.property('adapter', ts.namedType('runtime.SqlDriverAdapterFactory')).optional().setDocComment(ts.docComment`
-            A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by \`@prisma/adapter-pg\`, \`@prisma/adapter-libsql\`, \`@prisma/adapter-planetscale\`, etc.
+            A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by \`@prisma-lossless/adapter-pg\`, \`@prisma/adapter-libsql\`, \`@prisma/adapter-planetscale\`, etc.
 
             A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use \`accelerateUrl\` instead).
 
@@ -629,7 +629,7 @@ export type TransactionClient = Omit<Prisma.DefaultPrismaClient, ${transactionCl
 
             @example
             \`\`\`ts
-            import { PrismaPg } from '@prisma/adapter-pg'
+            import { PrismaPg } from '@prisma-lossless/adapter-pg'
             import { PrismaClient } from './generated/prisma/client'
 
             const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })

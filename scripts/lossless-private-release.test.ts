@@ -28,14 +28,14 @@ describe('lossless private release graph', () => {
 
   test('keeps the runtime closure in publish dependency order', () => {
     expect(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name)).toEqual([
-      '@prisma/debug',
-      '@prisma/driver-adapter-utils',
-      '@prisma/get-platform',
-      '@prisma/fetch-engine',
-      '@prisma/engines',
-      '@prisma/config',
-      '@prisma/client-runtime-utils',
-      '@prisma/adapter-pg',
+      '@prisma-lossless/debug',
+      '@prisma-lossless/driver-adapter-utils',
+      '@prisma-lossless/get-platform',
+      '@prisma-lossless/fetch-engine',
+      '@prisma-lossless/engines',
+      '@prisma-lossless/config',
+      '@prisma-lossless/client-runtime-utils',
+      '@prisma-lossless/adapter-pg',
       '@prisma-lossless/client',
       'prisma-lossless',
     ])
@@ -60,10 +60,10 @@ describe('lossless private release graph', () => {
     )
 
     expect(rewritten).toMatchObject({
-      name: '@prisma/get-platform',
+      name: '@prisma-lossless/get-platform',
       version: releaseVersion,
       dependencies: {
-        '@prisma/debug': releaseVersion,
+        '@prisma/debug': `npm:@prisma-lossless/debug@${releaseVersion}`,
         kleur: '4.1.5',
       },
       prismaLosslessRelease: {
@@ -83,6 +83,8 @@ describe('lossless private release graph', () => {
       'link:../local',
       'github:prisma/prisma#main',
       'git+https://github.com/prisma/prisma.git#main',
+      `npm:@prisma-lossless/debug@${PRIVATE_RELEASE_VERSION_PREFIX}.99`,
+      'npm:@evil/debug@7.8.0',
       '../checkout',
       '~/checkout',
     ]) {
@@ -114,7 +116,7 @@ describe('lossless private release graph', () => {
     expect(clientPackageJson).toMatchObject({
       version: releaseVersion,
       dependencies: {
-        '@prisma/client-runtime-utils': releaseVersion,
+        '@prisma/client-runtime-utils': `npm:@prisma-lossless/client-runtime-utils@${releaseVersion}`,
       },
       peerDependencies: {
         'prisma-lossless': releaseVersion,
@@ -127,8 +129,8 @@ describe('lossless private release graph', () => {
     expect(cliPackageJson).toMatchObject({
       version: releaseVersion,
       dependencies: {
-        '@prisma/config': releaseVersion,
-        '@prisma/engines': releaseVersion,
+        '@prisma/config': `npm:@prisma-lossless/config@${releaseVersion}`,
+        '@prisma/engines': `npm:@prisma-lossless/engines@${releaseVersion}`,
       },
       prisma: {
         prismaCommit: sourceCommit,
@@ -139,10 +141,11 @@ describe('lossless private release graph', () => {
       },
     })
 
-    expect(packageJsons.get('@prisma/adapter-pg')).toMatchObject({
+    expect(packageJsons.get('@prisma-lossless/adapter-pg')).toMatchObject({
+      name: '@prisma-lossless/adapter-pg',
       version: releaseVersion,
       dependencies: {
-        '@prisma/driver-adapter-utils': releaseVersion,
+        '@prisma/driver-adapter-utils': `npm:@prisma-lossless/driver-adapter-utils@${releaseVersion}`,
       },
       prismaLosslessRelease: {
         version: releaseVersion,

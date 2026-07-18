@@ -123,7 +123,7 @@ export interface EngineConfig {
   transactionOptions: Transaction.Options
 
   /**
-   * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-pg`.
+   * Instance of a Driver Adapter, e.g., like one provided by `@prisma-lossless/adapter-pg`.
    */
   adapter?: SqlDriverAdapterFactory
 

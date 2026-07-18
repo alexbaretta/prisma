@@ -2,8 +2,9 @@
 
 Branch: `target-7.8.0-lossless`
 
-Status: Lossless JSON implementation, local tarball adoption, and
-private first-party registry release validation are complete.
+Status: Lossless JSON implementation, local tarball adoption, private
+registry release validation, and lossless package naming consistency
+are complete.
 
 ## Purpose
 
@@ -158,6 +159,17 @@ repository's local tarball smoke path.
 | 016 | [Build private release graph](./016-build-private-release-graph.md)               | High     | [DONE] | 015          |
 | 017 | [Publish and validate private release](./017-publish-validate-private-release.md) | High     | [DONE] | 016          |
 
+### Sprint 4: Naming Consistency
+
+Sprint 4 removes the remaining consumer-facing `@prisma/*` package
+reference from the private release adoption contract. First-party
+consumers must depend on the forked names and update imports to the
+new nomenclature.
+
+| ID  | Tasklet                                                                  | Priority | Status | Dependencies |
+| --- | ------------------------------------------------------------------------ | -------- | ------ | ------------ |
+| 018 | [Publish consistently named private release](./018-consistent-naming.md) | High     | [DONE] | 017          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This
@@ -210,11 +222,10 @@ The plan is complete when:
 
 ## Completion Validation Status
 
-Tasklets 001 through 017 are `[DONE]` and committed. This
-validation-fix pass records the package-rename fixes, private release
-validation, external npm consumer proof, and final root validation
-evidence. Repo-root build validation passed after rerunning outside the
-sandbox:
+Tasklets 001 through 018 are `[DONE]`. This validation pass records
+the package-rename fixes, private release validation, external npm
+consumer proof, and final validation evidence. Repo-root build
+validation passed after rerunning outside the sandbox:
 
 ```sh
 pnpm build
@@ -224,7 +235,7 @@ The first sandboxed build failed at `tsx` IPC socket creation under
 `/var/folders/...`; the latest escalated rerun passed with `44
 successful, 44 total`.
 
-Repo-root test validation passed in this local environment with the
+Repo-root test validation was run in this local environment with the
 documented SQL Server and CockroachDB skips:
 
 ```sh
@@ -237,41 +248,41 @@ Before the test run, the stale local database
 `tests-migrate-prisma-config-extensions` was dropped so the migrate
 snapshots could start from the expected local state.
 
-The successful root run included the following relevant package
-evidence:
+The root test run failed only in `packages/migrate`, where four
+PostgreSQL setup hooks exceeded the 10 second Jest hook timeout after
+many PostgreSQL migrate cases had already passed. No lossless package,
+release tooling, generated guidance, client runtime, or adapter test
+failed.
 
-- `@prisma/migrate` passed (`33` suites, `352` tests, `580`
-  snapshots), with SQL Server and CockroachDB skipped by the explicit
-  local environment flags.
-- `@prisma-lossless/client` passed (`40` suites, `671` tests, `214`
-  snapshots), including the generated type harness.
-- `@prisma/integration-tests` passed (`8` suites, `514` tests, `514`
-  snapshots).
-- `prisma-lossless` Jest passed (`22` suites, `244` tests, `152`
-  snapshots).
-- `prisma-lossless` Vitest passed (`12` files, `165` tests).
+The failed package was rerun in isolation with the same local
+environment flags:
 
-The run still printed existing type-benchmark baseline exceedance
-messages in `basic/client-options.bench.ts` and
-`lots-of-relations/client-options.bench.ts`; the root `pnpm test`
-process exited successfully.
+```sh
+CI=true GITHUB_REF_NAME=target-7.8.0-lossless \
+  TERM=xterm-256color TEST_SKIP_MSSQL=true \
+  TEST_SKIP_COCKROACHDB=true pnpm --filter @prisma/migrate test
+```
+
+That rerun passed all migrate tests: `33` suites, `352` passed tests,
+`2` skipped tests, and `580` snapshots.
 
 ## Private Distribution Status
 
-Tasklets 015 through 017 are `[DONE]`. The immutable private release
-validated for first-party use is `7.8.0-lossless.3`, published to
-`http://127.0.0.1:4873/` with the `lossless` dist-tag from source
-commit `1b52c8b0bf090176f5fff36e25919dfb6526b572`.
+Tasklets 015 through 018 are `[DONE]`. The immutable private release
+validated for first-party use is `7.8.0-lossless.4`, published to
+`http://127.0.0.1:4873/` with the `lossless` dist-tag.
 
 The isolated npm consumer at
-`tmp/lossless-json-tasklet-017/consumer-7.8.0-lossless.3` installed
+`tmp/lossless-json-tasklet-018/consumer-7.8.0-lossless.4` installed
 exact registry versions of `prisma-lossless`,
-`@prisma-lossless/client`, and `@prisma/adapter-pg`, generated the
-client, typechecked, and passed the PostgreSQL lossless JSON smoke
-suite against the locally running PostgreSQL `18.3` server.
+`@prisma-lossless/client`, and `@prisma-lossless/adapter-pg`,
+generated the client, typechecked, and passed the PostgreSQL lossless
+JSON smoke suite against the locally running PostgreSQL `18.3`
+server.
 
 This closes the separate first-party consumption gap without
-publishing to the worldwide npm registry.
+publishing to the worldwide npm registry and without requiring a
+direct consumer dependency on any stock `@prisma/*` adapter package.
 
 ## Validation Bug Review: Client Type Harness Package Rename
 

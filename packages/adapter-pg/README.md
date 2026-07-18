@@ -1,4 +1,4 @@
-# @prisma/adapter-pg
+# @prisma-lossless/adapter-pg
 
 This package contains the driver adapter for Prisma ORM that enables usage of the [`node-postgres`](https://node-postgres.com/) (`pg`) database driver for PostgreSQL. You can learn more in the [documentation](https://pris.ly/d/adapter-pg).
 
@@ -8,14 +8,14 @@ This package contains the driver adapter for Prisma ORM that enables usage of th
 
 ## Usage
 
-This section explains how you can use it with Prisma ORM and the `@prisma/adapter-pg` driver adapter. Be sure that the `DATABASE_URL` environment variable is set to your PostgreSQL connection string (e.g. loaded using `dotenv` from a `.env` file).
+This section explains how you can use it with Prisma ORM and the `@prisma-lossless/adapter-pg` driver adapter. Be sure that the `DATABASE_URL` environment variable is set to your PostgreSQL connection string (e.g. loaded using `dotenv` from a `.env` file).
 
 ### 1. Install the dependencies
 
 Install the Prisma ORM's driver adapter for pg:
 
 ```
-npm install @prisma/adapter-pg
+npm install @prisma-lossless/adapter-pg
 ```
 
 ### 2. Instantiate Prisma Client using the driver adapter
@@ -23,8 +23,8 @@ npm install @prisma/adapter-pg
 Finally, when you instantiate Prisma Client, you need to pass an instance of Prisma ORM's driver adapter to the `PrismaClient` constructor:
 
 ```ts
-import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
+import { PrismaClient } from '@prisma-lossless/client'
 
 const connectionString = `${process.env.DATABASE_URL}`
 

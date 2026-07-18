@@ -68,7 +68,7 @@ describe('invalid options', () => {
 
       Pass a driver adapter to the PrismaClient constructor, for example:
 
-        import { PrismaPg } from '@prisma/adapter-pg'
+        import { PrismaPg } from '@prisma-lossless/adapter-pg'
         import { PrismaClient } from './generated/prisma/client'
 
         const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })

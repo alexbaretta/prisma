@@ -14,6 +14,7 @@ export const DEFAULT_RELEASE_OUTPUT_ROOT = path.join(process.cwd(), 'tmp/lossles
 
 export type ReleasePackage = {
   name: string
+  sourceName: string
   sourceDir: string
 }
 
@@ -45,31 +46,31 @@ const DEPENDENCY_SECTIONS: readonly DependencySection[] = [
   'peerDependencies',
 ]
 
-const RELEASE_PACKAGE_NAMES = new Set([
-  '@prisma/debug',
-  '@prisma/driver-adapter-utils',
-  '@prisma/get-platform',
-  '@prisma/fetch-engine',
-  '@prisma/engines',
-  '@prisma/config',
-  '@prisma/client-runtime-utils',
-  '@prisma/adapter-pg',
-  '@prisma-lossless/client',
-  'prisma-lossless',
-])
-
 export const RELEASE_PACKAGES: readonly ReleasePackage[] = [
-  { name: '@prisma/debug', sourceDir: 'packages/debug' },
-  { name: '@prisma/driver-adapter-utils', sourceDir: 'packages/driver-adapter-utils' },
-  { name: '@prisma/get-platform', sourceDir: 'packages/get-platform' },
-  { name: '@prisma/fetch-engine', sourceDir: 'packages/fetch-engine' },
-  { name: '@prisma/engines', sourceDir: 'packages/engines' },
-  { name: '@prisma/config', sourceDir: 'packages/config' },
-  { name: '@prisma/client-runtime-utils', sourceDir: 'packages/client-runtime-utils' },
-  { name: '@prisma/adapter-pg', sourceDir: 'packages/adapter-pg' },
-  { name: '@prisma-lossless/client', sourceDir: 'packages/client' },
-  { name: 'prisma-lossless', sourceDir: 'packages/cli' },
+  { name: '@prisma-lossless/debug', sourceName: '@prisma/debug', sourceDir: 'packages/debug' },
+  {
+    name: '@prisma-lossless/driver-adapter-utils',
+    sourceName: '@prisma/driver-adapter-utils',
+    sourceDir: 'packages/driver-adapter-utils',
+  },
+  { name: '@prisma-lossless/get-platform', sourceName: '@prisma/get-platform', sourceDir: 'packages/get-platform' },
+  { name: '@prisma-lossless/fetch-engine', sourceName: '@prisma/fetch-engine', sourceDir: 'packages/fetch-engine' },
+  { name: '@prisma-lossless/engines', sourceName: '@prisma/engines', sourceDir: 'packages/engines' },
+  { name: '@prisma-lossless/config', sourceName: '@prisma/config', sourceDir: 'packages/config' },
+  {
+    name: '@prisma-lossless/client-runtime-utils',
+    sourceName: '@prisma/client-runtime-utils',
+    sourceDir: 'packages/client-runtime-utils',
+  },
+  { name: '@prisma-lossless/adapter-pg', sourceName: '@prisma/adapter-pg', sourceDir: 'packages/adapter-pg' },
+  { name: '@prisma-lossless/client', sourceName: '@prisma-lossless/client', sourceDir: 'packages/client' },
+  { name: 'prisma-lossless', sourceName: 'prisma-lossless', sourceDir: 'packages/cli' },
 ]
+
+const RELEASE_PACKAGES_BY_SOURCE_NAME = new Map(
+  RELEASE_PACKAGES.map((releasePackage) => [releasePackage.sourceName, releasePackage]),
+)
+const RELEASE_PACKAGE_NAMES = new Set(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name))
 
 export function selectNextReleaseVersion(publishedVersions: readonly string[]): string {
   const releaseVersion = new RegExp(`^${escapeRegExp(PRIVATE_RELEASE_VERSION_PREFIX)}\\.(\\d+)$`)
@@ -92,12 +93,15 @@ export function rewritePackageJsonForPrivateRelease(
   sourceCommit: string,
 ): JsonObject {
   const rewritten = cloneJsonObject(packageJson)
-  const name = readPackageName(rewritten)
+  const sourceName = readPackageName(rewritten)
+  const releasePackage = RELEASE_PACKAGES_BY_SOURCE_NAME.get(sourceName)
 
-  if (!RELEASE_PACKAGE_NAMES.has(name)) {
-    throw new Error(`Package is not in the private release graph: ${name}`)
+  if (!releasePackage) {
+    throw new Error(`Package is not in the private release graph: ${sourceName}`)
   }
 
+  const name = releasePackage.name
+  rewritten.name = name
   rewritten.version = version
   rewritten.prismaLosslessRelease = {
     version,
@@ -140,17 +144,17 @@ export function validateReleasePackageMetadata(packageJson: JsonObject, version:
     const dependencies = readOptionalStringMap(packageJson[section])
 
     for (const [dependencyName, specifier] of Object.entries(dependencies)) {
-      assertAllowedDependencySpecifier(name, dependencyName, specifier)
+      assertAllowedDependencySpecifier(name, dependencyName, specifier, version)
     }
   }
 }
 
 export function assertReleaseGraphDependencyOrder(packages = RELEASE_PACKAGES): void {
-  const packageIndexes = new Map(packages.map((releasePackage, index) => [releasePackage.name, index]))
+  const packageIndexes = new Map(packages.map((releasePackage, index) => [releasePackage.sourceName, index]))
 
   for (const releasePackage of packages) {
     const packageJson = readPackageJson(path.join(process.cwd(), releasePackage.sourceDir, 'package.json'))
-    const packageIndex = packageIndexes.get(releasePackage.name)
+    const packageIndex = packageIndexes.get(releasePackage.sourceName)
 
     if (packageIndex === undefined) {
       throw new Error(`Release package is missing from the graph: ${releasePackage.name}`)
@@ -318,21 +322,25 @@ function rewriteDependencySection(packageJson: JsonObject, section: DependencySe
   const rewrittenDependencies: Record<string, string> = {}
 
   for (const [dependencyName, specifier] of Object.entries(dependencies)) {
+    const releaseDependency = RELEASE_PACKAGES_BY_SOURCE_NAME.get(dependencyName)
+
     if (specifier.startsWith('workspace:')) {
-      if (!RELEASE_PACKAGE_NAMES.has(dependencyName)) {
+      if (!releaseDependency) {
         throw new Error(`Dependency ${dependencyName} is not in the private release graph`)
       }
 
-      rewrittenDependencies[dependencyName] = version
+      rewrittenDependencies[dependencyName] =
+        releaseDependency.name === dependencyName ? version : npmAlias(releaseDependency.name, version)
       continue
     }
 
-    if (RELEASE_PACKAGE_NAMES.has(dependencyName) && (specifier === '*' || specifier === '0.0.0')) {
-      rewrittenDependencies[dependencyName] = version
+    if (releaseDependency && (specifier === '*' || specifier === '0.0.0')) {
+      rewrittenDependencies[dependencyName] =
+        releaseDependency.name === dependencyName ? version : npmAlias(releaseDependency.name, version)
       continue
     }
 
-    assertAllowedDependencySpecifier(readPackageName(packageJson), dependencyName, specifier)
+    assertAllowedDependencySpecifier(readPackageName(packageJson), dependencyName, specifier, version)
     rewrittenDependencies[dependencyName] = specifier
   }
 
@@ -343,7 +351,17 @@ function rewriteDependencySection(packageJson: JsonObject, section: DependencySe
   }
 }
 
-function assertAllowedDependencySpecifier(packageName: string, dependencyName: string, specifier: string): void {
+function assertAllowedDependencySpecifier(
+  packageName: string,
+  dependencyName: string,
+  specifier: string,
+  version: string,
+): void {
+  if (specifier.startsWith('npm:')) {
+    assertAllowedNpmAliasSpecifier(packageName, dependencyName, specifier, version)
+    return
+  }
+
   if (specifier === '0.0.0') {
     throw new Error(`${packageName} depends on ${dependencyName} with forbidden 0.0.0 specifier`)
   }
@@ -367,6 +385,34 @@ function assertAllowedDependencySpecifier(packageName: string, dependencyName: s
   if (/^(\.\.?\/|~\/|\/Users\/|\/home\/|\/private\/)/.test(specifier)) {
     throw new Error(`${packageName} depends on ${dependencyName} with forbidden checkout or home path`)
   }
+}
+
+function assertAllowedNpmAliasSpecifier(
+  packageName: string,
+  dependencyName: string,
+  specifier: string,
+  version: string,
+): void {
+  const releaseDependency = RELEASE_PACKAGES_BY_SOURCE_NAME.get(dependencyName)
+  const expectedSpecifier = releaseDependency ? npmAlias(releaseDependency.name, version) : null
+
+  if (!releaseDependency || specifier !== expectedSpecifier || readAliasVersion(specifier) !== version) {
+    throw new Error(`${packageName} depends on ${dependencyName} with forbidden npm alias specifier`)
+  }
+}
+
+function readAliasVersion(specifier: string): string {
+  const match = /^npm:@prisma-lossless\/[a-z0-9-]+@(.+)$/.exec(specifier)
+
+  if (!match) {
+    throw new Error('Malformed npm alias specifier')
+  }
+
+  return match[1]
+}
+
+function npmAlias(packageName: string, version: string): string {
+  return `npm:${packageName}@${version}`
 }
 
 function packStagedPackage(stagingDir: string, artifactsDir: string, packageName: string, version: string): string {

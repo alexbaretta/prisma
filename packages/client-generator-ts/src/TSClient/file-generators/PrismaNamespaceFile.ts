@@ -313,7 +313,7 @@ function buildClientOptions(context: GenerateContext) {
     .extends(ts.namedType('PrismaClientBaseOptions'))
     .add(
       ts.property('adapter', ts.namedType('runtime.SqlDriverAdapterFactory')).setDocComment(ts.docComment`
-            A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by \`@prisma/adapter-pg\`, \`@prisma/adapter-libsql\`, \`@prisma/adapter-planetscale\`, etc.
+            A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by \`@prisma-lossless/adapter-pg\`, \`@prisma/adapter-libsql\`, \`@prisma/adapter-planetscale\`, etc.
 
             A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use \`accelerateUrl\` instead).
 
@@ -321,7 +321,7 @@ function buildClientOptions(context: GenerateContext) {
 
             @example
             \`\`\`ts
-            import { PrismaPg } from '@prisma/adapter-pg'
+            import { PrismaPg } from '@prisma-lossless/adapter-pg'
             import { PrismaClient } from './generated/prisma/client'
 
             const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
