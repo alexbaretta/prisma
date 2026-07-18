@@ -72,6 +72,25 @@ describe('update available message', () => {
       expect(message).toMatchSnapshot()
     })
 
+    it('latest tag - minor with stock checkpoint package', () => {
+      printUpdateMessage({
+        status: 'ok',
+        // @ts-ignore
+        data: {
+          previous_version: '2.6.1',
+          current_version: '2.16.0',
+          package: 'prisma',
+          release_tag: 'latest',
+          outdated: true,
+        },
+      })
+      const message = ctx.mocked['console.error'].mock.calls[0][0]
+      expect(message).toContain('npm i --save-dev prisma-lossless@latest')
+      expect(message).not.toContain('npm i --save-dev prisma@latest')
+      expect(message).toContain('npm i @prisma-lossless/client@latest')
+      expect(message).toMatchSnapshot()
+    })
+
     it('latest tag - major', () => {
       printUpdateMessage({
         status: 'ok',

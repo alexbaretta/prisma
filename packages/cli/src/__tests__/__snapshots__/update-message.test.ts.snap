@@ -43,3 +43,12 @@ exports[`update available message update available latest tag - minor 1`] = `
 │    npm i @prisma-lossless/client@latest                 │
 └─────────────────────────────────────────────────────────┘"
 `;
+
+exports[`update available message update available latest tag - minor with stock checkpoint package 1`] = `
+"┌─────────────────────────────────────────────────────────┐
+│  Update available 2.6.1 -> 2.16.0                       │
+│  Run the following to update                            │
+│    npm i --save-dev prisma-lossless@latest              │
+│    npm i @prisma-lossless/client@latest                 │
+└─────────────────────────────────────────────────────────┘"
+`;

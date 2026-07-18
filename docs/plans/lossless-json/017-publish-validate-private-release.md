@@ -216,6 +216,34 @@ Validation that proves the fix: focused registry config tests must
 prove the body-size setting exists, and the private registry publish
 must succeed for `@prisma-lossless/client`.
 
+## Update Guidance Subproblem Review
+
+Observed problem: repo-root `pnpm test` generated an update banner
+that still recommended `npm i --save-dev prisma@latest` while the
+client line correctly used `@prisma-lossless/client@latest`.
+
+Violated contract or invariant: first-party consumers of this fork
+must not be guided back to stock public Prisma package names. The
+installable CLI package is `prisma-lossless`, not `prisma`.
+
+Owning layer: the CLI update-message helper owns the user-facing
+upgrade command. Checkpoint metadata is an upstream service boundary
+and may still report the stock `prisma` package name.
+
+Intended solution: make CLI update guidance use the fork CLI package
+name `prisma-lossless` regardless of the checkpoint package field, and
+add regression coverage for checkpoint results that still say
+`prisma`.
+
+Rejected unsafe or wrong-layer solution: do not rename internal
+workspace packages such as `@prisma/migrate` solely because tests print
+their workspace names, and do not trust checkpoint metadata to carry
+the fork package name.
+
+Validation that proves the fix: focused CLI update-message tests must
+pass, and regenerated CLI build output must not contain stock
+`prisma@latest` update guidance.
+
 ## Validation
 
 Run the focused package suites, repo-root build, and repo-root tests
