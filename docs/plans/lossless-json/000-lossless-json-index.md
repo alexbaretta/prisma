@@ -3,8 +3,8 @@
 Branch: `target-7.8.0-lossless`
 
 Status: Lossless JSON implementation, local tarball adoption, private
-registry release validation, and lossless package naming consistency
-are complete.
+registry release validation, lossless package naming consistency, and
+the raw JSON parameter follow-up fix are complete.
 
 ## Purpose
 
@@ -170,6 +170,16 @@ new nomenclature.
 | --- | ------------------------------------------------------------------------ | -------- | ------ | ------------ |
 | 018 | [Publish consistently named private release](./018-consistent-naming.md) | High     | [DONE] | 017          |
 
+### Sprint 5: Raw JSON Parameter Follow-Up
+
+Sprint 5 fixes the `7.8.0-lossless.4` regression where
+`LosslessNumber` values inside raw SQL JSON object parameters were
+serialized as implementation objects.
+
+| ID  | Tasklet                                                          | Priority | Status | Dependencies |
+| --- | ---------------------------------------------------------------- | -------- | ------ | ------------ |
+| 019 | [Preserve raw JSON parameters](./019-fix-raw-json-parameters.md) | High     | [DONE] | 018          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This
@@ -222,7 +232,7 @@ The plan is complete when:
 
 ## Completion Validation Status
 
-Tasklets 001 through 018 are `[DONE]`. This validation pass records
+Tasklets 001 through 019 are `[DONE]`. This validation pass records
 the package-rename fixes, private release validation, external npm
 consumer proof, and final validation evidence. Repo-root build
 validation passed after rerunning outside the sandbox:
@@ -268,17 +278,19 @@ That rerun passed all migrate tests: `33` suites, `352` passed tests,
 
 ## Private Distribution Status
 
-Tasklets 015 through 018 are `[DONE]`. The immutable private release
-validated for first-party use is `7.8.0-lossless.4`, published to
+Tasklets 015 through 019 are `[DONE]`. The immutable private release
+validated for first-party use is `7.8.0-lossless.5`, published to
 `http://127.0.0.1:4873/` with the `lossless` dist-tag.
 
 The isolated npm consumer at
-`tmp/lossless-json-tasklet-018/consumer-7.8.0-lossless.4` installed
+`tmp/lossless-json-tasklet-019/consumer-7.8.0-lossless.5` installed
 exact registry versions of `prisma-lossless`,
 `@prisma-lossless/client`, and `@prisma-lossless/adapter-pg`,
 generated the client, typechecked, and passed the PostgreSQL lossless
 JSON smoke suite against the locally running PostgreSQL `18.3`
-server.
+server. The smoke suite includes model reads, model writes, raw JSON
+result reads, raw text casts, and `$queryRaw` / `$executeRaw` JSON
+object parameters with the complete precision matrix.
 
 This closes the separate first-party consumption gap without
 publishing to the worldwide npm registry and without requiring a

@@ -10,11 +10,11 @@ Replace stock Prisma packages in your application:
 ```json
 {
   "dependencies": {
-    "@prisma-lossless/client": "7.8.0-lossless.4",
-    "@prisma-lossless/adapter-pg": "7.8.0-lossless.4"
+    "@prisma-lossless/client": "7.8.0-lossless.5",
+    "@prisma-lossless/adapter-pg": "7.8.0-lossless.5"
   },
   "devDependencies": {
-    "prisma-lossless": "7.8.0-lossless.4"
+    "prisma-lossless": "7.8.0-lossless.5"
   }
 }
 ```
@@ -81,3 +81,8 @@ numeric token, or convert explicitly when precision loss is acceptable.
 JavaScript `number` inputs remain accepted, but precision already lost
 by user code cannot be recovered. Use `new Prisma.LosslessNumber(...)`
 for JSON numbers that must be written without precision loss.
+
+Raw SQL JSON parameters are covered by the same contract. Objects that
+contain `Prisma.LosslessNumber` values may be passed directly through
+`$queryRaw` and `$executeRaw` and cast to `jsonb`; no consumer-side
+pre-stringification helper is required.
