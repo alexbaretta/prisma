@@ -1,6 +1,6 @@
 # Sprint 3
 
-### [ ] Tasklet 017: Publish And Validate Private Release
+### [DONE] Tasklet 017: Publish And Validate Private Release
 
 ## Goal
 
@@ -289,12 +289,10 @@ Private registry:
 
 Published immutable version:
 
-- version: `7.8.0-lossless.2`;
-- source commit: `c7c603cd9ae636e1ccc217e92ea087511e990d6c`;
-- manifest path under
-  `tmp/lossless-json-tasklet-016/runs/`;
+- version: `7.8.0-lossless.3`;
+- source commit: `1b52c8b0bf090176f5fff36e25919dfb6526b572`;
 - manifest run directory:
-  `1784331035380-c7c603cd9ae6`;
+  `tmp/lossless-json-tasklet-016/runs/1784335135982-1b52c8b0bf09`;
 - manifest file: `private-release-manifest.json`.
 
 Published packages:
@@ -313,53 +311,69 @@ Published packages:
 Registry metadata inspection passed for the install-critical packages:
 
 ```sh
-npm view @prisma-lossless/client@7.8.0-lossless.2 \
+npm view @prisma-lossless/client@7.8.0-lossless.3 \
   name version dist.integrity dist.tarball \
   --registry http://127.0.0.1:4873/
 
-npm view prisma-lossless@7.8.0-lossless.2 \
+npm view prisma-lossless@7.8.0-lossless.3 \
   name version dist.integrity dist.tarball \
   --registry http://127.0.0.1:4873/
 
-npm view @prisma/adapter-pg@7.8.0-lossless.2 \
+npm view @prisma/adapter-pg@7.8.0-lossless.3 \
   name version dist.integrity dist.tarball \
   --registry http://127.0.0.1:4873/
 ```
 
-Result: all returned exact version `7.8.0-lossless.2`, private
+Result: all returned exact version `7.8.0-lossless.3`, private
 registry tarball URLs, and sha512 integrity metadata.
 
 Downloaded package content inspection passed:
 
 ```sh
-npm pack @prisma-lossless/client@7.8.0-lossless.2 \
+npm pack @prisma-lossless/client@7.8.0-lossless.3 \
   --registry http://127.0.0.1:4873/ \
-  --pack-destination tmp/lossless-json-tasklet-017/downloads
+  --pack-destination \
+  tmp/lossless-json-tasklet-017/downloads-7.8.0-lossless.3
 
-npm pack prisma-lossless@7.8.0-lossless.2 \
+npm pack prisma-lossless@7.8.0-lossless.3 \
   --registry http://127.0.0.1:4873/ \
-  --pack-destination tmp/lossless-json-tasklet-017/downloads
+  --pack-destination \
+  tmp/lossless-json-tasklet-017/downloads-7.8.0-lossless.3
 
-npm pack @prisma/adapter-pg@7.8.0-lossless.2 \
+npm pack @prisma/adapter-pg@7.8.0-lossless.3 \
   --registry http://127.0.0.1:4873/ \
-  --pack-destination tmp/lossless-json-tasklet-017/downloads
+  --pack-destination \
+  tmp/lossless-json-tasklet-017/downloads-7.8.0-lossless.3
 ```
 
 Result: package manifests inside the downloaded tarballs recorded
-`7.8.0-lossless.2` and `prismaLosslessRelease.sourceCommit`. The
+`7.8.0-lossless.3` and `prismaLosslessRelease.sourceCommit`. The
 client tarball recorded `@prisma/client-runtime-utils` and peer
-`prisma-lossless` at `7.8.0-lossless.2`. The adapter tarball recorded
-`@prisma/driver-adapter-utils` at `7.8.0-lossless.2`.
+`prisma-lossless` at `7.8.0-lossless.3`. The adapter tarball recorded
+`@prisma/driver-adapter-utils` at `7.8.0-lossless.3`. The CLI tarball
+recorded no dependency on `@prisma/migrate`.
+
+Update-guidance inspection passed:
+
+```sh
+tar -xOf tmp/lossless-json-tasklet-017/downloads-7.8.0-lossless.3/\
+prisma-lossless-7.8.0-lossless.3.tgz package/build/index.js |
+  rg --text "npm i --save-dev prisma@|npm install --save-dev prisma$|\
+prisma@latest"
+```
+
+Result: no matches. The built CLI contains `prisma-lossless` command
+and update guidance strings.
 
 Overwrite refusal passed:
 
 ```sh
-ROOT=/private/tmp/prisma-lossless-private-registry
-PRISMA_LOSSLESS_REGISTRY_ROOT="$ROOT" \
+PRISMA_LOSSLESS_REGISTRY_ROOT=/private/tmp/\
+prisma-lossless-private-registry \
   pnpm exec tsx scripts/lossless-private-registry.ts publish \
   http://127.0.0.1:4873/ \
-  tmp/lossless-json-tasklet-017/downloads/\
-prisma-lossless-client-7.8.0-lossless.2.tgz
+  tmp/lossless-json-tasklet-017/downloads-7.8.0-lossless.3/\
+prisma-lossless-client-7.8.0-lossless.3.tgz
 ```
 
 Result: expected `E409 Conflict` because the package version is already
@@ -367,9 +381,10 @@ present.
 
 Isolated consumer:
 
-- location: `tmp/lossless-json-tasklet-017/consumer`;
+- location:
+  `tmp/lossless-json-tasklet-017/consumer-7.8.0-lossless.3`;
 - package manager: `npm`;
-- dependencies: exact `7.8.0-lossless.2` versions for
+- dependencies: exact `7.8.0-lossless.3` versions for
   `prisma-lossless`, `@prisma-lossless/client`, and
   `@prisma/adapter-pg`;
 - no `file:`, `workspace:`, `link:`, Git, sibling checkout, or home
@@ -386,9 +401,10 @@ npm run smoke
 
 The generated-client banner still reports internal client version
 `0.0.0`, but installed package manifests remain
-`7.8.0-lossless.2`.
+`7.8.0-lossless.3`.
 
-The PostgreSQL smoke suite passed:
+The PostgreSQL smoke suite passed against the locally running
+PostgreSQL `18.3` server:
 
 - generated client import from `@prisma-lossless/client`;
 - model read JSON large integer, decimal, nested array, and JSON null;
@@ -399,7 +415,7 @@ The PostgreSQL smoke suite passed:
 
 Dependency-substitution validation passed. The consumer lockfile
 resolves these package entries from `http://127.0.0.1:4873/` at
-`7.8.0-lossless.2`:
+`7.8.0-lossless.3`:
 
 - `node_modules/prisma-lossless`;
 - `node_modules/@prisma-lossless/client`;
@@ -408,19 +424,16 @@ resolves these package entries from `http://127.0.0.1:4873/` at
 - `node_modules/@prisma/debug`;
 - `node_modules/@prisma/client-runtime-utils`;
 - `node_modules/@prisma/config`;
-- `node_modules/@prisma/engines`;
-- `node_modules/@prisma/fetch-engine`;
-- `node_modules/@prisma/engines/node_modules/@prisma/get-platform`;
-- `node_modules/@prisma/fetch-engine/node_modules/@prisma/get-platform`.
+- `node_modules/@prisma/engines`.
 
 Failure coverage passed:
 
 - public npm lookup for
-  `@prisma-lossless/client@7.8.0-lossless.2` returned `E404`;
+  `@prisma-lossless/client@7.8.0-lossless.3` returned `E404`;
 - local private lookup for
   `@prisma-lossless/client@7.8.0-lossless.999` returned `E404`;
 - stale lockfile fixture returned `EUSAGE` because locked
-  `@prisma-lossless/client@7.8.0-lossless.1` did not satisfy exact
+  `@prisma-lossless/client@7.8.0-lossless.3` did not satisfy exact
   `7.8.0-lossless.2`;
 - unavailable registry lookup at `http://127.0.0.1:59999/` returned
   `ECONNREFUSED`.
@@ -436,10 +449,15 @@ pnpm exec eslint scripts/lossless-private-release.ts \
   scripts/lossless-private-registry.ts \
   scripts/lossless-private-registry.test.ts
 
+pnpm --filter prisma-lossless exec jest \
+  src/__tests__/update-message.test.ts
+
 pnpm build
 ```
 
-Repo-root test status:
+Repo-root test validation passed after dropping the generated stale
+local test database
+`tests-migrate-prisma-config-extensions`:
 
 ```sh
 CI=true GITHUB_REF_NAME=target-7.8.0-lossless \
@@ -447,13 +465,20 @@ CI=true GITHUB_REF_NAME=target-7.8.0-lossless \
   TEST_SKIP_COCKROACHDB=true pnpm test
 ```
 
-Result: failed in the existing `@prisma/migrate` PostgreSQL test
-environment after all tasklet-relevant packages passed. The first
-root-test run failed because the MySQL Docker filesystem was full. A
-Docker build-cache prune reclaimed about 8.9 GB and the MySQL tests
-then passed. The remaining failures are local PostgreSQL test
-environment issues: stale databases with wrong ownership, missing
-PostgreSQL test databases, and missing `vector` extension support.
+Relevant root-test evidence:
 
-Tasklet 017 remains open until repo-root `pnpm test` passes from a
-valid local database baseline.
+- `@prisma/migrate` passed (`33` suites, `352` tests, `580`
+  snapshots), with SQL Server and CockroachDB skipped by explicit
+  local environment flags.
+- `@prisma-lossless/client` passed (`40` suites, `671` tests, `214`
+  snapshots), including the generated type harness.
+- `@prisma/integration-tests` passed (`8` suites, `514` tests, `514`
+  snapshots).
+- `prisma-lossless` Jest passed (`22` suites, `244` tests, `152`
+  snapshots).
+- `prisma-lossless` Vitest passed (`12` files, `165` tests).
+
+The root run still printed existing type-benchmark baseline exceedance
+messages in `basic/client-options.bench.ts` and
+`lots-of-relations/client-options.bench.ts`; the root `pnpm test`
+process exited successfully with code `0`.
