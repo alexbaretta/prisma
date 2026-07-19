@@ -14,7 +14,12 @@ import {
   startRegistry,
   stopStartedRegistry,
 } from './lossless-private-registry'
-import { readPackedPackageJson, RELEASE_PACKAGES, validateReleasePackageMetadata } from './lossless-private-release'
+import {
+  prepareBuiltPrivateReleaseCandidates,
+  readPackedPackageJson,
+  RELEASE_PACKAGES,
+  validateReleasePackageMetadata,
+} from './lossless-private-release'
 
 const MAX_PORT_ALLOCATION_ATTEMPTS = 5
 const RUNTIME_ROOT = path.join(os.tmpdir(), 'prisma-lossless-private-registry-runs')
@@ -61,6 +66,17 @@ export type RegistryRunnerDependencies = {
   runChild: (command: readonly string[], environment: NodeJS.ProcessEnv) => Promise<number>
 }
 
+export type BuiltReleaseRunnerDependencies = {
+  makeReleaseRoot: () => string
+  prepareRelease: (version: string, outputRoot: string) => PrivateReleaseManifest
+  runRegistry: (manifest: PrivateReleaseManifest, command: readonly string[]) => Promise<number>
+  removeRelease: (releaseRoot: string) => void
+}
+
+export type RegistryRunnerArguments =
+  | { mode: 'manifest'; manifestPath: string; command: string[] }
+  | { mode: 'built'; version: string; command: string[] }
+
 class RegistryRunTerminatedError extends Error {
   constructor(readonly signal: NodeJS.Signals) {
     super(`Registry run terminated by ${signal}`)
@@ -76,6 +92,13 @@ const DEFAULT_DEPENDENCIES: RegistryRunnerDependencies = {
   publish: publishPackage,
   removeRuntime: (runtimeRoot) => fs.rmSync(runtimeRoot, { recursive: true, force: true }),
   runChild: runChildCommand,
+}
+
+const DEFAULT_BUILT_RELEASE_DEPENDENCIES: BuiltReleaseRunnerDependencies = {
+  makeReleaseRoot: createBuiltReleaseRoot,
+  prepareRelease: prepareBuiltPrivateReleaseCandidates,
+  runRegistry: runWithEphemeralRegistry,
+  removeRelease: (releaseRoot) => fs.rmSync(releaseRoot, { recursive: true, force: true }),
 }
 
 export function buildRegistryUrls(port: number): RegistryUrls {
@@ -283,6 +306,26 @@ export async function runWithEphemeralRegistry(
   }
 }
 
+export async function runWithBuiltRelease(
+  version: string,
+  command: readonly string[],
+  dependencies: BuiltReleaseRunnerDependencies = DEFAULT_BUILT_RELEASE_DEPENDENCIES,
+): Promise<number> {
+  const releaseRoot = dependencies.makeReleaseRoot()
+
+  try {
+    const manifest = dependencies.prepareRelease(version, releaseRoot)
+    return await dependencies.runRegistry(manifest, command)
+  } finally {
+    dependencies.removeRelease(releaseRoot)
+  }
+}
+
+export function createBuiltReleaseRoot(): string {
+  fs.mkdirSync(RUNTIME_ROOT, { recursive: true })
+  return fs.mkdtempSync(path.join(RUNTIME_ROOT, 'built-release-'))
+}
+
 export async function runChildCommand(command: readonly string[], environment: NodeJS.ProcessEnv): Promise<number> {
   const [executable, ...args] = command
   const options: SpawnOptions = { env: environment, stdio: 'inherit' }
@@ -411,23 +454,33 @@ function readRequiredString(object: JsonObject, key: string, source: string): st
   return value
 }
 
-function parseArguments(argv: readonly string[]): { manifestPath: string; command: string[] } {
+export function parseArguments(argv: readonly string[]): RegistryRunnerArguments {
   const separatorIndex = argv.indexOf('--')
 
-  if (separatorIndex !== 1 || argv.length < 3) {
-    throw new Error(
-      'Usage: pnpm exec tsx scripts/lossless-private-registry-run.ts ' +
-        '<private-release-manifest.json> -- <command> [args...]',
-    )
+  if (argv[0] === '--from-built' && separatorIndex === 2 && argv.length >= 4) {
+    return { mode: 'built', version: argv[1], command: argv.slice(3) }
   }
 
-  return { manifestPath: argv[0], command: argv.slice(2) }
+  if (separatorIndex === 1 && argv.length >= 3) {
+    return { mode: 'manifest', manifestPath: argv[0], command: argv.slice(2) }
+  }
+
+  throw new Error(
+    'Usage: pnpm exec tsx scripts/lossless-private-registry-run.ts ' +
+      '[--from-built <version> | <private-release-manifest.json>] -- <command> [args...]',
+  )
 }
 
 async function main(argv: readonly string[]): Promise<void> {
-  const { manifestPath, command } = parseArguments(argv)
-  const manifest = loadPrivateReleaseManifest(manifestPath)
-  process.exitCode = await runWithEphemeralRegistry(manifest, command)
+  const parsed = parseArguments(argv)
+
+  if (parsed.mode === 'built') {
+    process.exitCode = await runWithBuiltRelease(parsed.version, parsed.command)
+    return
+  }
+
+  const manifest = loadPrivateReleaseManifest(parsed.manifestPath)
+  process.exitCode = await runWithEphemeralRegistry(manifest, parsed.command)
 }
 
 if (require.main === module) {

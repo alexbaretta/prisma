@@ -25,26 +25,23 @@ Remove these stock packages from direct application dependencies:
 - `@prisma/client`
 - `@prisma/adapter-pg`
 
-Build the exact approved private release artifacts directly from their
-pinned source commit. This command does not contact a registry to choose
-or manufacture the release version:
+Build prisma-lossless before a consumer invokes the registry wrapper.
+The consumer supplies the exact package version but does not build the
+fork, inspect its Git state, or manage a release manifest:
 
 ```sh
-pnpm exec tsx scripts/lossless-private-release.ts build-pinned \
-  7.8.0-lossless.5 \
-  f98f2e0f42cd7d9d9556567f9236c98eed00da16 \
-  tmp/lossless-json-private-release
+pnpm build
 ```
 
-The command prints the resulting manifest path. Run each consumer
-install or build through the ephemeral registry wrapper using that
-manifest. The wrapper starts its own pinned Verdaccio process on an
-OS-assigned loopback port, publishes the exact recorded packages, runs
-the command after `--`, and stops the registry on success or failure:
+Run each consumer install or build through the ephemeral registry
+wrapper. The wrapper transiently packs the already-built graph, starts
+its own Verdaccio process on an OS-assigned loopback port, publishes the
+exact packages, runs the command after `--`, and removes the registry
+and release artifacts on success or failure:
 
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
-  tmp/lossless-json-private-release/runs/<run>/private-release-manifest.json \
+  --from-built 7.8.0-lossless.5 \
   -- pnpm --dir /path/to/consumer install --frozen-lockfile
 ```
 
@@ -64,7 +61,7 @@ installation stage, for example:
 
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
-  /path/to/private-release-manifest.json -- \
+  --from-built 7.8.0-lossless.5 -- \
   docker build \
     --build-arg PRISMA_LOSSLESS_DOCKER_REGISTRY_URL \
     .

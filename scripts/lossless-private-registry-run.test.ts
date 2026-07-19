@@ -13,9 +13,12 @@ import {
 import {
   buildChildEnvironment,
   buildRegistryUrls,
+  type BuiltReleaseRunnerDependencies,
   loadPrivateReleaseManifest,
+  parseArguments,
   type PrivateReleaseManifest,
   type RegistryRunnerDependencies,
+  runWithBuiltRelease,
   runWithEphemeralRegistry,
   startEphemeralRegistry,
 } from './lossless-private-registry-run'
@@ -66,6 +69,41 @@ function dependencies(overrides: Partial<RegistryRunnerDependencies> = {}): Regi
 }
 
 describe('ephemeral private registry runner', () => {
+  test('accepts manifest and already-built project modes', () => {
+    expect(parseArguments(['release.json', '--', 'pnpm', 'install'])).toEqual({
+      mode: 'manifest',
+      manifestPath: 'release.json',
+      command: ['pnpm', 'install'],
+    })
+    expect(parseArguments(['--from-built', '7.8.0-lossless.5', '--', 'pnpm', 'install'])).toEqual({
+      mode: 'built',
+      version: '7.8.0-lossless.5',
+      command: ['pnpm', 'install'],
+    })
+    expect(() => parseArguments(['--from-built', '7.8.0-lossless.5'])).toThrow(/Usage/)
+  })
+
+  test('removes transient built releases after child success and failure', async () => {
+    const makeReleaseRoot = vi.fn(() => '/private/tmp/prebuilt-release')
+    const prepareRelease = vi.fn(() => MANIFEST)
+    const runRegistry = vi.fn(() => Promise.resolve(41))
+    const removeRelease = vi.fn()
+    const deps: BuiltReleaseRunnerDependencies = {
+      makeReleaseRoot,
+      prepareRelease,
+      runRegistry,
+      removeRelease,
+    }
+
+    await expect(runWithBuiltRelease(MANIFEST.version, ['consumer'], deps)).resolves.toBe(41)
+    expect(prepareRelease).toHaveBeenCalledWith(MANIFEST.version, '/private/tmp/prebuilt-release')
+    expect(removeRelease).toHaveBeenCalledWith('/private/tmp/prebuilt-release')
+
+    runRegistry.mockRejectedValueOnce(new Error('child failed'))
+    await expect(runWithBuiltRelease(MANIFEST.version, ['consumer'], deps)).rejects.toThrow('child failed')
+    expect(removeRelease).toHaveBeenCalledTimes(2)
+  })
+
   test('builds distinct host and Docker URLs and overrides npm resolution', () => {
     const urls = buildRegistryUrls(51_234)
     const environment = buildChildEnvironment(urls, { KEEP_ME: 'yes' })

@@ -3,8 +3,9 @@
 Branch: `target-7.8.0-lossless`
 
 Status: Lossless JSON implementation, local tarball adoption, private
-registry release validation, lossless package naming consistency, and
-the raw JSON parameter follow-up fix are complete.
+registry release validation, lossless package naming consistency, raw
+JSON parameter handling, and prebuilt ephemeral consumption are
+complete.
 
 ## Purpose
 
@@ -199,6 +200,16 @@ pre-existing registry merely to choose the release version.
 | ID  | Tasklet                                                                 | Priority | Status | Dependencies |
 | --- | ----------------------------------------------------------------------- | -------- | ------ | ------------ |
 | 021 | [Build a pinned release offline](./021-build-pinned-release-offline.md) | High     | [DONE] | 020          |
+
+### Sprint 8: Prebuilt Consumer Registry
+
+Sprint 8 lets a consumer invoke the ephemeral registry directly from
+an already-built prisma-lossless project. The fork owns transient
+packing; the consumer does not reconstruct a pinned source release.
+
+| ID  | Tasklet                                                        | Priority | Status | Dependencies |
+| --- | -------------------------------------------------------------- | -------- | ------ | ------------ |
+| 022 | [Run from prebuilt artifacts](./022-run-prebuilt-artifacts.md) | High     | [DONE] | 020          |
 
 ## Execution Order
 

@@ -309,6 +309,15 @@ export function preparePinnedPrivateReleaseCandidates(
   return preparePrivateReleaseCandidatesForIdentity(DEFAULT_REGISTRY_URL, version, sourceCommit, outputRoot)
 }
 
+export function prepareBuiltPrivateReleaseCandidates(
+  version: string,
+  outputRoot = DEFAULT_RELEASE_OUTPUT_ROOT,
+): ReleaseManifest {
+  assertPinnedReleaseVersion(version)
+
+  return preparePrivateReleaseCandidatesForIdentity(DEFAULT_REGISTRY_URL, version, readSourceCommit(), outputRoot)
+}
+
 function preparePrivateReleaseCandidatesForIdentity(
   registry: string,
   version: string,
