@@ -87,6 +87,47 @@ export function selectNextReleaseVersion(publishedVersions: readonly string[]): 
   return `${PRIVATE_RELEASE_VERSION_PREFIX}.${highestReleaseNumber + 1}`
 }
 
+export function assertPinnedReleaseVersion(version: string): void {
+  const releaseVersion = new RegExp(`^${escapeRegExp(PRIVATE_RELEASE_VERSION_PREFIX)}\\.[1-9]\\d*$`)
+
+  if (!releaseVersion.test(version)) {
+    throw new Error(`Pinned private release version is invalid: ${version}`)
+  }
+}
+
+export function assertReleaseSourcesMatchCommit(
+  sourceCommit: string,
+  checkout = process.cwd(),
+  packages = RELEASE_PACKAGES,
+): void {
+  const sourcePaths = packages.map((releasePackage) => releasePackage.sourceDir)
+  const verifyResult = spawnSync('git', ['rev-parse', '--verify', `${sourceCommit}^{commit}`], {
+    cwd: checkout,
+    encoding: 'utf-8',
+  })
+
+  if (verifyResult.status !== 0) {
+    throw new Error(`Pinned private release source commit does not exist: ${sourceCommit}`)
+  }
+
+  const committedDiff = spawnSync('git', ['diff', '--quiet', sourceCommit, 'HEAD', '--', ...sourcePaths], {
+    cwd: checkout,
+    encoding: 'utf-8',
+  })
+  const worktreeDiff = spawnSync('git', ['diff', '--quiet', 'HEAD', '--', ...sourcePaths], {
+    cwd: checkout,
+    encoding: 'utf-8',
+  })
+
+  if (committedDiff.status === 1 || worktreeDiff.status === 1) {
+    throw new Error(`Release package sources differ from provenance commit ${sourceCommit}`)
+  }
+
+  if (committedDiff.status !== 0 || worktreeDiff.status !== 0) {
+    throw new Error(`Could not verify release package sources against ${sourceCommit}`)
+  }
+}
+
 export function rewritePackageJsonForPrivateRelease(
   packageJson: JsonObject,
   version: string,
@@ -253,6 +294,27 @@ export function preparePrivateReleaseCandidates(
   const approvedRegistry = assertApprovedPublishRegistry(registry)
   const version = selectNextPrivateRegistryVersion(approvedRegistry, paths)
   const sourceCommit = readSourceCommit()
+
+  return preparePrivateReleaseCandidatesForIdentity(approvedRegistry, version, sourceCommit, outputRoot)
+}
+
+export function preparePinnedPrivateReleaseCandidates(
+  version: string,
+  sourceCommit: string,
+  outputRoot = DEFAULT_RELEASE_OUTPUT_ROOT,
+): ReleaseManifest {
+  assertPinnedReleaseVersion(version)
+  assertReleaseSourcesMatchCommit(sourceCommit)
+
+  return preparePrivateReleaseCandidatesForIdentity(DEFAULT_REGISTRY_URL, version, sourceCommit, outputRoot)
+}
+
+function preparePrivateReleaseCandidatesForIdentity(
+  registry: string,
+  version: string,
+  sourceCommit: string,
+  outputRoot: string,
+): ReleaseManifest {
   const runDir = path.join(path.resolve(outputRoot), 'runs', `${Date.now()}-${sourceCommit.slice(0, 12)}`)
   const stagingRoot = path.join(runDir, 'staging')
   const artifactsDir = path.join(runDir, 'artifacts')
@@ -287,7 +349,7 @@ export function preparePrivateReleaseCandidates(
     }
   })
   const manifest = {
-    registry: approvedRegistry,
+    registry,
     version,
     sourceCommit,
     runDir,
@@ -521,20 +583,34 @@ function escapeRegExp(value: string): string {
 }
 
 function main(argv: string[]): void {
-  const [command, registry = DEFAULT_REGISTRY_URL] = argv
+  const [command, ...args] = argv
 
   switch (command) {
     case 'build': {
+      const registry = args[0] ?? DEFAULT_REGISTRY_URL
       const manifest = preparePrivateReleaseCandidates(registry)
       console.log(JSON.stringify(manifest, null, 2))
       return
     }
+    case 'build-pinned': {
+      const [version, sourceCommit, outputRoot] = args
+
+      if (!version || !sourceCommit) {
+        throw new Error('build-pinned requires an exact version and source commit')
+      }
+
+      const manifest = preparePinnedPrivateReleaseCandidates(version, sourceCommit, outputRoot)
+      console.log(path.join(manifest.runDir, 'private-release-manifest.json'))
+      return
+    }
     case 'next-version':
-      console.log(selectNextPrivateRegistryVersion(registry))
+      console.log(selectNextPrivateRegistryVersion(args[0] ?? DEFAULT_REGISTRY_URL))
       return
     default:
       throw new Error(
-        'Usage: pnpm exec tsx scripts/lossless-private-release.ts ' + '[build|next-version] <approved-registry>',
+        'Usage: pnpm exec tsx scripts/lossless-private-release.ts ' +
+          '[build|next-version] <approved-registry> | ' +
+          'build-pinned <version> <source-commit> [output-root]',
       )
   }
 }

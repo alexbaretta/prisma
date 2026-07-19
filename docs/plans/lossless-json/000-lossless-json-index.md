@@ -190,6 +190,16 @@ service or a cloud registry.
 | --- | ---------------------------------------------------------------------------- | -------- | ------ | ------------ |
 | 020 | [Run isolated ephemeral registries](./020-run-ephemeral-private-registry.md) | High     | [DONE] | 019          |
 
+### Sprint 7: Reproducible Ephemeral Release Input
+
+Sprint 7 lets a clean consumer builder reconstruct an approved private
+release graph from pinned public source without depending on a
+pre-existing registry merely to choose the release version.
+
+| ID  | Tasklet                                                                 | Priority | Status | Dependencies |
+| --- | ----------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 021 | [Build a pinned release offline](./021-build-pinned-release-offline.md) | High     | [DONE] | 020          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This

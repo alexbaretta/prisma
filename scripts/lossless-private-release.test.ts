@@ -1,7 +1,14 @@
+import { spawnSync } from 'node:child_process'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+
 import { describe, expect, test } from 'vitest'
 
 import {
+  assertPinnedReleaseVersion,
   assertReleaseGraphDependencyOrder,
+  assertReleaseSourcesMatchCommit,
   buildPrivateReleasePackageJsons,
   PRIVATE_RELEASE_VERSION_PREFIX,
   RELEASE_PACKAGES,
@@ -24,6 +31,43 @@ describe('lossless private release graph', () => {
         '7.8.0-lossless-canary.99',
       ]),
     ).toBe(`${PRIVATE_RELEASE_VERSION_PREFIX}.5`)
+  })
+
+  test('accepts only exact numbered lossless release versions', () => {
+    expect(() => assertPinnedReleaseVersion('7.8.0-lossless.5')).not.toThrow()
+
+    for (const version of ['7.8.0-lossless.0', '7.8.0-lossless', '7.8.0-lossless.5-next', '^7.8.0-lossless.5']) {
+      expect(() => assertPinnedReleaseVersion(version)).toThrow(/version is invalid/)
+    }
+  })
+
+  test('allows tooling changes but rejects release-source drift', () => {
+    const checkout = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-lossless-source-proof-'))
+
+    try {
+      fs.mkdirSync(path.join(checkout, 'package'), { recursive: true })
+      fs.mkdirSync(path.join(checkout, 'scripts'), { recursive: true })
+      fs.writeFileSync(path.join(checkout, 'package', 'index.ts'), 'export const value = 1\n')
+      fs.writeFileSync(path.join(checkout, 'scripts', 'runner.ts'), 'export const runner = 1\n')
+      runGit(checkout, ['init'])
+      runGit(checkout, ['config', 'user.email', 'test@localhost.invalid'])
+      runGit(checkout, ['config', 'user.name', 'Test'])
+      runGit(checkout, ['add', '.'])
+      runGit(checkout, ['commit', '-m', 'Initial'])
+      const sourceCommit = runGit(checkout, ['rev-parse', 'HEAD'])
+      const packages = [{ name: 'fixture', sourceName: 'fixture', sourceDir: 'package' }]
+
+      fs.writeFileSync(path.join(checkout, 'scripts', 'runner.ts'), 'export const runner = 2\n')
+      runGit(checkout, ['add', 'scripts/runner.ts'])
+      runGit(checkout, ['commit', '-m', 'Change tooling'])
+      expect(() => assertReleaseSourcesMatchCommit(sourceCommit, checkout, packages)).not.toThrow()
+
+      fs.writeFileSync(path.join(checkout, 'package', 'index.ts'), 'export const value = 2\n')
+      expect(() => assertReleaseSourcesMatchCommit(sourceCommit, checkout, packages)).toThrow(/sources differ/)
+      expect(() => assertReleaseSourcesMatchCommit('missing-commit', checkout, packages)).toThrow(/does not exist/)
+    } finally {
+      fs.rmSync(checkout, { recursive: true, force: true })
+    }
   })
 
   test('keeps the runtime closure in publish dependency order', () => {
@@ -154,3 +198,13 @@ describe('lossless private release graph', () => {
     })
   })
 })
+
+function runGit(checkout: string, args: string[]): string {
+  const result = spawnSync('git', args, { cwd: checkout, encoding: 'utf-8' })
+
+  if (result.status !== 0) {
+    throw new Error(`git ${args.join(' ')} failed: ${result.stderr}`)
+  }
+
+  return result.stdout.trim()
+}
