@@ -1,4 +1,5 @@
-import { spawn, spawnSync } from 'node:child_process'
+import { type ChildProcess, spawn, spawnSync } from 'node:child_process'
+import { once } from 'node:events'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -12,7 +13,20 @@ export const PRIVATE_REGISTRY_MAX_BODY_SIZE = '200mb'
 const DEFAULT_ROOT = path.join(os.tmpdir(), 'prisma-lossless-private-registry')
 const PUBLIC_REGISTRY_HOSTS = new Set(['registry.npmjs.org', 'npmjs.org', 'www.npmjs.com'])
 const APPROVED_PUBLISH_HOSTS = new Set(['127.0.0.1', 'localhost', '[::1]'])
-const DEFAULT_PORT = '4873'
+
+export type RegistryStartOptions = {
+  detached?: boolean
+  healthAttempts?: number
+  healthDelayMs?: number
+}
+
+export type StartedRegistry = {
+  child: ChildProcess
+  paths: RegistryRuntimePaths
+  registry: string
+}
+
+export class RegistryPortUnavailableError extends Error {}
 
 export type RegistryRuntimePaths = {
   root: string
@@ -91,7 +105,15 @@ export function assertApprovedPublishRegistry(registry: string): string {
     throw new Error(`Refusing to publish lossless Prisma packages to public registry: ${normalized}`)
   }
 
-  if (!APPROVED_PUBLISH_HOSTS.has(parsed.hostname) || parsed.port !== DEFAULT_PORT) {
+  const port = Number(parsed.port)
+
+  if (
+    parsed.protocol !== 'http:' ||
+    !APPROVED_PUBLISH_HOSTS.has(parsed.hostname) ||
+    !Number.isInteger(port) ||
+    port < 1024 ||
+    port > 65_535
+  ) {
     throw new Error(`Registry is not an approved private publish target: ${normalized}`)
   }
 
@@ -180,32 +202,93 @@ export async function checkRegistryHealth(registry = DEFAULT_REGISTRY_URL): Prom
   }
 }
 
-export async function startRegistry(paths = getRegistryRuntimePaths()): Promise<void> {
+export async function startRegistry(
+  paths = getRegistryRuntimePaths(),
+  registry = DEFAULT_REGISTRY_URL,
+  options: RegistryStartOptions = {},
+): Promise<StartedRegistry> {
+  const approvedRegistry = assertApprovedPublishRegistry(registry)
+  const parsedRegistry = new URL(approvedRegistry)
+  const listenHost = parsedRegistry.hostname === '[::1]' ? '::1' : parsedRegistry.hostname
+  const listenAddress = `${listenHost}:${parsedRegistry.port}`
+  const detached = options.detached ?? true
+  const healthAttempts = options.healthAttempts ?? 60
+  const healthDelayMs = options.healthDelayMs ?? 500
+
   writeRegistryConfig(paths)
 
   const logHandle = fs.openSync(paths.logFile, 'a')
   const child = spawn(
     'pnpm',
-    ['dlx', `verdaccio@${VERDACCIO_VERSION}`, '--config', paths.configFile, '--listen', '127.0.0.1:4873'],
+    ['dlx', `verdaccio@${VERDACCIO_VERSION}`, '--config', paths.configFile, '--listen', listenAddress],
     {
-      detached: true,
+      detached,
       stdio: ['ignore', logHandle, logHandle],
     },
   )
+  fs.closeSync(logHandle)
 
-  child.unref()
+  let spawnError: Error | undefined
+  child.once('error', (error) => {
+    spawnError = error
+  })
+
+  if (detached) {
+    child.unref()
+  }
+
+  if (child.pid === undefined) {
+    throw new Error('Verdaccio did not return a process ID')
+  }
+
   fs.writeFileSync(paths.pidFile, `${child.pid}\n`)
 
-  for (let attempt = 0; attempt < 60; attempt++) {
+  for (let attempt = 0; attempt < healthAttempts; attempt++) {
+    if (spawnError) {
+      throw spawnError
+    }
+
+    if (child.exitCode !== null) {
+      const log = readRegistryLog(paths)
+
+      if (/EADDRINUSE|address already in use/i.test(log)) {
+        throw new RegistryPortUnavailableError(`Verdaccio could not bind ${listenAddress}`)
+      }
+
+      throw new Error(`Verdaccio exited with code ${child.exitCode} before becoming healthy. See ${paths.logFile}`)
+    }
+
     try {
-      await checkRegistryHealth()
-      return
+      await checkRegistryHealth(approvedRegistry)
+      return { child, paths, registry: approvedRegistry }
     } catch {
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      await new Promise((resolve) => setTimeout(resolve, healthDelayMs))
     }
   }
 
+  const startedRegistry = { child, paths, registry: approvedRegistry }
+  await stopStartedRegistry(startedRegistry)
   throw new Error(`Timed out waiting for Verdaccio. See ${paths.logFile}`)
+}
+
+export async function stopStartedRegistry(startedRegistry: StartedRegistry, timeoutMs = 5_000): Promise<void> {
+  const { child } = startedRegistry
+
+  if (child.exitCode !== null || child.signalCode !== null) {
+    return
+  }
+
+  child.kill('SIGTERM')
+  const exited = await Promise.race([
+    once(child, 'close').then(() => true),
+    new Promise<boolean>((resolve) => setTimeout(() => resolve(false), timeoutMs)),
+  ])
+
+  if (!exited && child.exitCode === null && child.signalCode === null) {
+    const closePromise = once(child, 'close')
+    child.kill('SIGKILL')
+    await closePromise
+  }
 }
 
 export function stopRegistry(paths = getRegistryRuntimePaths()): void {
@@ -255,6 +338,14 @@ function runNpm(args: string[]): void {
 
   if (result.status !== 0) {
     throw new Error(`npm ${args.join(' ')} failed with exit code ${result.status}`)
+  }
+}
+
+function readRegistryLog(paths: RegistryRuntimePaths): string {
+  try {
+    return fs.readFileSync(paths.logFile, 'utf-8')
+  } catch {
+    return ''
   }
 }
 

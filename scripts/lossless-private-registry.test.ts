@@ -19,6 +19,7 @@ describe('lossless private registry contract', () => {
   test('approves only the private local publish endpoint', () => {
     expect(assertApprovedPublishRegistry(DEFAULT_REGISTRY_URL)).toBe(DEFAULT_REGISTRY_URL)
     expect(assertApprovedPublishRegistry('http://localhost:4873')).toBe('http://localhost:4873/')
+    expect(assertApprovedPublishRegistry('http://127.0.0.1:57321')).toBe('http://127.0.0.1:57321/')
   })
 
   test('rejects public, missing, malformed, and remote endpoints', () => {
@@ -27,7 +28,8 @@ describe('lossless private registry contract', () => {
     expect(() => assertApprovedPublishRegistry('not-a-url')).toThrow(/malformed/)
     expect(() => assertApprovedPublishRegistry('https://example.com:4873/')).toThrow(/not an approved/)
     expect(() => assertApprovedPublishRegistry('http://host.docker.internal:4873/')).toThrow(/not an approved/)
-    expect(() => assertApprovedPublishRegistry('http://127.0.0.1:4874/')).toThrow(/not an approved/)
+    expect(() => assertApprovedPublishRegistry('http://127.0.0.1:80/')).toThrow(/not an approved/)
+    expect(() => assertApprovedPublishRegistry('http://127.0.0.1/')).toThrow(/not an approved/)
   })
 
   test('normalizes safe registry URLs without credentials', () => {

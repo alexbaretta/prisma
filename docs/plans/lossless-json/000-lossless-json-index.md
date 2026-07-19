@@ -180,6 +180,16 @@ serialized as implementation objects.
 | --- | ---------------------------------------------------------------- | -------- | ------ | ------------ |
 | 019 | [Preserve raw JSON parameters](./019-fix-raw-json-parameters.md) | High     | [DONE] | 018          |
 
+### Sprint 6: Ephemeral Consumer Registry
+
+Sprint 6 makes the existing private release artifacts available to
+concurrent first-party builds without requiring a system-level registry
+service or a cloud registry.
+
+| ID  | Tasklet                                                                      | Priority | Status | Dependencies |
+| --- | ---------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 020 | [Run isolated ephemeral registries](./020-run-ephemeral-private-registry.md) | High     | [DONE] | 019          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This

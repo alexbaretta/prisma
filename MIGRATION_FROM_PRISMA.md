@@ -25,12 +25,46 @@ Remove these stock packages from direct application dependencies:
 - `@prisma/client`
 - `@prisma/adapter-pg`
 
-For the current private release, point npm at the private registry:
+Build the private release artifacts, then run each consumer install or
+build through the ephemeral registry wrapper. The wrapper starts its
+own pinned Verdaccio process on an OS-assigned loopback port, publishes
+the exact packages recorded in the release manifest, runs the command
+after `--`, and stops the registry on success or failure:
 
-```ini
-registry=http://127.0.0.1:4873/
-@prisma-lossless:registry=http://127.0.0.1:4873/
+```sh
+pnpm exec tsx scripts/lossless-private-registry-run.ts \
+  tmp/lossless-json-tasklet-016/runs/<run>/private-release-manifest.json \
+  -- pnpm --dir /path/to/consumer install --frozen-lockfile
 ```
+
+Do not configure a permanent registry URL in the consumer project.
+The wrapper overrides both the default npm registry and the
+`@prisma-lossless` scoped registry for its child process. Concurrent
+builds receive different ports and independent registry storage.
+
+The child process also receives these explicit URLs:
+
+- `PRISMA_LOSSLESS_REGISTRY_URL` is the loopback URL for host tools.
+- `PRISMA_LOSSLESS_DOCKER_REGISTRY_URL` uses
+  `host.docker.internal` for a Docker build.
+
+A consumer Docker build should pass the Docker URL into its package
+installation stage, for example:
+
+```sh
+pnpm exec tsx scripts/lossless-private-registry-run.ts \
+  /path/to/private-release-manifest.json -- \
+  docker build \
+    --build-arg PRISMA_LOSSLESS_DOCKER_REGISTRY_URL \
+    .
+```
+
+The consumer Dockerfile remains responsible for applying that build
+argument to npm or pnpm. Docker takes the named build argument from the
+environment injected into its process by the wrapper. Linux Docker
+engines may additionally require
+`--add-host host.docker.internal:host-gateway`; Docker Desktop supplies
+that hostname automatically.
 
 ## Import Changes
 
