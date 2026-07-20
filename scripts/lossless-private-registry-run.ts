@@ -23,7 +23,7 @@ import {
 
 const MAX_PORT_ALLOCATION_ATTEMPTS = 5
 const RUNTIME_ROOT = path.join(os.tmpdir(), 'prisma-lossless-private-registry-runs')
-const BUILT_RELEASE_ROOT = path.join(process.cwd(), 'tmp/prisma-lossless-private-registry-runs')
+const BUILT_RELEASE_ROOT = path.join(os.tmpdir(), 'prisma-lossless-private-registry-built-releases')
 
 type JsonObject = Record<string, unknown>
 

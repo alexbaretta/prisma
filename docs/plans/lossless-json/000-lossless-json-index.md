@@ -222,6 +222,18 @@ project so Corepack selects the consumer's pinned package manager.
 | --- | ------------------------------------------------------------------------- | -------- | ------ | ------------ |
 | 023 | [Fix ephemeral release identity](./023-fix-ephemeral-release-identity.md) | High     | [DONE] | 020, 022     |
 
+### Sprint 10: Independent Release Identity Proof
+
+Sprint 10 fixes the Tasklet 023 regression where the `.5` release
+identity was generated from the same artifact graph later served to
+consumers. Release identity validation must use an independent
+consumer lockfile expectation and must retire historical versions that
+cannot be reproduced byte-for-byte.
+
+| ID  | Tasklet                                                                       | Priority | Status | Dependencies |
+| --- | ----------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 024 | [Fix independent release identity](./024-fix-independent-release-identity.md) | High     | [DONE] | 023          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This
@@ -320,23 +332,59 @@ That rerun passed all migrate tests: `33` suites, `352` passed tests,
 
 ## Private Distribution Status
 
-Tasklets 015 through 019 are `[DONE]`. The immutable private release
-validated for first-party use is `7.8.0-lossless.5`, published to
-`http://127.0.0.1:4873/` with the `lossless` dist-tag.
+Tasklets 015 through 024 are `[DONE]`. The current immutable private
+release validated for first-party use is `7.8.0-lossless.6`, served
+through the ephemeral registry wrapper with the `lossless` dist-tag.
+
+The historical `7.8.0-lossless.5` identity is recorded as
+unavailable. GWEN's lockfile proves the original `.5` client tarball
+integrity, but the current prebuilt packaging path cannot reproduce
+those client bytes. The wrapper therefore rejects `.5` before
+starting Verdaccio and instructs consumers to use `.6`.
 
 The isolated npm consumer at
-`tmp/lossless-json-tasklet-019/consumer-7.8.0-lossless.5` installed
-exact registry versions of `prisma-lossless`,
-`@prisma-lossless/client`, and `@prisma-lossless/adapter-pg`,
-generated the client, typechecked, and passed the PostgreSQL lossless
-JSON smoke suite against the locally running PostgreSQL `18.3`
-server. The smoke suite includes model reads, model writes, raw JSON
-result reads, raw text casts, and `$queryRaw` / `$executeRaw` JSON
-object parameters with the complete precision matrix.
+`tmp/lossless-json-tasklet-019/consumer-7.8.0-lossless.5` previously
+validated the runtime behavior of the forked packages against the
+locally running PostgreSQL `18.3` server. Tasklet 024 supersedes its
+release identity proof with a temporary consumer whose lockfile is
+independent of the serving identity and pins all ten private packages
+to `7.8.0-lossless.6`.
 
 This closes the separate first-party consumption gap without
 publishing to the worldwide npm registry and without requiring a
 direct consumer dependency on any stock `@prisma/*` adapter package.
+
+Tasklet 024 validation:
+
+- `pnpm exec prettier --check ...` passed for all touched files.
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm exec eslint ...`
+  passed for all changed TypeScript tooling and tests.
+- `pnpm exec vitest run scripts/lossless-private-release.test.ts
+scripts/lossless-private-registry-run.test.ts
+scripts/lossless-private-registry.test.ts` passed (`32` tests).
+- `PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION=1 pnpm exec vitest run
+scripts/lossless-private-registry-run.integration.test.ts` passed
+  outside the sandbox (`4` tests). The test used an empty pnpm store,
+  proved Corepack selected consumer `pnpm v11.1.1`, verified
+  `LosslessNumber`, proved repeat `.6` packaging integrity, rejected
+  `.5`, rejected a mismatched fixture, and checked cleanup.
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm exec tsc --noEmit
+--pretty false` aborted with a V8 heap out-of-memory failure before
+  producing TypeScript diagnostics. The repo-root build below is the
+  authoritative build/type gate used for this tasklet.
+- `pnpm build` passed (`44` successful, `44` total).
+- Root `pnpm test` first failed before tests started in the sandbox
+  because `tsx` could not create its IPC pipe. The escalated rerun with
+  SQL Server and CockroachDB skipped reached `@prisma/migrate` and
+  failed only because local MongoDB was not running and the stale
+  `tests-migrate-prisma-config-extensions` database already existed.
+  The stale PostgreSQL test database was dropped, and the root test was
+  rerun with `TEST_SKIP_MONGODB=true` as supported by the migrate test
+  matrix. That rerun passed migrate, client, and integration packages
+  but exited nonzero in the final CLI package due 5 second CLI Jest
+  timeouts under full-suite load.
+- The failed CLI files were rerun in isolation with `--runInBand` and
+  passed (`2` suites, `35` tests).
 
 ## Validation Bug Review: Client Type Harness Package Rename
 

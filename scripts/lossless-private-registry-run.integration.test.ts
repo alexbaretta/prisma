@@ -28,12 +28,18 @@ import {
   prepareBuiltPrivateReleaseCandidates,
   RELEASE_PACKAGES,
 } from './lossless-private-release'
+import {
+  type IndependentPrivateReleaseFixture,
+  readIndependentPrivateReleaseFixture,
+} from './lossless-private-release-fixtures'
 
 const RUN_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION === '1'
 const VERSION = '7.8.0-lossless.999999'
-const RECORDED_VERSION = '7.8.0-lossless.5'
+const HISTORICAL_VERSION = '7.8.0-lossless.5'
+const RECORDED_VERSION = '7.8.0-lossless.6'
 const CONSUMER_PNPM_VERSION = '11.1.1'
 const SOURCE_COMMIT = '0123456789abcdef0123456789abcdef01234567'
+const RECORDED_FIXTURE = readIndependentPrivateReleaseFixture(RECORDED_VERSION)
 
 describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () => {
   let root: string
@@ -46,7 +52,6 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
 
   afterAll(() => {
     fs.rmSync(root, { recursive: true, force: true })
-    fs.rmSync(path.join(process.cwd(), 'tmp/lossless-json-tasklet-023-integration'), { recursive: true, force: true })
   })
 
   test('runs concurrent isolated registries and stops both', async () => {
@@ -77,35 +82,55 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
     const consumerDir = createConsumerDir(root, 'real-consumer')
     const firstReleaseRoot = repoLocalReleaseRoot(root, 'recorded-release-first')
     const secondReleaseRoot = repoLocalReleaseRoot(root, 'recorded-release-second')
+    const storeDir = path.join(root, 'empty-pnpm-store')
 
     try {
       const firstManifest = prepareBuiltPrivateReleaseCandidates(RECORDED_VERSION, firstReleaseRoot)
       const secondManifest = prepareBuiltPrivateReleaseCandidates(RECORDED_VERSION, secondReleaseRoot)
 
       expect(integrities(firstManifest)).toEqual(integrities(secondManifest))
+      expectReleaseMatchesIndependentFixture(firstManifest, RECORDED_FIXTURE)
+      expectReleaseMatchesIndependentFixture(secondManifest, RECORDED_FIXTURE)
     } finally {
       fs.rmSync(firstReleaseRoot, { recursive: true, force: true })
       fs.rmSync(secondReleaseRoot, { recursive: true, force: true })
     }
 
     writeRealConsumerPackageJson(consumerDir)
+    fs.mkdirSync(storeDir)
 
     const lockfileRoots = trackedRoots(root, 'lockfile')
     const frozenRoots = trackedRoots(root, 'frozen')
     const lockfileExitCode = await runWithBuiltRelease(
       RECORDED_VERSION,
-      [process.execPath, writeInstallScript(root, 'lockfile', ['install', '--lockfile-only'])],
+      [
+        process.execPath,
+        writeInstallScript(root, 'lockfile', ['install', '--lockfile-only', '--reporter', 'append-only']),
+      ],
       consumerDir,
       builtDependencies(lockfileRoots),
     )
 
     expect(lockfileExitCode).toBe(0)
     expectRootsRemoved(lockfileRoots)
+    expectLockfileMatchesIndependentFixture(path.join(consumerDir, 'pnpm-lock.yaml'), RECORDED_FIXTURE)
+    expect(fs.existsSync(path.join(consumerDir, 'node_modules'))).toBe(false)
 
     const verifyOutput = path.join(root, 'real-consumer-result.json')
     const frozenExitCode = await runWithBuiltRelease(
       RECORDED_VERSION,
-      [process.execPath, writeVerifyScript(root, verifyOutput, ['install', '--frozen-lockfile', '--ignore-scripts'])],
+      [
+        process.execPath,
+        writeVerifyScript(root, verifyOutput, storeDir, [
+          'install',
+          '--frozen-lockfile',
+          '--ignore-scripts',
+          '--store-dir',
+          storeDir,
+          '--reporter',
+          'append-only',
+        ]),
+      ],
       consumerDir,
       builtDependencies(frozenRoots),
     )
@@ -117,11 +142,56 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
       pnpmVersion: string
       losslessNumber: string
       packages: string[]
+      installOutput: string
+      storeWasEmpty: boolean
+      modulesWereEmpty: boolean
     }
 
     expect(result.pnpmVersion).toBe(CONSUMER_PNPM_VERSION)
     expect(result.losslessNumber).toBe('9007199254740993')
     expect(result.packages).toEqual(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name))
+    expect(result.storeWasEmpty).toBe(true)
+    expect(result.modulesWereEmpty).toBe(true)
+    expect(result.installOutput).toMatch(/downloaded\s+119/i)
+    expect(result.installOutput).not.toMatch(/Already up to date/i)
+    expectLockfileMatchesIndependentFixture(path.join(consumerDir, 'pnpm-lock.yaml'), RECORDED_FIXTURE)
+  }, 300_000)
+
+  test('rejects unavailable and mismatched release identities before child execution', async () => {
+    const consumerDir = createConsumerDir(root, 'unavailable-consumer')
+    const unavailableRoots = trackedRoots(root, 'unavailable')
+
+    await expect(
+      runWithBuiltRelease(
+        HISTORICAL_VERSION,
+        [process.execPath, '-e', 'throw new Error("child must not run")'],
+        consumerDir,
+        builtDependencies(unavailableRoots),
+      ),
+    ).rejects.toThrow(/Use 7\.8\.0-lossless\.6/)
+    expectRootsRemoved(unavailableRoots)
+
+    const manifest = prepareBuiltPrivateReleaseCandidates(RECORDED_VERSION, repoLocalReleaseRoot(root, 'mismatch'))
+    const wrongFixture: IndependentPrivateReleaseFixture = {
+      ...RECORDED_FIXTURE,
+      packages: [
+        ...RECORDED_FIXTURE.packages.slice(0, 8),
+        {
+          name: '@prisma-lossless/client',
+          version: RECORDED_VERSION,
+          integrity: readIndependentPrivateReleaseFixture(HISTORICAL_VERSION).packages[8].integrity,
+        },
+        RECORDED_FIXTURE.packages[9],
+      ],
+    }
+
+    try {
+      expect(() => expectReleaseMatchesIndependentFixture(manifest, wrongFixture)).toThrow(
+        /does not match independent fixture/,
+      )
+    } finally {
+      fs.rmSync(manifest.runDir, { recursive: true, force: true })
+    }
   }, 300_000)
 
   test('removes registry and release roots after child failure', async () => {
@@ -263,7 +333,7 @@ function writeInstallScript(root: string, name: string, pnpmArgs: string[]): str
   return scriptPath
 }
 
-function writeVerifyScript(root: string, outputPath: string, installArgs: string[]): string {
+function writeVerifyScript(root: string, outputPath: string, storeDir: string, installArgs: string[]): string {
   const scriptPath = path.join(root, 'verify-consumer.cjs')
   fs.writeFileSync(
     scriptPath,
@@ -284,11 +354,13 @@ function writeVerifyScript(root: string, outputPath: string, installArgs: string
           process.stderr.write(result.stderr)
           process.exit(result.status ?? 1)
         }
-        return result.stdout.trim()
+        return [result.stdout, result.stderr].join('\\n').trim()
       }
 
       const pnpmVersion = run(['--version'])
-      run(${JSON.stringify(installArgs)})
+      const storeWasEmpty = fs.readdirSync(${JSON.stringify(storeDir)}).length === 0
+      const modulesWereEmpty = !fs.existsSync(path.join(process.cwd(), 'node_modules'))
+      const installOutput = run(${JSON.stringify(installArgs)})
       const consumerRequire = createRequire(path.join(process.cwd(), 'package.json'))
       const { LosslessNumber } = consumerRequire('@prisma-lossless/client/runtime/client')
       const losslessNumber = new LosslessNumber('9007199254740993')
@@ -302,7 +374,14 @@ function writeVerifyScript(root: string, outputPath: string, installArgs: string
 
       fs.writeFileSync(
         ${JSON.stringify(outputPath)},
-        JSON.stringify({ pnpmVersion, losslessNumber: losslessNumber.toString(), packages }),
+        JSON.stringify({
+          pnpmVersion,
+          losslessNumber: losslessNumber.toString(),
+          packages,
+          installOutput,
+          storeWasEmpty,
+          modulesWereEmpty,
+        }),
       )
     `,
   )
@@ -328,7 +407,7 @@ function trackedRoots(root: string, label: string): TrackedRoots {
 }
 
 function repoLocalReleaseRoot(root: string, label: string): string {
-  return path.join(process.cwd(), 'tmp/lossless-json-tasklet-023-integration', path.basename(root), label)
+  return path.join(root, 'built-release-roots', label)
 }
 
 function builtDependencies(roots: TrackedRoots) {
@@ -367,4 +446,46 @@ function expectRootsRemoved(roots: TrackedRoots): void {
 
 function readResult(resultPath: string): { registry: string; version: string } {
   return JSON.parse(fs.readFileSync(resultPath, 'utf-8')) as { registry: string; version: string }
+}
+
+function expectReleaseMatchesIndependentFixture(
+  manifest: PrivateReleaseManifest,
+  fixture: IndependentPrivateReleaseFixture,
+): void {
+  expect(manifest.version).toBe(fixture.version)
+  expect(manifest.sourceCommit).toBe(fixture.sourceCommit)
+
+  const actual = integrities(manifest)
+
+  for (const releasePackage of fixture.packages) {
+    if (actual[releasePackage.name] !== releasePackage.integrity) {
+      throw new Error(
+        `${releasePackage.name}@${releasePackage.version} does not match independent fixture: ` +
+          `${actual[releasePackage.name]} !== ${releasePackage.integrity}`,
+      )
+    }
+  }
+}
+
+function expectLockfileMatchesIndependentFixture(
+  lockfilePath: string,
+  fixture: IndependentPrivateReleaseFixture,
+): void {
+  const lockfile = fs.readFileSync(lockfilePath, 'utf-8')
+
+  for (const releasePackage of fixture.packages) {
+    const escapedName = escapeRegExp(releasePackage.name)
+    const escapedIntegrity = escapeRegExp(releasePackage.integrity)
+    const packageRecord = new RegExp(
+      `^  ['"]?${escapedName}@${escapeRegExp(releasePackage.version)}['"]?:\\n` +
+        `    resolution: \\{integrity: ${escapedIntegrity}\\}`,
+      'm',
+    )
+
+    expect(lockfile).toMatch(packageRecord)
+  }
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }

@@ -138,6 +138,33 @@ describe('ephemeral private registry runner', () => {
     }
   })
 
+  test('removes transient built releases after prepare failure', async () => {
+    const consumerDir = createConsumerDir()
+    const makeReleaseRoot = vi.fn(() => '/private/tmp/prebuilt-release')
+    const prepareRelease = vi.fn(() => {
+      throw new Error('release unavailable')
+    })
+    const runRegistry = vi.fn(() => Promise.resolve(0))
+    const removeRelease = vi.fn()
+    const deps: BuiltReleaseRunnerDependencies = {
+      makeReleaseRoot,
+      prepareRelease,
+      runRegistry,
+      removeRelease,
+    }
+
+    try {
+      await expect(runWithBuiltRelease(MANIFEST.version, ['consumer'], consumerDir, deps)).rejects.toThrow(
+        'release unavailable',
+      )
+      expect(prepareRelease).toHaveBeenCalledWith(MANIFEST.version, '/private/tmp/prebuilt-release')
+      expect(runRegistry).not.toHaveBeenCalled()
+      expect(removeRelease).toHaveBeenCalledWith('/private/tmp/prebuilt-release')
+    } finally {
+      fs.rmSync(consumerDir, { recursive: true, force: true })
+    }
+  })
+
   test('builds distinct host and Docker URLs and overrides npm resolution', () => {
     const urls = buildRegistryUrls(51_234)
     const environment = buildChildEnvironment(urls, { KEEP_ME: 'yes' }, '/private/tmp/npm-userconfig')

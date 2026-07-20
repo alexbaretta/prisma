@@ -1,6 +1,7 @@
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 
 import {
@@ -16,7 +17,7 @@ import {
 } from './lossless-private-release-identities'
 
 export const PRIVATE_RELEASE_VERSION_PREFIX = '7.8.0-lossless'
-export const DEFAULT_RELEASE_OUTPUT_ROOT = path.join(process.cwd(), 'tmp/lossless-json-tasklet-016')
+export const DEFAULT_RELEASE_OUTPUT_ROOT = path.join(os.tmpdir(), 'prisma-lossless-private-release-candidates')
 
 export type ReleasePackage = {
   name: string
@@ -77,6 +78,8 @@ const RELEASE_PACKAGES_BY_SOURCE_NAME = new Map(
   RELEASE_PACKAGES.map((releasePackage) => [releasePackage.sourceName, releasePackage]),
 )
 const RELEASE_PACKAGE_NAMES = new Set(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name))
+const RELEASE_PACKAGE_MTIME = new Date('1985-10-26T08:15:00.000Z')
+const ROOT_LICENSE_FILE = path.join(process.cwd(), 'LICENSE')
 
 export function selectNextReleaseVersion(publishedVersions: readonly string[]): string {
   const releaseVersion = new RegExp(`^${escapeRegExp(PRIVATE_RELEASE_VERSION_PREFIX)}\\.(\\d+)$`)
@@ -321,6 +324,7 @@ export function prepareBuiltPrivateReleaseCandidates(
 ): ReleaseManifest {
   assertPinnedReleaseVersion(version)
   const releaseIdentity = readPrivateReleaseIdentity(version)
+  assertAvailablePrivateReleaseIdentity(releaseIdentity)
   assertReleaseSourcesMatchCommit(releaseIdentity.sourceCommit)
 
   const manifest = preparePrivateReleaseCandidatesForIdentity(
@@ -350,11 +354,39 @@ export function readPrivateReleaseIdentity(
   return releaseIdentity
 }
 
+export function assertAvailablePrivateReleaseIdentity(releaseIdentity: PrivateReleaseIdentity): void {
+  if (releaseIdentity.status !== 'unavailable') {
+    return
+  }
+
+  const replacement = releaseIdentity.replacementVersion
+    ? ` Use ${releaseIdentity.replacementVersion} or mint a new prisma-lossless private release version.`
+    : ' Mint a new prisma-lossless private release version.'
+  const reason = releaseIdentity.unavailableReason ? ` ${releaseIdentity.unavailableReason}` : ''
+
+  throw new Error(
+    `Private release ${releaseIdentity.version} is recorded as unavailable and cannot be reproduced.` +
+      `${reason}${replacement}`,
+  )
+}
+
 export function validatePrivateReleaseIdentity(releaseIdentity: PrivateReleaseIdentity): void {
   assertPinnedReleaseVersion(releaseIdentity.version)
 
   if (!/^[0-9a-f]{40}$/.test(releaseIdentity.sourceCommit)) {
     throw new Error(`Private release ${releaseIdentity.version} records an invalid source commit`)
+  }
+
+  if (
+    releaseIdentity.status !== undefined &&
+    releaseIdentity.status !== 'available' &&
+    releaseIdentity.status !== 'unavailable'
+  ) {
+    throw new Error(`Private release ${releaseIdentity.version} records an invalid availability status`)
+  }
+
+  if (releaseIdentity.replacementVersion !== undefined) {
+    assertPinnedReleaseVersion(releaseIdentity.replacementVersion)
   }
 
   if (releaseIdentity.packages.length !== RELEASE_PACKAGES.length) {
@@ -422,6 +454,8 @@ function preparePrivateReleaseCandidatesForIdentity(
   sourceCommit: string,
   outputRoot: string,
 ): ReleaseManifest {
+  assertReleaseOutputRootOutsideCheckout(outputRoot)
+
   const runDir = path.join(path.resolve(outputRoot), 'runs', `${Date.now()}-${sourceCommit.slice(0, 12)}`)
   const stagingRoot = path.join(runDir, 'staging')
   const artifactsDir = path.join(runDir, 'artifacts')
@@ -440,7 +474,9 @@ function preparePrivateReleaseCandidatesForIdentity(
     }
 
     copyPackageSource(sourceDir, stagingDir)
+    copyRootLicenseFile(stagingDir)
     fs.writeFileSync(path.join(stagingDir, 'package.json'), `${JSON.stringify(packageJson, null, 2)}\n`)
+    normalizePackageStagingMetadata(stagingDir)
 
     const tarballPath = packStagedPackage(stagingDir, artifactsDir, releasePackage.name, version)
     const packedPackageJson = readPackedPackageJson(tarballPath)
@@ -467,6 +503,18 @@ function preparePrivateReleaseCandidatesForIdentity(
   fs.writeFileSync(path.join(runDir, 'private-release-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
   return manifest
+}
+
+function assertReleaseOutputRootOutsideCheckout(outputRoot: string): void {
+  const resolvedOutputRoot = path.resolve(outputRoot)
+  const relativeOutputRoot = path.relative(process.cwd(), resolvedOutputRoot)
+
+  if (relativeOutputRoot === '' || (!relativeOutputRoot.startsWith('..') && !path.isAbsolute(relativeOutputRoot))) {
+    throw new Error(
+      `Private release output root must be outside the prisma checkout: ${resolvedOutputRoot}. ` +
+        `Use an external temporary directory so npm packlist cannot apply checkout-local Git ignore rules.`,
+    )
+  }
 }
 
 export function readPackedPackageJson(tarballPath: string): JsonObject {
@@ -611,6 +659,38 @@ function copyPackageSource(sourceDir: string, stagingDir: string): void {
       return !relative.split(path.sep).includes('node_modules') && !relative.split(path.sep).includes('.turbo')
     },
   })
+}
+
+function copyRootLicenseFile(stagingDir: string): void {
+  const stagedLicenseFile = path.join(stagingDir, 'LICENSE')
+
+  if (
+    !fs.statSync(stagedLicenseFile, { throwIfNoEntry: false })?.isFile() &&
+    fs.statSync(ROOT_LICENSE_FILE, { throwIfNoEntry: false })?.isFile()
+  ) {
+    fs.copyFileSync(ROOT_LICENSE_FILE, stagedLicenseFile)
+  }
+}
+
+function normalizePackageStagingMetadata(stagingDir: string): void {
+  for (const entry of fs.readdirSync(stagingDir, { withFileTypes: true })) {
+    const entryPath = path.join(stagingDir, entry.name)
+
+    if (entry.isDirectory()) {
+      normalizePackageStagingMetadata(entryPath)
+      fs.utimesSync(entryPath, RELEASE_PACKAGE_MTIME, RELEASE_PACKAGE_MTIME)
+      continue
+    }
+
+    if (entry.isSymbolicLink() && typeof fs.lutimesSync === 'function') {
+      fs.lutimesSync(entryPath, RELEASE_PACKAGE_MTIME, RELEASE_PACKAGE_MTIME)
+      continue
+    }
+
+    fs.utimesSync(entryPath, RELEASE_PACKAGE_MTIME, RELEASE_PACKAGE_MTIME)
+  }
+
+  fs.utimesSync(stagingDir, RELEASE_PACKAGE_MTIME, RELEASE_PACKAGE_MTIME)
 }
 
 function readSourceCommit(): string {

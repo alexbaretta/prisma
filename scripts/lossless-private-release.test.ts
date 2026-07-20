@@ -6,12 +6,14 @@ import path from 'node:path'
 import { describe, expect, test } from 'vitest'
 
 import {
+  assertAvailablePrivateReleaseIdentity,
   assertPinnedReleaseVersion,
   assertReleaseGraphDependencyOrder,
   assertReleaseSourcesMatchCommit,
   buildPrivateReleasePackageJsons,
   calculateTarballIntegrity,
   prepareBuiltPrivateReleaseCandidates,
+  preparePinnedPrivateReleaseCandidates,
   PRIVATE_RELEASE_VERSION_PREFIX,
   readPrivateReleaseIdentity,
   RELEASE_PACKAGES,
@@ -21,6 +23,7 @@ import {
   validateReleaseManifestIntegrity,
   validateReleasePackageMetadata,
 } from './lossless-private-release'
+import { readIndependentPrivateReleaseFixture } from './lossless-private-release-fixtures'
 
 const releaseVersion = `${PRIVATE_RELEASE_VERSION_PREFIX}.17`
 const sourceCommit = '0123456789abcdef0123456789abcdef01234567'
@@ -48,14 +51,41 @@ describe('lossless private release graph', () => {
 
   test('resolves recorded immutable release identity', () => {
     const identity = readPrivateReleaseIdentity('7.8.0-lossless.5')
+    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.6')
+    const historicalFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.5')
+    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.6')
 
     expect(identity.sourceCommit).toBe('f98f2e0f42cd7d9d9556567f9236c98eed00da16')
+    expect(identity.status).toBe('unavailable')
+    expect(identity.replacementVersion).toBe('7.8.0-lossless.6')
+    expect(identity.packages).toEqual(
+      historicalFixture.packages.map(({ name, integrity }) => ({
+        name,
+        integrity,
+      })),
+    )
+    expect(currentIdentity.status).toBe('available')
     expect(identity.packages).toHaveLength(RELEASE_PACKAGES.length)
     expect(identity.packages[1]).toEqual({
       name: '@prisma-lossless/driver-adapter-utils',
       integrity: 'sha512-Ow22QHvHic7XNSozhTgreG6/KO5ZT4PO5NjOyxQP9Es/dgbeU9QXrPWFHJgCgn1FMv1zkISBZQqU+Iw01o4XAQ==',
     })
+    expect(currentIdentity.packages).toEqual(
+      currentFixture.packages.map(({ name, integrity }) => ({
+        name,
+        integrity,
+      })),
+    )
     expect(() => readPrivateReleaseIdentity('7.8.0-lossless.999999')).toThrow(/No immutable private release identity/)
+  })
+
+  test('rejects unavailable historical versions before packing built artifacts', () => {
+    const identity = readPrivateReleaseIdentity('7.8.0-lossless.5')
+
+    expect(() => assertAvailablePrivateReleaseIdentity(identity)).toThrow(
+      /Private release 7\.8\.0-lossless\.5 is recorded as unavailable/,
+    )
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7\.8\.0-lossless\.6/)
   })
 
   test('rejects incomplete or mismatched release identities', () => {
@@ -76,6 +106,18 @@ describe('lossless private release graph', () => {
         packages: [{ ...identity.packages[0], integrity: 'sha1-nope' }, ...identity.packages.slice(1)],
       }),
     ).toThrow(/bad integrity/)
+    expect(() =>
+      validatePrivateReleaseIdentity({
+        ...identity,
+        status: 'invalid' as 'available',
+      }),
+    ).toThrow(/invalid availability status/)
+    expect(() =>
+      validatePrivateReleaseIdentity({
+        ...identity,
+        replacementVersion: '^7.8.0-lossless.6',
+      }),
+    ).toThrow(/version is invalid/)
   })
 
   test('validates prepared tarballs against immutable integrity metadata', () => {
@@ -126,6 +168,16 @@ describe('lossless private release graph', () => {
     expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.999999')).toThrow(
       /No immutable private release identity/,
     )
+  })
+
+  test('rejects release output roots inside the checkout', () => {
+    expect(() =>
+      preparePinnedPrivateReleaseCandidates(
+        '7.8.0-lossless.6',
+        'f98f2e0f42cd7d9d9556567f9236c98eed00da16',
+        path.join(process.cwd(), 'tmp/release-inside-checkout'),
+      ),
+    ).toThrow(/output root must be outside the prisma checkout/)
   })
 
   test('allows tooling changes but rejects release-source drift', () => {
