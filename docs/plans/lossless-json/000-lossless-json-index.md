@@ -234,6 +234,17 @@ cannot be reproduced byte-for-byte.
 | --- | ----------------------------------------------------------------------------- | -------- | ------ | ------------ |
 | 024 | [Fix independent release identity](./024-fix-independent-release-identity.md) | High     | [DONE] | 023          |
 
+### Sprint 11: Generated Client Release Identity
+
+Sprint 11 fixes the Tasklet 024 follow-up defect where an immutable
+private release installs as `7.8.0-lossless.6`, but generated Prisma
+Client metadata still reports the development placeholder version
+`0.0.0` and stock generated dependencies.
+
+| ID  | Tasklet                                                                                 | Priority | Status | Dependencies |
+| --- | --------------------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 025 | [Fix generated client release identity](./025-fix-generated-client-release-identity.md) | High     | [ ]    | 024          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This

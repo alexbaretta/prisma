@@ -74,12 +74,35 @@ export const RELEASE_PACKAGES: readonly ReleasePackage[] = [
   { name: 'prisma-lossless', sourceName: 'prisma-lossless', sourceDir: 'packages/cli' },
 ]
 
+export const PRIVATE_RELEASE_SOURCE_DIRS: readonly string[] = [
+  ...RELEASE_PACKAGES.map((releasePackage) => releasePackage.sourceDir),
+  'packages/client-generator-js',
+  'packages/client-generator-ts',
+]
+
 const RELEASE_PACKAGES_BY_SOURCE_NAME = new Map(
   RELEASE_PACKAGES.map((releasePackage) => [releasePackage.sourceName, releasePackage]),
 )
 const RELEASE_PACKAGE_NAMES = new Set(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name))
 const RELEASE_PACKAGE_MTIME = new Date('1985-10-26T08:15:00.000Z')
 const ROOT_LICENSE_FILE = path.join(process.cwd(), 'LICENSE')
+const DEVELOPMENT_VERSION_PLACEHOLDER = '0.0.0'
+const GENERATED_RUNTIME_UTILS_DEPENDENCY = '@prisma/client-runtime-utils'
+const LOSSLESS_RUNTIME_UTILS_DEPENDENCY = '@prisma-lossless/client-runtime-utils'
+
+const CLIENT_RELEASE_VERSION_ARTIFACTS = [
+  'runtime/client.js',
+  'runtime/client.js.map',
+  'runtime/client.mjs',
+  'runtime/client.mjs.map',
+  'runtime/wasm-compiler-edge.js',
+  'runtime/wasm-compiler-edge.js.map',
+  'runtime/wasm-compiler-edge.mjs',
+  'runtime/wasm-compiler-edge.mjs.map',
+  'scripts/default-index.js',
+] as const
+
+const CLI_GENERATOR_ARTIFACTS = ['build/index.js'] as const
 
 export function selectNextReleaseVersion(publishedVersions: readonly string[]): string {
   const releaseVersion = new RegExp(`^${escapeRegExp(PRIVATE_RELEASE_VERSION_PREFIX)}\\.(\\d+)$`)
@@ -107,9 +130,8 @@ export function assertPinnedReleaseVersion(version: string): void {
 export function assertReleaseSourcesMatchCommit(
   sourceCommit: string,
   checkout = process.cwd(),
-  packages = RELEASE_PACKAGES,
+  sourcePaths: readonly string[] = PRIVATE_RELEASE_SOURCE_DIRS,
 ): void {
-  const sourcePaths = packages.map((releasePackage) => releasePackage.sourceDir)
   const verifyResult = spawnSync('git', ['rev-parse', '--verify', `${sourceCommit}^{commit}`], {
     cwd: checkout,
     encoding: 'utf-8',
@@ -313,6 +335,7 @@ export function preparePinnedPrivateReleaseCandidates(
   outputRoot = DEFAULT_RELEASE_OUTPUT_ROOT,
 ): ReleaseManifest {
   assertPinnedReleaseVersion(version)
+  assertReleaseOutputRootOutsideCheckout(outputRoot)
   assertReleaseSourcesMatchCommit(sourceCommit)
 
   return preparePrivateReleaseCandidatesForIdentity(DEFAULT_REGISTRY_URL, version, sourceCommit, outputRoot)
@@ -476,6 +499,7 @@ function preparePrivateReleaseCandidatesForIdentity(
     copyPackageSource(sourceDir, stagingDir)
     copyRootLicenseFile(stagingDir)
     fs.writeFileSync(path.join(stagingDir, 'package.json'), `${JSON.stringify(packageJson, null, 2)}\n`)
+    rewriteStagedPrivateReleaseArtifacts(stagingDir, releasePackage.name, version)
     normalizePackageStagingMetadata(stagingDir)
 
     const tarballPath = packStagedPackage(stagingDir, artifactsDir, releasePackage.name, version)
@@ -503,6 +527,37 @@ function preparePrivateReleaseCandidatesForIdentity(
   fs.writeFileSync(path.join(runDir, 'private-release-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
   return manifest
+}
+
+export function rewriteStagedPrivateReleaseArtifacts(stagingDir: string, packageName: string, version: string): void {
+  if (packageName === '@prisma-lossless/client') {
+    for (const relativePath of CLIENT_RELEASE_VERSION_ARTIFACTS) {
+      replaceTextInExistingFile(path.join(stagingDir, relativePath), [[DEVELOPMENT_VERSION_PLACEHOLDER, version]])
+    }
+    return
+  }
+
+  if (packageName === 'prisma-lossless') {
+    for (const relativePath of CLI_GENERATOR_ARTIFACTS) {
+      replaceTextInExistingFile(path.join(stagingDir, relativePath), [
+        [GENERATED_RUNTIME_UTILS_DEPENDENCY, LOSSLESS_RUNTIME_UTILS_DEPENDENCY],
+      ])
+    }
+  }
+}
+
+function replaceTextInExistingFile(filePath: string, replacements: readonly (readonly [string, string])[]): void {
+  if (!fs.statSync(filePath, { throwIfNoEntry: false })?.isFile()) {
+    return
+  }
+
+  let content = fs.readFileSync(filePath, 'utf-8')
+
+  for (const [search, replacement] of replacements) {
+    content = content.split(search).join(replacement)
+  }
+
+  fs.writeFileSync(filePath, content)
 }
 
 function assertReleaseOutputRootOutsideCheckout(outputRoot: string): void {

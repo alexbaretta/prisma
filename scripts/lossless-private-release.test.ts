@@ -18,6 +18,7 @@ import {
   readPrivateReleaseIdentity,
   RELEASE_PACKAGES,
   rewritePackageJsonForPrivateRelease,
+  rewriteStagedPrivateReleaseArtifacts,
   selectNextReleaseVersion,
   validatePrivateReleaseIdentity,
   validateReleaseManifestIntegrity,
@@ -194,16 +195,16 @@ describe('lossless private release graph', () => {
       runGit(checkout, ['add', '.'])
       runGit(checkout, ['commit', '-m', 'Initial'])
       const sourceCommit = runGit(checkout, ['rev-parse', 'HEAD'])
-      const packages = [{ name: 'fixture', sourceName: 'fixture', sourceDir: 'package' }]
+      const sourcePaths = ['package']
 
       fs.writeFileSync(path.join(checkout, 'scripts', 'runner.ts'), 'export const runner = 2\n')
       runGit(checkout, ['add', 'scripts/runner.ts'])
       runGit(checkout, ['commit', '-m', 'Change tooling'])
-      expect(() => assertReleaseSourcesMatchCommit(sourceCommit, checkout, packages)).not.toThrow()
+      expect(() => assertReleaseSourcesMatchCommit(sourceCommit, checkout, sourcePaths)).not.toThrow()
 
       fs.writeFileSync(path.join(checkout, 'package', 'index.ts'), 'export const value = 2\n')
-      expect(() => assertReleaseSourcesMatchCommit(sourceCommit, checkout, packages)).toThrow(/sources differ/)
-      expect(() => assertReleaseSourcesMatchCommit('missing-commit', checkout, packages)).toThrow(/does not exist/)
+      expect(() => assertReleaseSourcesMatchCommit(sourceCommit, checkout, sourcePaths)).toThrow(/sources differ/)
+      expect(() => assertReleaseSourcesMatchCommit('missing-commit', checkout, sourcePaths)).toThrow(/does not exist/)
     } finally {
       fs.rmSync(checkout, { recursive: true, force: true })
     }
@@ -335,6 +336,40 @@ describe('lossless private release graph', () => {
         sourceCommit,
       },
     })
+  })
+
+  test('rewrites staged generated client release artifacts', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-lossless-staged-artifacts-'))
+
+    try {
+      const clientDir = path.join(root, 'client')
+      const cliDir = path.join(root, 'cli')
+      fs.mkdirSync(path.join(clientDir, 'runtime'), { recursive: true })
+      fs.mkdirSync(path.join(clientDir, 'scripts'), { recursive: true })
+      fs.mkdirSync(path.join(cliDir, 'build'), { recursive: true })
+      fs.writeFileSync(path.join(clientDir, 'runtime/client.js'), 'var clientVersion = "0.0.0";\n')
+      fs.writeFileSync(path.join(clientDir, 'runtime/client.mjs'), 'var clientVersion = "0.0.0";\n')
+      fs.writeFileSync(path.join(clientDir, 'scripts/default-index.js'), 'client: "0.0.0"\n')
+      fs.writeFileSync(
+        path.join(cliDir, 'build/index.js'),
+        'dependencies:{"@prisma/client-runtime-utils":clientVersion}\n',
+      )
+
+      rewriteStagedPrivateReleaseArtifacts(clientDir, '@prisma-lossless/client', releaseVersion)
+      rewriteStagedPrivateReleaseArtifacts(cliDir, 'prisma-lossless', releaseVersion)
+
+      expect(fs.readFileSync(path.join(clientDir, 'runtime/client.js'), 'utf-8')).toContain(releaseVersion)
+      expect(fs.readFileSync(path.join(clientDir, 'runtime/client.mjs'), 'utf-8')).toContain(releaseVersion)
+      expect(fs.readFileSync(path.join(clientDir, 'scripts/default-index.js'), 'utf-8')).toContain(releaseVersion)
+      expect(fs.readFileSync(path.join(cliDir, 'build/index.js'), 'utf-8')).toContain(
+        '@prisma-lossless/client-runtime-utils',
+      )
+      expect(fs.readFileSync(path.join(cliDir, 'build/index.js'), 'utf-8')).not.toContain(
+        '@prisma/client-runtime-utils',
+      )
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true })
+    }
   })
 })
 

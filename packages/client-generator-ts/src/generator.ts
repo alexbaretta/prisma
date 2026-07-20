@@ -1,14 +1,24 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
 import { enginesVersion } from '@prisma/engines-version'
 import { Generator, GeneratorConfig, GeneratorManifest, GeneratorOptions } from '@prisma/generator'
 import { parseEnvValue } from '@prisma/internals'
 import { getTsconfig } from 'get-tsconfig'
 import { bold, dim, green } from 'kleur/colors'
 
-import { version as clientVersion } from '../package.json'
 import { inferImportFileExtension, parseGeneratedFileExtension, parseImportFileExtension } from './file-extensions'
 import { generateClient } from './generateClient'
 import { inferModuleFormat, parseModuleFormatFromUnknown } from './module-format'
 import { parseRuntimeTargetFromUnknown, RuntimeTargetInternal } from './runtime-targets'
+
+const FALLBACK_CLIENT_VERSION = '0.0.0'
+const PRISMA_CLIENT_PACKAGE_NAME = '@prisma-lossless/client'
+const PRISMA_CLIENT_RUNTIME_BASE = `${PRISMA_CLIENT_PACKAGE_NAME}/runtime`
+
+type PrismaClientPackageJson = {
+  version?: unknown
+}
 
 const missingOutputErrorMessage = `An output path is required for the \`prisma-client\` generator. Please provide an output path in your schema file:
 
@@ -31,6 +41,8 @@ export class PrismaClientTsGenerator implements Generator {
   readonly name = 'prisma-client-ts'
 
   getManifest(config: GeneratorConfig): Promise<GeneratorManifest> {
+    const clientVersion = readInstalledPrismaClientVersion(config.sourceFilePath)
+
     return Promise.resolve({
       defaultOutput: getOutputPath(config),
       prettyName: 'Prisma Client',
@@ -44,6 +56,7 @@ export class PrismaClientTsGenerator implements Generator {
     const { config } = options.generator
     const outputDir = getOutputPath(options.generator)
     const tsconfig = getTsconfig(outputDir)?.config
+    const clientVersion = readInstalledPrismaClientVersion(options.schemaPath)
 
     const target = config.runtime !== undefined ? parseRuntimeTargetFromUnknown(config.runtime) : 'nodejs'
 
@@ -74,7 +87,7 @@ export class PrismaClientTsGenerator implements Generator {
       binaryPaths: options.binaryPaths!,
       datasources: options.datasources,
       outputDir,
-      runtimeBase: '@prisma/client/runtime',
+      runtimeBase: PRISMA_CLIENT_RUNTIME_BASE,
       dmmf: options.dmmf,
       generator: options.generator,
       engineVersion: options.version,
@@ -88,6 +101,19 @@ export class PrismaClientTsGenerator implements Generator {
       tsNoCheckPreamble: true, // Set to false only during internal tests
       compilerBuild: parseCompilerBuildFromUnknown(options.generator.config.compilerBuild, target),
     })
+  }
+}
+
+function readInstalledPrismaClientVersion(baseFilePath: string): string {
+  try {
+    const packageJsonPath = require.resolve(`${PRISMA_CLIENT_PACKAGE_NAME}/package.json`, {
+      paths: [path.dirname(baseFilePath)],
+    })
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8')) as PrismaClientPackageJson
+
+    return typeof packageJson.version === 'string' ? packageJson.version : FALLBACK_CLIENT_VERSION
+  } catch {
+    return FALLBACK_CLIENT_VERSION
   }
 }
 

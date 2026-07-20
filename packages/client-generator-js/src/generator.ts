@@ -1,17 +1,23 @@
+import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { enginesVersion } from '@prisma/engines-version'
 import { Generator, GeneratorConfig, GeneratorManifest, GeneratorOptions } from '@prisma/generator'
 import { BuiltInProvider, parseEnvValue } from '@prisma/internals'
 
-import { version as clientVersion } from '../package.json'
 import { generateClient } from './generateClient'
 import { resolvePrismaClient } from './resolvePrismaClient'
+
+const FALLBACK_CLIENT_VERSION = '0.0.0'
 
 type PrismaClientJsGeneratorOptions = {
   shouldResolvePrismaClient?: boolean
   shouldInstallMissingPackages?: boolean
   runtimePath?: string
+}
+
+type PrismaClientPackageJson = {
+  version?: unknown
 }
 
 // const MISSING_CUSTOM_OUTPUT_PATH_WARNING = `\
@@ -57,6 +63,9 @@ export class PrismaClientJsGenerator implements Generator {
     // using the JSON-RPC compatibility adapter for Prisma Studio, we should use
     // a static value here.
     const defaultOutput = this.#shouldResolvePrismaClient ? await this.#getPrismaClientPath(config) : '.prisma/client'
+    const clientVersion = this.#shouldResolvePrismaClient
+      ? await this.#getPrismaClientVersion(config)
+      : FALLBACK_CLIENT_VERSION
 
     return {
       defaultOutput,
@@ -69,6 +78,7 @@ export class PrismaClientJsGenerator implements Generator {
 
   async generate(options: GeneratorOptions): Promise<void> {
     const outputDir = parseEnvValue(options.generator.output!)
+    const clientVersion = await this.#getPrismaClientVersion(options.generator)
 
     await generateClient({
       datamodel: options.datamodel,
@@ -105,6 +115,15 @@ export class PrismaClientJsGenerator implements Generator {
 
     this.#runtimePath = path.join(await this.#getPrismaClientPath(config), 'runtime')
     return this.#runtimePath
+  }
+
+  async #getPrismaClientVersion(config: GeneratorConfig): Promise<string> {
+    const clientPath = await this.#getPrismaClientPath(config)
+    const packageJson = JSON.parse(
+      await fs.readFile(path.join(clientPath, 'package.json'), 'utf-8'),
+    ) as PrismaClientPackageJson
+
+    return typeof packageJson.version === 'string' ? packageJson.version : FALLBACK_CLIENT_VERSION
   }
 }
 

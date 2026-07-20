@@ -75,6 +75,49 @@ const registry = {
 } satisfies GeneratorRegistry
 
 describe('generator', () => {
+  test('uses installed lossless client identity for generated metadata', async () => {
+    const releaseVersion = '7.8.0-lossless.17'
+    const prismaClientTarget = path.join(__dirname, './node_modules/@prisma-lossless/client')
+    const dotPrismaDir = path.join(__dirname, './node_modules/.prisma/client')
+
+    await fsPromises.rm(prismaClientTarget, { recursive: true, force: true })
+    await fsPromises.rm(dotPrismaDir, { recursive: true, force: true })
+    await fsPromises.mkdir(prismaClientTarget, { recursive: true })
+    await fsPromises.writeFile(
+      path.join(prismaClientTarget, 'package.json'),
+      JSON.stringify({ name: '@prisma-lossless/client', version: releaseVersion }, null, 2),
+    )
+    await fsPromises.cp(path.join(__dirname, '../../client/runtime'), path.join(prismaClientTarget, 'runtime'), {
+      recursive: true,
+    })
+
+    const generator = await getGenerator({
+      schemaPath: path.join(__dirname, 'schema.prisma'),
+      printDownloadProgress: false,
+      skipDownload: true,
+      registry,
+    })
+
+    expect(generator.manifest?.version).toBe(releaseVersion)
+
+    await generator.generate()
+
+    const generatedPackageJson = JSON.parse(
+      await fsPromises.readFile(path.join(dotPrismaDir, 'package.json'), 'utf-8'),
+    ) as {
+      version?: unknown
+      dependencies?: Record<string, string>
+    }
+    const generatedIndexJs = await fsPromises.readFile(path.join(dotPrismaDir, 'index.js'), 'utf-8')
+
+    expect(generatedPackageJson.version).toBe(releaseVersion)
+    expect(generatedPackageJson.dependencies).toEqual({
+      '@prisma-lossless/client-runtime-utils': releaseVersion,
+    })
+    expect(generatedIndexJs).toContain(`client: "${releaseVersion}"`)
+    generator.stop()
+  })
+
   test('minimal', async () => {
     const prismaClientTarget = path.join(__dirname, './node_modules/@prisma-lossless/client')
     // Make sure, that nothing is cached.
@@ -157,6 +200,11 @@ describe('generator', () => {
   test('with custom output', async () => {
     const prismaClientTarget = path.join(__dirname, './node_modules/@prisma-lossless/client')
     await fsPromises.rm(prismaClientTarget, { recursive: true, force: true })
+    await fsPromises.mkdir(prismaClientTarget, { recursive: true })
+    await fsPromises.writeFile(
+      path.join(prismaClientTarget, 'package.json'),
+      JSON.stringify({ name: '@prisma-lossless/client', version: '0.0.0' }, null, 2),
+    )
     await fsPromises.cp(path.join(__dirname, '../../client/runtime'), path.join(prismaClientTarget, 'runtime'), {
       recursive: true,
     })

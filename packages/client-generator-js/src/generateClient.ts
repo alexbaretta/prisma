@@ -24,6 +24,8 @@ import { TSClientOptions } from './TSClient/TSClient'
 import { buildTypedSql } from './typedSql/typedSql'
 import { addPreamble, addPreambleToJSFiles } from './utils/addPreamble'
 
+const CLIENT_RUNTIME_UTILS_PACKAGE_NAME = '@prisma-lossless/client-runtime-utils'
+
 type OutputDeclaration = {
   content: string
   lineNumber: number
@@ -159,7 +161,7 @@ export async function buildClient({
     version: clientVersion,
     sideEffects: false,
     dependencies: {
-      '@prisma/client-runtime-utils': clientVersion,
+      [CLIENT_RUNTIME_UTILS_PACKAGE_NAME]: clientVersion,
     },
   }
 
