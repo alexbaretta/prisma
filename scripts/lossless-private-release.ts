@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -8,6 +9,11 @@ import {
   getRegistryRuntimePaths,
   type RegistryRuntimePaths,
 } from './lossless-private-registry'
+import {
+  PRIVATE_RELEASE_IDENTITIES,
+  type PrivateReleaseIdentity,
+  type PrivateReleasePackageIdentity,
+} from './lossless-private-release-identities'
 
 export const PRIVATE_RELEASE_VERSION_PREFIX = '7.8.0-lossless'
 export const DEFAULT_RELEASE_OUTPUT_ROOT = path.join(process.cwd(), 'tmp/lossless-json-tasklet-016')
@@ -314,8 +320,100 @@ export function prepareBuiltPrivateReleaseCandidates(
   outputRoot = DEFAULT_RELEASE_OUTPUT_ROOT,
 ): ReleaseManifest {
   assertPinnedReleaseVersion(version)
+  const releaseIdentity = readPrivateReleaseIdentity(version)
+  assertReleaseSourcesMatchCommit(releaseIdentity.sourceCommit)
 
-  return preparePrivateReleaseCandidatesForIdentity(DEFAULT_REGISTRY_URL, version, readSourceCommit(), outputRoot)
+  const manifest = preparePrivateReleaseCandidatesForIdentity(
+    DEFAULT_REGISTRY_URL,
+    version,
+    releaseIdentity.sourceCommit,
+    outputRoot,
+  )
+  validateReleaseManifestIntegrity(manifest, releaseIdentity)
+  return manifest
+}
+
+export function readPrivateReleaseIdentity(
+  version: string,
+  identities: readonly PrivateReleaseIdentity[] = PRIVATE_RELEASE_IDENTITIES,
+): PrivateReleaseIdentity {
+  const releaseIdentity = identities.find((identity) => identity.version === version)
+
+  if (!releaseIdentity) {
+    throw new Error(
+      `No immutable private release identity is recorded for ${version}. ` +
+        `Mint a new prisma-lossless private release version before using --from-built.`,
+    )
+  }
+
+  validatePrivateReleaseIdentity(releaseIdentity)
+  return releaseIdentity
+}
+
+export function validatePrivateReleaseIdentity(releaseIdentity: PrivateReleaseIdentity): void {
+  assertPinnedReleaseVersion(releaseIdentity.version)
+
+  if (!/^[0-9a-f]{40}$/.test(releaseIdentity.sourceCommit)) {
+    throw new Error(`Private release ${releaseIdentity.version} records an invalid source commit`)
+  }
+
+  if (releaseIdentity.packages.length !== RELEASE_PACKAGES.length) {
+    throw new Error(
+      `Private release ${releaseIdentity.version} records ${releaseIdentity.packages.length} packages; ` +
+        `expected ${RELEASE_PACKAGES.length}`,
+    )
+  }
+
+  releaseIdentity.packages.forEach((releasePackage, index) => {
+    const expectedName = RELEASE_PACKAGES[index].name
+
+    if (releasePackage.name !== expectedName) {
+      throw new Error(
+        `Private release ${releaseIdentity.version} package ${index} is ${releasePackage.name}; ` +
+          `expected ${expectedName}`,
+      )
+    }
+
+    if (!/^sha512-[A-Za-z0-9+/]+={0,2}$/.test(releasePackage.integrity)) {
+      throw new Error(`Private release ${releaseIdentity.version} package ${releasePackage.name} has bad integrity`)
+    }
+  })
+}
+
+export function validateReleaseManifestIntegrity(
+  manifest: ReleaseManifest,
+  releaseIdentity: PrivateReleaseIdentity,
+): void {
+  validatePrivateReleaseIdentity(releaseIdentity)
+
+  if (manifest.version !== releaseIdentity.version || manifest.sourceCommit !== releaseIdentity.sourceCommit) {
+    throw new Error(`Prepared release manifest does not match immutable release identity ${releaseIdentity.version}`)
+  }
+
+  if (manifest.packages.length !== releaseIdentity.packages.length) {
+    throw new Error(`Prepared release manifest for ${manifest.version} has an incomplete package graph`)
+  }
+
+  manifest.packages.forEach((releasePackage, index) => {
+    const packageIdentity: PrivateReleasePackageIdentity = releaseIdentity.packages[index]
+
+    if (releasePackage.name !== packageIdentity.name) {
+      throw new Error(`Prepared release package ${index} is ${releasePackage.name}; expected ${packageIdentity.name}`)
+    }
+
+    const actualIntegrity = calculateTarballIntegrity(releasePackage.tarballPath)
+
+    if (actualIntegrity !== packageIdentity.integrity) {
+      throw new Error(
+        `Prepared release package ${releasePackage.name}@${releasePackage.version} has integrity ${actualIntegrity}; ` +
+          `expected ${packageIdentity.integrity}. Refusing to mutate immutable private release ${manifest.version}.`,
+      )
+    }
+  })
+}
+
+export function calculateTarballIntegrity(tarballPath: string): string {
+  return `sha512-${createHash('sha512').update(fs.readFileSync(tarballPath)).digest('base64')}`
 }
 
 function preparePrivateReleaseCandidatesForIdentity(

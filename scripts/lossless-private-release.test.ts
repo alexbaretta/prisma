@@ -10,10 +10,15 @@ import {
   assertReleaseGraphDependencyOrder,
   assertReleaseSourcesMatchCommit,
   buildPrivateReleasePackageJsons,
+  calculateTarballIntegrity,
+  prepareBuiltPrivateReleaseCandidates,
   PRIVATE_RELEASE_VERSION_PREFIX,
+  readPrivateReleaseIdentity,
   RELEASE_PACKAGES,
   rewritePackageJsonForPrivateRelease,
   selectNextReleaseVersion,
+  validatePrivateReleaseIdentity,
+  validateReleaseManifestIntegrity,
   validateReleasePackageMetadata,
 } from './lossless-private-release'
 
@@ -39,6 +44,88 @@ describe('lossless private release graph', () => {
     for (const version of ['7.8.0-lossless.0', '7.8.0-lossless', '7.8.0-lossless.5-next', '^7.8.0-lossless.5']) {
       expect(() => assertPinnedReleaseVersion(version)).toThrow(/version is invalid/)
     }
+  })
+
+  test('resolves recorded immutable release identity', () => {
+    const identity = readPrivateReleaseIdentity('7.8.0-lossless.5')
+
+    expect(identity.sourceCommit).toBe('f98f2e0f42cd7d9d9556567f9236c98eed00da16')
+    expect(identity.packages).toHaveLength(RELEASE_PACKAGES.length)
+    expect(identity.packages[1]).toEqual({
+      name: '@prisma-lossless/driver-adapter-utils',
+      integrity: 'sha512-Ow22QHvHic7XNSozhTgreG6/KO5ZT4PO5NjOyxQP9Es/dgbeU9QXrPWFHJgCgn1FMv1zkISBZQqU+Iw01o4XAQ==',
+    })
+    expect(() => readPrivateReleaseIdentity('7.8.0-lossless.999999')).toThrow(/No immutable private release identity/)
+  })
+
+  test('rejects incomplete or mismatched release identities', () => {
+    const identity = readPrivateReleaseIdentity('7.8.0-lossless.5')
+
+    expect(() => validatePrivateReleaseIdentity({ ...identity, packages: identity.packages.slice(1) })).toThrow(
+      /records 9 packages/,
+    )
+    expect(() =>
+      validatePrivateReleaseIdentity({
+        ...identity,
+        packages: [{ ...identity.packages[0], name: '@prisma-lossless/wrong' }, ...identity.packages.slice(1)],
+      }),
+    ).toThrow(/expected @prisma-lossless\/debug/)
+    expect(() =>
+      validatePrivateReleaseIdentity({
+        ...identity,
+        packages: [{ ...identity.packages[0], integrity: 'sha1-nope' }, ...identity.packages.slice(1)],
+      }),
+    ).toThrow(/bad integrity/)
+  })
+
+  test('validates prepared tarballs against immutable integrity metadata', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-lossless-integrity-proof-'))
+    const tarballPath = path.join(root, 'package.tgz')
+
+    try {
+      fs.writeFileSync(tarballPath, 'release-bytes')
+      const integrity = calculateTarballIntegrity(tarballPath)
+      const packages = RELEASE_PACKAGES.map((releasePackage) => ({
+        name: releasePackage.name,
+        version: releaseVersion,
+        sourceCommit,
+        sourceDir: releasePackage.sourceDir,
+        stagingDir: root,
+        tarballPath,
+      }))
+      const identity = {
+        version: releaseVersion,
+        sourceCommit,
+        packages: RELEASE_PACKAGES.map((releasePackage) => ({ name: releasePackage.name, integrity })),
+      }
+      const manifest = {
+        registry: 'http://127.0.0.1:4873/',
+        version: releaseVersion,
+        sourceCommit,
+        runDir: root,
+        artifactsDir: root,
+        packages,
+      }
+
+      expect(() => validateReleaseManifestIntegrity(manifest, identity)).not.toThrow()
+      expect(() =>
+        validateReleaseManifestIntegrity(manifest, {
+          ...identity,
+          packages: [{ ...identity.packages[0], integrity: 'sha512-wrong' }, ...identity.packages.slice(1)],
+        }),
+      ).toThrow(/Refusing to mutate immutable private release/)
+      expect(() => validateReleaseManifestIntegrity({ ...manifest, packages: packages.slice(1) }, identity)).toThrow(
+        /incomplete package graph/,
+      )
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('does not pack unknown built versions under --from-built', () => {
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.999999')).toThrow(
+      /No immutable private release identity/,
+    )
   })
 
   test('allows tooling changes but rejects release-source drift', () => {

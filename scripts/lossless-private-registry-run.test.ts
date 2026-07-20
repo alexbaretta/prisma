@@ -18,6 +18,7 @@ import {
   parseArguments,
   type PrivateReleaseManifest,
   type RegistryRunnerDependencies,
+  resolveConsumerDirectory,
   runWithBuiltRelease,
   runWithEphemeralRegistry,
   startEphemeralRegistry,
@@ -68,22 +69,48 @@ function dependencies(overrides: Partial<RegistryRunnerDependencies> = {}): Regi
   }
 }
 
+function createConsumerDir(): string {
+  const consumerDir = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-lossless-consumer-'))
+  fs.writeFileSync(path.join(consumerDir, 'package.json'), JSON.stringify({ name: 'consumer', version: '1.0.0' }))
+  return consumerDir
+}
+
 describe('ephemeral private registry runner', () => {
-  test('accepts manifest and already-built project modes', () => {
-    expect(parseArguments(['release.json', '--', 'pnpm', 'install'])).toEqual({
+  test('accepts manifest and already-built project modes with consumer cwd', () => {
+    expect(parseArguments(['--consumer-dir', '/consumer', 'release.json', '--', 'pnpm', 'install'])).toEqual({
       mode: 'manifest',
       manifestPath: 'release.json',
+      consumerDir: '/consumer',
       command: ['pnpm', 'install'],
     })
-    expect(parseArguments(['--from-built', '7.8.0-lossless.5', '--', 'pnpm', 'install'])).toEqual({
+    expect(
+      parseArguments(['--from-built', '7.8.0-lossless.5', '--consumer-dir', '/consumer', '--', 'pnpm', 'install']),
+    ).toEqual({
       mode: 'built',
       version: '7.8.0-lossless.5',
+      consumerDir: '/consumer',
       command: ['pnpm', 'install'],
     })
-    expect(() => parseArguments(['--from-built', '7.8.0-lossless.5'])).toThrow(/Usage/)
+    expect(() => parseArguments(['--from-built', '7.8.0-lossless.5', '--', 'pnpm', 'install'])).toThrow(/Usage/)
+    expect(() => parseArguments(['--consumer-dir', '/consumer', '--from-built', '7.8.0-lossless.5'])).toThrow(/Usage/)
+  })
+
+  test('validates the consumer working directory', () => {
+    const consumerDir = createConsumerDir()
+    const emptyDir = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-lossless-empty-consumer-'))
+
+    try {
+      expect(resolveConsumerDirectory(consumerDir)).toBe(path.resolve(consumerDir))
+      expect(() => resolveConsumerDirectory(path.join(consumerDir, 'missing'))).toThrow(/does not exist/)
+      expect(() => resolveConsumerDirectory(emptyDir)).toThrow(/must contain package\.json/)
+    } finally {
+      fs.rmSync(consumerDir, { recursive: true, force: true })
+      fs.rmSync(emptyDir, { recursive: true, force: true })
+    }
   })
 
   test('removes transient built releases after child success and failure', async () => {
+    const consumerDir = createConsumerDir()
     const makeReleaseRoot = vi.fn(() => '/private/tmp/prebuilt-release')
     const prepareRelease = vi.fn(() => MANIFEST)
     const runRegistry = vi.fn(() => Promise.resolve(41))
@@ -95,18 +122,25 @@ describe('ephemeral private registry runner', () => {
       removeRelease,
     }
 
-    await expect(runWithBuiltRelease(MANIFEST.version, ['consumer'], deps)).resolves.toBe(41)
-    expect(prepareRelease).toHaveBeenCalledWith(MANIFEST.version, '/private/tmp/prebuilt-release')
-    expect(removeRelease).toHaveBeenCalledWith('/private/tmp/prebuilt-release')
+    try {
+      await expect(runWithBuiltRelease(MANIFEST.version, ['consumer'], consumerDir, deps)).resolves.toBe(41)
+      expect(prepareRelease).toHaveBeenCalledWith(MANIFEST.version, '/private/tmp/prebuilt-release')
+      expect(runRegistry).toHaveBeenCalledWith(MANIFEST, ['consumer'], path.resolve(consumerDir))
+      expect(removeRelease).toHaveBeenCalledWith('/private/tmp/prebuilt-release')
 
-    runRegistry.mockRejectedValueOnce(new Error('child failed'))
-    await expect(runWithBuiltRelease(MANIFEST.version, ['consumer'], deps)).rejects.toThrow('child failed')
-    expect(removeRelease).toHaveBeenCalledTimes(2)
+      runRegistry.mockRejectedValueOnce(new Error('child failed'))
+      await expect(runWithBuiltRelease(MANIFEST.version, ['consumer'], consumerDir, deps)).rejects.toThrow(
+        'child failed',
+      )
+      expect(removeRelease).toHaveBeenCalledTimes(2)
+    } finally {
+      fs.rmSync(consumerDir, { recursive: true, force: true })
+    }
   })
 
   test('builds distinct host and Docker URLs and overrides npm resolution', () => {
     const urls = buildRegistryUrls(51_234)
-    const environment = buildChildEnvironment(urls, { KEEP_ME: 'yes' })
+    const environment = buildChildEnvironment(urls, { KEEP_ME: 'yes' }, '/private/tmp/npm-userconfig')
 
     expect(urls).toEqual({
       host: 'http://127.0.0.1:51234/',
@@ -117,7 +151,11 @@ describe('ephemeral private registry runner', () => {
       PRISMA_LOSSLESS_REGISTRY_URL: urls.host,
       PRISMA_LOSSLESS_DOCKER_REGISTRY_URL: urls.docker,
       npm_config_registry: urls.host,
+      NPM_CONFIG_REGISTRY: urls.host,
       'npm_config_@prisma-lossless:registry': urls.host,
+      'NPM_CONFIG_@PRISMA_LOSSLESS:REGISTRY': urls.host,
+      npm_config_userconfig: '/private/tmp/npm-userconfig',
+      NPM_CONFIG_USERCONFIG: '/private/tmp/npm-userconfig',
     })
   })
 
@@ -161,23 +199,51 @@ describe('ephemeral private registry runner', () => {
   })
 
   test('preserves child failure and cleans up the owned registry', async () => {
+    const consumerDir = createConsumerDir()
     const deps = dependencies({ runChild: vi.fn(() => Promise.resolve(37)) })
 
-    const exitCode = await runWithEphemeralRegistry(MANIFEST, ['consumer-build', '--frozen'], deps)
+    try {
+      const exitCode = await runWithEphemeralRegistry(MANIFEST, ['consumer-build', '--frozen'], consumerDir, deps)
 
-    expect(exitCode).toBe(37)
-    expect(deps.stop).toHaveBeenCalledOnce()
-    expect(deps.removeRuntime).toHaveBeenCalledWith('/private/tmp/registry-1')
+      expect(exitCode).toBe(37)
+      expect(deps.runChild).toHaveBeenCalledWith(
+        ['consumer-build', '--frozen'],
+        expect.objectContaining({
+          PRISMA_LOSSLESS_REGISTRY_URL: 'http://127.0.0.1:51000/',
+          NPM_CONFIG_USERCONFIG: '/private/tmp/registry-1/npm-userconfig',
+        }),
+        path.resolve(consumerDir),
+      )
+      expect(deps.stop).toHaveBeenCalledOnce()
+      expect(deps.removeRuntime).toHaveBeenCalledWith('/private/tmp/registry-1')
+    } finally {
+      fs.rmSync(consumerDir, { recursive: true, force: true })
+    }
   })
 
   test('cleans up when the child cannot start', async () => {
+    const consumerDir = createConsumerDir()
     const deps = dependencies({
       runChild: vi.fn(() => Promise.reject(new Error('ENOENT'))),
     })
 
-    await expect(runWithEphemeralRegistry(MANIFEST, ['missing-command'], deps)).rejects.toThrow('ENOENT')
-    expect(deps.stop).toHaveBeenCalledOnce()
-    expect(deps.removeRuntime).toHaveBeenCalledOnce()
+    try {
+      await expect(runWithEphemeralRegistry(MANIFEST, ['missing-command'], consumerDir, deps)).rejects.toThrow('ENOENT')
+      expect(deps.stop).toHaveBeenCalledOnce()
+      expect(deps.removeRuntime).toHaveBeenCalledOnce()
+    } finally {
+      fs.rmSync(consumerDir, { recursive: true, force: true })
+    }
+  })
+
+  test('rejects invalid consumer cwd before registry startup', async () => {
+    const deps = dependencies()
+
+    await expect(
+      runWithEphemeralRegistry(MANIFEST, ['pnpm', 'install'], '/private/tmp/missing-consumer', deps),
+    ).rejects.toThrow(/Consumer directory does not exist/)
+    expect(deps.start).not.toHaveBeenCalled()
+    expect(deps.runChild).not.toHaveBeenCalled()
   })
 
   test('cleans up a started registry when publication fails', async () => {

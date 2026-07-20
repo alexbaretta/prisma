@@ -211,6 +211,17 @@ packing; the consumer does not reconstruct a pinned source release.
 | --- | -------------------------------------------------------------- | -------- | ------ | ------------ |
 | 022 | [Run from prebuilt artifacts](./022-run-prebuilt-artifacts.md) | High     | [DONE] | 020          |
 
+### Sprint 9: Immutable Ephemeral Release Identity
+
+Sprint 9 fixes the ephemeral registry defects introduced by Tasklets
+020 and 022. Existing private versions must reproduce the same package
+bytes and provenance, and child tools must run from the consumer
+project so Corepack selects the consumer's pinned package manager.
+
+| ID  | Tasklet                                                                   | Priority | Status | Dependencies |
+| --- | ------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 023 | [Fix ephemeral release identity](./023-fix-ephemeral-release-identity.md) | High     | [DONE] | 020, 022     |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This

@@ -41,14 +41,18 @@ and release artifacts on success or failure:
 
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
+  --consumer-dir /path/to/consumer \
   --from-built 7.8.0-lossless.5 \
-  -- pnpm --dir /path/to/consumer install --frozen-lockfile
+  -- corepack pnpm install --frozen-lockfile
 ```
 
 Do not configure a permanent registry URL in the consumer project.
 The wrapper overrides both the default npm registry and the
 `@prisma-lossless` scoped registry for its child process. Concurrent
 builds receive different ports and independent registry storage.
+The child process runs with `/path/to/consumer` as its working
+directory, so Corepack reads the consumer `packageManager` field and
+Docker build contexts resolve relative to the consumer repository.
 
 The child process also receives these explicit URLs:
 
@@ -61,7 +65,9 @@ installation stage, for example:
 
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
-  --from-built 7.8.0-lossless.5 -- \
+  --consumer-dir /path/to/consumer \
+  --from-built 7.8.0-lossless.5 \
+  -- \
   docker build \
     --build-arg PRISMA_LOSSLESS_DOCKER_REGISTRY_URL \
     .
@@ -102,8 +108,15 @@ npx prisma-lossless studio
 After changing dependencies and imports, reinstall and regenerate:
 
 ```sh
-npm install
-npx prisma-lossless generate
+pnpm exec tsx scripts/lossless-private-registry-run.ts \
+  --consumer-dir /path/to/consumer \
+  --from-built 7.8.0-lossless.5 \
+  -- corepack pnpm install --frozen-lockfile
+
+pnpm exec tsx scripts/lossless-private-registry-run.ts \
+  --consumer-dir /path/to/consumer \
+  --from-built 7.8.0-lossless.5 \
+  -- corepack pnpm exec prisma-lossless generate
 ```
 
 Commit the resulting lockfile change so all environments resolve the
