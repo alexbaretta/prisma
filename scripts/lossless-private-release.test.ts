@@ -52,13 +52,16 @@ describe('lossless private release graph', () => {
 
   test('resolves recorded immutable release identity', () => {
     const identity = readPrivateReleaseIdentity('7.8.0-lossless.5')
-    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.6')
+    const retiredIdentity = readPrivateReleaseIdentity('7.8.0-lossless.6')
+    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.7')
     const historicalFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.5')
-    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.6')
+    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.7')
 
     expect(identity.sourceCommit).toBe('f98f2e0f42cd7d9d9556567f9236c98eed00da16')
     expect(identity.status).toBe('unavailable')
-    expect(identity.replacementVersion).toBe('7.8.0-lossless.6')
+    expect(identity.replacementVersion).toBe('7.8.0-lossless.7')
+    expect(retiredIdentity.status).toBe('unavailable')
+    expect(retiredIdentity.replacementVersion).toBe('7.8.0-lossless.7')
     expect(identity.packages).toEqual(
       historicalFixture.packages.map(({ name, integrity }) => ({
         name,
@@ -82,11 +85,16 @@ describe('lossless private release graph', () => {
 
   test('rejects unavailable historical versions before packing built artifacts', () => {
     const identity = readPrivateReleaseIdentity('7.8.0-lossless.5')
+    const retiredIdentity = readPrivateReleaseIdentity('7.8.0-lossless.6')
 
     expect(() => assertAvailablePrivateReleaseIdentity(identity)).toThrow(
       /Private release 7\.8\.0-lossless\.5 is recorded as unavailable/,
     )
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7\.8\.0-lossless\.6/)
+    expect(() => assertAvailablePrivateReleaseIdentity(retiredIdentity)).toThrow(
+      /Private release 7\.8\.0-lossless\.6 is recorded as unavailable/,
+    )
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7\.8\.0-lossless\.7/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.6')).toThrow(/Use 7\.8\.0-lossless\.7/)
   })
 
   test('rejects incomplete or mismatched release identities', () => {
@@ -116,7 +124,7 @@ describe('lossless private release graph', () => {
     expect(() =>
       validatePrivateReleaseIdentity({
         ...identity,
-        replacementVersion: '^7.8.0-lossless.6',
+        replacementVersion: '^7.8.0-lossless.7',
       }),
     ).toThrow(/version is invalid/)
   })
@@ -174,8 +182,8 @@ describe('lossless private release graph', () => {
   test('rejects release output roots inside the checkout', () => {
     expect(() =>
       preparePinnedPrivateReleaseCandidates(
-        '7.8.0-lossless.6',
-        'f98f2e0f42cd7d9d9556567f9236c98eed00da16',
+        '7.8.0-lossless.7',
+        'de26dd06509902ef202e675bb3eb2d2ee9b7fc4a',
         path.join(process.cwd(), 'tmp/release-inside-checkout'),
       ),
     ).toThrow(/output root must be outside the prisma checkout/)

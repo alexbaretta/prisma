@@ -1,6 +1,6 @@
 # Sprint 11
 
-### [ ] Tasklet 025: Fix Generated Client Release Identity
+### [DONE] Tasklet 025: Fix Generated Client Release Identity
 
 Branch: `target-7.8.0-lossless`
 
@@ -154,3 +154,137 @@ paths, and cleanup behavior.
   success and failure.
 - The tasklet is marked `[DONE]` only after validation passes and the
   completed changes are committed.
+
+## Post-Implementation Review
+
+The implementation keeps generated client identity in the Prisma fork's
+generator and release layers. The JavaScript and TypeScript generators
+resolve the installed `@prisma-lossless/client/package.json` from the
+consumer schema location, then use that installed package version for
+generator manifest metadata and generated client output. They no longer
+derive release identity from the generator package's workspace
+`0.0.0` development placeholder.
+
+Generated package metadata now depends on
+`@prisma-lossless/client-runtime-utils` when the fork owns that runtime
+package. The fix does not suppress the CLI/client mismatch warning and
+does not normalize generated files in GWEN or any other consumer.
+
+Private release staging also rewrites built runtime artifacts that
+still contain package-version placeholders before packing. This keeps
+runtime fallback constants and bundled generated metadata aligned with
+the single immutable private release identity. The release source
+verification now includes the client generator packages because they
+own generated client identity even though they are not themselves
+published in the ten-package private graph.
+
+`7.8.0-lossless.6` remains immutable and is not repacked. It is
+recorded as unavailable because it installs with correct package
+metadata but generates clients with `0.0.0`. The next usable immutable
+private release identity is `7.8.0-lossless.7`.
+
+## Final Release Identity
+
+Final version: `7.8.0-lossless.7`
+
+Provenance commit:
+`de26dd06509902ef202e675bb3eb2d2ee9b7fc4a`
+
+| Package                                 | Integrity                                                                                         |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `@prisma-lossless/debug`                | `sha512-CbQwVaNgGD+QMI+nvmbFZZ7+YVVs0jyhLe5sFRm4VU+ZlNMpMjn1dCeCp3FmztemiRAoLjj/MRTQgFM7eRBDtg==` |
+| `@prisma-lossless/driver-adapter-utils` | `sha512-LJWEh7v18pR1RUGel8b115bRn1pxkIY1uGOsb2fvcp43/b8+McW2EV6KBDU3NpnjLTxzX6WzqB29vH40TfMdtA==` |
+| `@prisma-lossless/get-platform`         | `sha512-k1H+c5eBYZn2m9buHVy5nfa7evMiEc+yRRc8mJZXyg/oBvT8shQfQ32sCBNuzFJMFGgvUXjzjPqzuGsxHxIkhA==` |
+| `@prisma-lossless/fetch-engine`         | `sha512-Ep25kydhl1wz4Fu4VN3lPt182yKnyk35k50hGmKzrSsnkG/Z3+LjnQZ8zFTkh3XN6HZPj01yPet3MOTkAcXDMA==` |
+| `@prisma-lossless/engines`              | `sha512-1Zz2ky5tbVqaKrg9sQHfbPEvXBFmo0nA8ypV6neBhGM2hdc5Z6lIhH4CCFpd8IaS+hhCju6M/eV7kC+QikIrAQ==` |
+| `@prisma-lossless/config`               | `sha512-dFxDUMNdccMLhtDFx0se/Rf7u7YeMGiG9Fm4PVQCgAxvbEHuNyONuXoKTa3ODOyw8WZYnd9PVMSyEDgqVTyFxA==` |
+| `@prisma-lossless/client-runtime-utils` | `sha512-pdFPma5Yy/5vGlMFggcxk2/Ps/8LyMqiAMnCo+rUiHJoTXaB1vrCjBgz/gKm9GEvPEqGN4sioHbJn8AVuBZDbw==` |
+| `@prisma-lossless/adapter-pg`           | `sha512-maS90+bMuqmAl/xBoJs4AckEJ+zsaI0Cqh4Uq61ATBP6apaG5zso1vYnidtcd/Apr6nN+YNoQ7YUztNQBDC4fQ==` |
+| `@prisma-lossless/client`               | `sha512-/0p3P3MKG2rnQYsGym8dEnCBqLi1W0owvtHEpZj/ue17MU9CgCE1Z2BQb3pnr3LzlC9A++sQ3p8D2jScLdC6eg==` |
+| `prisma-lossless`                       | `sha512-gqZO9gX2J5rNBp/41xTlc3kiwHcWgQZ1JUCNN4uC5O9b8LWkKruJ6dez41hByJAw2GFW0MY3ByHLJVtTdGVB/Q==` |
+
+## Consumer Invocation
+
+Host install:
+
+```sh
+pnpm exec tsx scripts/lossless-private-registry-run.ts \
+  --consumer-dir /path/to/consumer \
+  --from-built 7.8.0-lossless.7 \
+  -- corepack pnpm install --frozen-lockfile
+```
+
+Regeneration:
+
+```sh
+pnpm exec tsx scripts/lossless-private-registry-run.ts \
+  --consumer-dir /path/to/consumer \
+  --from-built 7.8.0-lossless.7 \
+  -- corepack pnpm exec prisma-lossless generate
+```
+
+Docker build:
+
+```sh
+pnpm exec tsx scripts/lossless-private-registry-run.ts \
+  --consumer-dir /path/to/consumer \
+  --from-built 7.8.0-lossless.7 \
+  -- \
+  docker build \
+    --build-arg PRISMA_LOSSLESS_DOCKER_REGISTRY_URL \
+    .
+```
+
+## Validation Evidence
+
+- `pnpm --filter @prisma/client-generator-js build` passed.
+- `pnpm --filter @prisma/client-generator-ts build` passed.
+- `pnpm --filter @prisma-lossless/client build` passed.
+- `pnpm --filter prisma-lossless build` passed.
+- `pnpm exec tsx scripts/lossless-private-release.ts build-pinned
+7.8.0-lossless.7
+de26dd06509902ef202e675bb3eb2d2ee9b7fc4a
+/private/tmp/prisma-lossless-private-release-7` passed outside the
+  sandbox after the sandboxed run failed at `tsx` IPC socket creation.
+- `pnpm --dir packages/client-generator-js exec vitest run
+tests/generator.test.ts --reporter=dot` passed (`8` tests).
+- `pnpm exec vitest run scripts/lossless-private-release.test.ts
+scripts/lossless-private-registry-run.test.ts
+scripts/lossless-private-registry.test.ts --reporter=dot` passed
+  (`33` tests).
+- `PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION=1 pnpm exec vitest run
+scripts/lossless-private-registry-run.integration.test.ts
+--reporter=dot` passed outside the sandbox (`4` tests). The test
+  installed `7.8.0-lossless.7` from an empty pnpm store, proved
+  consumer `pnpm v11.1.1` was selected, ran
+  `prisma-lossless generate`, observed
+  `Generated Prisma Client (v7.8.0-lossless.7)`, observed no
+  version-mismatch warning, verified generated package metadata,
+  imported and constructed `@prisma-lossless/client`, verified
+  `Prisma.prismaVersion.client`, verified `LosslessNumber`, proved
+  repeated packing integrity, rejected `.6`, rejected mismatched
+  fixture evidence, and checked success and failure cleanup.
+- `pnpm exec prettier --check ...` passed for the touched markdown and
+  TypeScript files.
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm exec eslint ...`
+  passed for the touched TypeScript release files and tests.
+- `pnpm build` failed in the sandbox at `tsx` IPC socket creation for
+  the generator packages, then passed outside the sandbox (`44`
+  successful, `44` total).
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm exec tsc --noEmit
+--pretty false` failed with broad repository diagnostics, including
+  transient `tmp/lossless-json-tasklet-023-probe/...` staging sources
+  and existing fixture type drift. No diagnostic implicated the Tasklet
+  025 generated-client identity change.
+- `CI=true GITHUB_REF_NAME=target-7.8.0-lossless
+TERM=xterm-256color TEST_SKIP_MSSQL=true TEST_SKIP_COCKROACHDB=true
+TEST_SKIP_MONGODB=true pnpm test` failed in `@prisma/migrate`
+  because the local PostgreSQL database
+  `tests-migrate-prisma-config-extensions` already existed and changed
+  one snapshot line.
+- After dropping only that stale local test database,
+  `CI=true GITHUB_REF_NAME=target-7.8.0-lossless
+TERM=xterm-256color TEST_SKIP_MSSQL=true TEST_SKIP_COCKROACHDB=true
+TEST_SKIP_MONGODB=true pnpm --filter @prisma/migrate test` passed
+  (`33` suites, `341` passed tests, `2` skipped tests, `543`
+  snapshots).

@@ -10,11 +10,11 @@ Replace stock Prisma packages in your application:
 ```json
 {
   "dependencies": {
-    "@prisma-lossless/client": "7.8.0-lossless.6",
-    "@prisma-lossless/adapter-pg": "7.8.0-lossless.6"
+    "@prisma-lossless/client": "7.8.0-lossless.7",
+    "@prisma-lossless/adapter-pg": "7.8.0-lossless.7"
   },
   "devDependencies": {
-    "prisma-lossless": "7.8.0-lossless.6"
+    "prisma-lossless": "7.8.0-lossless.7"
   }
 }
 ```
@@ -25,11 +25,10 @@ Remove these stock packages from direct application dependencies:
 - `@prisma/client`
 - `@prisma/adapter-pg`
 
-Use `7.8.0-lossless.6` or newer. The historical
-`7.8.0-lossless.5` consumer lockfile identity is known, but the
-current prebuilt wrapper cannot reproduce the original client tarball
-bytes, so the wrapper rejects `.5` instead of serving changed bytes
-under that version.
+Use `7.8.0-lossless.7` or newer. Historical
+`7.8.0-lossless.5` and `7.8.0-lossless.6` identities are known, but
+the current wrapper rejects both instead of serving package bytes that
+do not match their immutable release identity.
 
 Build prisma-lossless before a consumer invokes the registry wrapper.
 The consumer supplies the exact package version but does not build the
@@ -48,7 +47,7 @@ and release artifacts on success or failure:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.6 \
+  --from-built 7.8.0-lossless.7 \
   -- corepack pnpm install --frozen-lockfile
 ```
 
@@ -72,7 +71,7 @@ installation stage, for example:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.6 \
+  --from-built 7.8.0-lossless.7 \
   -- \
   docker build \
     --build-arg PRISMA_LOSSLESS_DOCKER_REGISTRY_URL \
@@ -116,12 +115,12 @@ After changing dependencies and imports, reinstall and regenerate:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.6 \
+  --from-built 7.8.0-lossless.7 \
   -- corepack pnpm install --frozen-lockfile
 
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.6 \
+  --from-built 7.8.0-lossless.7 \
   -- corepack pnpm exec prisma-lossless generate
 ```
 

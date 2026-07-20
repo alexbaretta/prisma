@@ -35,8 +35,8 @@ import {
 
 const RUN_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION === '1'
 const VERSION = '7.8.0-lossless.999999'
-const HISTORICAL_VERSION = '7.8.0-lossless.5'
-const RECORDED_VERSION = '7.8.0-lossless.6'
+const HISTORICAL_VERSION = '7.8.0-lossless.6'
+const RECORDED_VERSION = '7.8.0-lossless.7'
 const CONSUMER_PNPM_VERSION = '11.1.1'
 const SOURCE_COMMIT = '0123456789abcdef0123456789abcdef01234567'
 const RECORDED_FIXTURE = readIndependentPrivateReleaseFixture(RECORDED_VERSION)
@@ -140,6 +140,12 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
 
     const result = JSON.parse(fs.readFileSync(verifyOutput, 'utf-8')) as {
       pnpmVersion: string
+      generatedClientVersion: string
+      generatedPackageVersion: string
+      generatedDependencyNames: string[]
+      generatedOutput: string
+      installedClientVersion: string
+      instantiatedClient: boolean
       losslessNumber: string
       packages: string[]
       installOutput: string
@@ -148,6 +154,15 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
     }
 
     expect(result.pnpmVersion).toBe(CONSUMER_PNPM_VERSION)
+    expect(result.generatedClientVersion).toBe(RECORDED_VERSION)
+    expect(result.generatedPackageVersion).toBe(RECORDED_VERSION)
+    expect(result.generatedDependencyNames).toContain('@prisma-lossless/client-runtime-utils')
+    expect(result.generatedDependencyNames).not.toContain('@prisma/client-runtime-utils')
+    expect(result.generatedOutput).toContain(`Generated Prisma Client (v${RECORDED_VERSION})`)
+    expect(result.generatedOutput).not.toContain('0.0.0')
+    expect(result.generatedOutput).not.toMatch(/Versions of .*don't match/)
+    expect(result.installedClientVersion).toBe(RECORDED_VERSION)
+    expect(result.instantiatedClient).toBe(true)
     expect(result.losslessNumber).toBe('9007199254740993')
     expect(result.packages).toEqual(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name))
     expect(result.storeWasEmpty).toBe(true)
@@ -168,7 +183,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
         consumerDir,
         builtDependencies(unavailableRoots),
       ),
-    ).rejects.toThrow(/Use 7\.8\.0-lossless\.6/)
+    ).rejects.toThrow(/Use 7\.8\.0-lossless\.7/)
     expectRootsRemoved(unavailableRoots)
 
     const manifest = prepareBuiltPrivateReleaseCandidates(RECORDED_VERSION, repoLocalReleaseRoot(root, 'mismatch'))
@@ -361,8 +376,44 @@ function writeVerifyScript(root: string, outputPath: string, storeDir: string, i
       const storeWasEmpty = fs.readdirSync(${JSON.stringify(storeDir)}).length === 0
       const modulesWereEmpty = !fs.existsSync(path.join(process.cwd(), 'node_modules'))
       const installOutput = run(${JSON.stringify(installArgs)})
+      fs.mkdirSync('prisma', { recursive: true })
+      fs.writeFileSync(
+        'prisma/schema.prisma',
+        [
+          'generator client {',
+          '  provider = "prisma-client-js"',
+          '}',
+          '',
+          'datasource db {',
+          '  provider = "postgresql"',
+          '}',
+          '',
+          'model JsonProbe {',
+          '  id Int @id @default(autoincrement())',
+          '  payload Json',
+          '}',
+          '',
+        ].join('\\n'),
+      )
+      const generatedOutput = run(['exec', 'prisma-lossless', 'generate', '--schema', 'prisma/schema.prisma', '--no-hints'])
       const consumerRequire = createRequire(path.join(process.cwd(), 'package.json'))
+      const { PrismaPg } = consumerRequire('@prisma-lossless/adapter-pg')
+      const installedClientPackageJsonPath = consumerRequire.resolve('@prisma-lossless/client/package.json')
+      const installedClientPackageJson = consumerRequire('@prisma-lossless/client/package.json')
+      const generatedPackageJsonPath = path.join(
+        path.dirname(installedClientPackageJsonPath),
+        '../../.prisma/client/package.json',
+      )
+      const generatedPackageJson = JSON.parse(
+        fs.readFileSync(generatedPackageJsonPath, 'utf-8'),
+      )
+      const { PrismaClient, Prisma } = consumerRequire('@prisma-lossless/client')
       const { LosslessNumber } = consumerRequire('@prisma-lossless/client/runtime/client')
+      const prisma = new PrismaClient({
+        adapter: new PrismaPg({
+          connectionString: 'postgresql://postgres:postgres@127.0.0.1:5432/prisma_lossless_identity',
+        }),
+      })
       const losslessNumber = new LosslessNumber('9007199254740993')
       const lockfile = fs.readFileSync('pnpm-lock.yaml', 'utf-8')
       const packages = ${JSON.stringify(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name))}
@@ -376,6 +427,17 @@ function writeVerifyScript(root: string, outputPath: string, storeDir: string, i
         ${JSON.stringify(outputPath)},
         JSON.stringify({
           pnpmVersion,
+          generatedClientVersion: Prisma.prismaVersion.client,
+          generatedDependencyNames: Object.keys(generatedPackageJson.dependencies ?? {}),
+          generatedPackageVersion: generatedPackageJson.version,
+          generatedOutput,
+          installedClientVersion: installedClientPackageJson.version,
+          instantiatedClient:
+            typeof PrismaClient === 'function' &&
+            prisma !== null &&
+            typeof prisma === 'object' &&
+            typeof prisma.$connect === 'function' &&
+            typeof prisma.$disconnect === 'function',
           losslessNumber: losslessNumber.toString(),
           packages,
           installOutput,

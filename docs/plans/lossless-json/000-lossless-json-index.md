@@ -243,7 +243,7 @@ Client metadata still reports the development placeholder version
 
 | ID  | Tasklet                                                                                 | Priority | Status | Dependencies |
 | --- | --------------------------------------------------------------------------------------- | -------- | ------ | ------------ |
-| 025 | [Fix generated client release identity](./025-fix-generated-client-release-identity.md) | High     | [ ]    | 024          |
+| 025 | [Fix generated client release identity](./025-fix-generated-client-release-identity.md) | High     | [DONE] | 024          |
 
 ## Execution Order
 
@@ -343,23 +343,26 @@ That rerun passed all migrate tests: `33` suites, `352` passed tests,
 
 ## Private Distribution Status
 
-Tasklets 015 through 024 are `[DONE]`. The current immutable private
-release validated for first-party use is `7.8.0-lossless.6`, served
+Tasklets 015 through 025 are `[DONE]`. The current immutable private
+release validated for first-party use is `7.8.0-lossless.7`, served
 through the ephemeral registry wrapper with the `lossless` dist-tag.
 
 The historical `7.8.0-lossless.5` identity is recorded as
 unavailable. GWEN's lockfile proves the original `.5` client tarball
 integrity, but the current prebuilt packaging path cannot reproduce
-those client bytes. The wrapper therefore rejects `.5` before
-starting Verdaccio and instructs consumers to use `.6`.
+those client bytes. The `7.8.0-lossless.6` identity is also recorded as
+unavailable because its generated Prisma Client metadata still carried
+the workspace development version `0.0.0`. The wrapper rejects both
+versions before starting Verdaccio and instructs consumers to use `.7`.
 
 The isolated npm consumer at
 `tmp/lossless-json-tasklet-019/consumer-7.8.0-lossless.5` previously
 validated the runtime behavior of the forked packages against the
 locally running PostgreSQL `18.3` server. Tasklet 024 supersedes its
 release identity proof with a temporary consumer whose lockfile is
-independent of the serving identity and pins all ten private packages
-to `7.8.0-lossless.6`.
+independent of the serving identity and pins all ten private packages.
+Tasklet 025 supersedes the usable private release identity with `.7`
+and proves generated client metadata in an external consumer.
 
 This closes the separate first-party consumption gap without
 publishing to the worldwide npm registry and without requiring a
@@ -396,6 +399,35 @@ scripts/lossless-private-registry-run.integration.test.ts` passed
   timeouts under full-suite load.
 - The failed CLI files were rerun in isolation with `--runInBand` and
   passed (`2` suites, `35` tests).
+
+Tasklet 025 validation:
+
+- `7.8.0-lossless.7` is the current usable immutable private release
+  identity. The `.5` and `.6` identities are recorded as unavailable
+  and rejected before Verdaccio startup.
+- Focused generator and release unit tests passed:
+  `packages/client-generator-js` generator tests (`8` tests) and the
+  release tooling unit suite (`33` tests).
+- The real ephemeral-registry external-consumer integration passed
+  outside the sandbox (`4` tests). It installed from an empty pnpm
+  store with consumer `pnpm v11.1.1`, ran `prisma-lossless generate`,
+  verified `Generated Prisma Client (v7.8.0-lossless.7)`, verified no
+  version-mismatch warning, checked generated package metadata and
+  `Prisma.prismaVersion.client`, verified `LosslessNumber`, proved
+  repeat package integrity, and checked cleanup.
+- Focused Prettier and ESLint checks passed for touched files.
+- `pnpm build` failed in the sandbox at `tsx` IPC socket creation, then
+  passed outside the sandbox (`44` successful, `44` total).
+- Standalone `tsc --noEmit` failed with broad repository diagnostics,
+  including transient release-staging sources under `tmp/` and existing
+  fixture type drift. The repo-root build remains the passing build
+  gate for this tasklet.
+- Root `pnpm test` with SQL Server, CockroachDB, and MongoDB skipped
+  failed once in `@prisma/migrate` because the local PostgreSQL test
+  database `tests-migrate-prisma-config-extensions` already existed and
+  removed one expected snapshot line. After dropping that stale local
+  test database, `pnpm --filter @prisma/migrate test` passed (`33`
+  suites, `341` passed tests, `2` skipped tests, `543` snapshots).
 
 ## Validation Bug Review: Client Type Harness Package Rename
 
