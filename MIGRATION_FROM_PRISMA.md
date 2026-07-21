@@ -10,11 +10,11 @@ Replace stock Prisma packages in your application:
 ```json
 {
   "dependencies": {
-    "@prisma-lossless/client": "7.8.0-lossless.11",
-    "@prisma-lossless/adapter-pg": "7.8.0-lossless.11"
+    "@prisma-lossless/client": "7.8.0-lossless.12",
+    "@prisma-lossless/adapter-pg": "7.8.0-lossless.12"
   },
   "devDependencies": {
-    "prisma-lossless": "7.8.0-lossless.11"
+    "@prisma-lossless/cli": "7.8.0-lossless.12"
   }
 }
 ```
@@ -31,17 +31,18 @@ consumer repository before running a normal install:
 ```yaml
 allowBuilds:
   '@prisma-lossless/engines': true
-  prisma-lossless: true
+  '@prisma-lossless/cli': true
 
 onlyBuiltDependencies:
   - '@prisma-lossless/engines'
-  - prisma-lossless
+  - '@prisma-lossless/cli'
 ```
 
-Use `7.8.0-lossless.11` or newer. Historical
+Use `7.8.0-lossless.12` or newer. Historical
 `7.8.0-lossless.5`, `7.8.0-lossless.6`,
 `7.8.0-lossless.7`, `7.8.0-lossless.8`,
-`7.8.0-lossless.9`, and `7.8.0-lossless.10`
+`7.8.0-lossless.9`, `7.8.0-lossless.10`, and
+`7.8.0-lossless.11`
 identities are known, but the current wrapper
 rejects them instead of serving package bytes that do not match their
 immutable release identity or cannot be reproduced from a clean
@@ -49,19 +50,30 @@ checkout. The `.9` identity reproduces, but it omits required engines
 lifecycle JavaScript files and cannot complete a normal cold install.
 The `.10` identity installs, but it was produced by staging package
 metadata from source manifests that still used development versions and
-workspace dependency specifiers.
+workspace dependency specifiers. The `.11` identity uses the unscoped
+`prisma-lossless` npm package name for the CLI and cannot be published
+under the `@prisma-lossless` organization.
+
+After `7.8.0-lossless.12` is published to npmjs.org, install it from
+the public registry with normal package-manager commands:
+
+```sh
+pnpm add @prisma-lossless/client@7.8.0-lossless.12 \
+  @prisma-lossless/adapter-pg@7.8.0-lossless.12
+pnpm add -D @prisma-lossless/cli@7.8.0-lossless.12
+```
 
 Run each consumer install or build through the ephemeral registry
-wrapper. The wrapper builds prisma-lossless, transiently packs the
-release graph, starts its own Verdaccio process on an OS-assigned
-loopback port, publishes the exact packages, runs the command after
-`--`, and removes the registry and release artifacts on success or
-failure:
+wrapper only when testing an unpublished local release. The wrapper
+builds prisma-lossless, transiently packs the release graph, starts its
+own Verdaccio process on an OS-assigned loopback port, publishes the
+exact packages, runs the command after `--`, and removes the registry
+and release artifacts on success or failure:
 
 ```sh
 pnpm exec tsx scripts/private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.11 \
+  --from-built 7.8.0-lossless.12 \
   -- corepack pnpm install --frozen-lockfile
 ```
 
@@ -85,7 +97,7 @@ installation stage, for example:
 ```sh
 pnpm exec tsx scripts/private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.11 \
+  --from-built 7.8.0-lossless.12 \
   -- \
   docker build \
     --build-arg PRISMA_LOSSLESS_DOCKER_REGISTRY_URL \
@@ -111,7 +123,7 @@ import { PrismaPg } from '@prisma-lossless/adapter-pg'
 Update Prisma config imports:
 
 ```ts
-import { defineConfig } from 'prisma-lossless/config'
+import { defineConfig } from '@prisma-lossless/cli/config'
 ```
 
 Update CLI commands:
@@ -129,12 +141,12 @@ After changing dependencies and imports, reinstall and regenerate:
 ```sh
 pnpm exec tsx scripts/private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.11 \
+  --from-built 7.8.0-lossless.12 \
   -- corepack pnpm install --frozen-lockfile
 
 pnpm exec tsx scripts/private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.11 \
+  --from-built 7.8.0-lossless.12 \
   -- corepack pnpm exec prisma-lossless generate
 ```
 

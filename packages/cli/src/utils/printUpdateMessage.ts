@@ -3,7 +3,7 @@ import type { Check } from 'checkpoint-client'
 import { blue, bold } from 'kleur/colors'
 
 const isPrismaInstalledGlobally = isCurrentBinInstalledGlobally()
-const PRISMA_CLI_PACKAGE_NAME = 'prisma-lossless'
+const PRISMA_CLI_PACKAGE_NAME = '@prisma-lossless/cli'
 const PRISMA_CLIENT_PACKAGE_NAME = '@prisma-lossless/client'
 
 export function printUpdateMessage(checkResult: Check.Result | 0 | void): void {

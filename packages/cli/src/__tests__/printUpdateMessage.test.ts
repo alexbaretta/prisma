@@ -44,7 +44,7 @@ test('normal release', () => {
     "┌─────────────────────────────────────────────────────────┐
     │  Update available 4.5.0 -> 4.6.0                        │
     │  Run the following to update                            │
-    │    npm i --save-dev prisma-lossless@4.6.0               │
+    │    npm i --save-dev @prisma-lossless/cli@4.6.0               │
     │    npm i @prisma-lossless/client@4.6.0                  │
     └─────────────────────────────────────────────────────────┘"
   `)
@@ -56,7 +56,7 @@ test('integration version with long name', () => {
     "┌───────────────────────────────────────────────────────────────────────────────┐
     │  Update available 4.5.0-integration-use-keep-alive-for-node-fetch.1 -> 4.6.0  │
     │  Run the following to update                                                  │
-    │    npm i --save-dev prisma-lossless@4.6.0                                     │
+    │    npm i --save-dev @prisma-lossless/cli@4.6.0                                     │
     │    npm i @prisma-lossless/client@4.6.0                                        │
     └───────────────────────────────────────────────────────────────────────────────┘"
   `)

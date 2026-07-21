@@ -287,6 +287,16 @@ release script names now that the fork identity is authoritative.
 | --- | --------------------------------------------------------------------------------------- | -------- | ------ | ------------ |
 | 029 | [Build from wrapper and rename scripts](./029-build-from-wrapper-and-rename-scripts.md) | High     | [DONE] | 028          |
 
+### Sprint 16: Public Npm Publication
+
+Sprint 16 adapts Prisma's existing npm publish tooling for the
+prisma-lossless public package graph and publishes the validated
+lossless release to npmjs.org.
+
+| ID  | Tasklet                                                           | Priority | Status | Dependencies |
+| --- | ----------------------------------------------------------------- | -------- | ------ | ------------ |
+| 030 | [Publish public npm release](./030-publish-public-npm-release.md) | High     | [ ]    | 029          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This

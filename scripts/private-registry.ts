@@ -134,10 +134,6 @@ packages:
     access: $all
     publish: $authenticated
     unpublish: $authenticated
-  'prisma-lossless':
-    access: $all
-    publish: $authenticated
-    unpublish: $authenticated
   '@prisma/*':
     access: $all
     publish: $authenticated

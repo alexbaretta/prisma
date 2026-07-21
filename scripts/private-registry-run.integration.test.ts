@@ -31,7 +31,7 @@ const RUN_FRESH_CHECKOUT_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_FRESH_CHE
 const PRESERVE_INTEGRATION_ROOT = process.env.PRISMA_LOSSLESS_PRESERVE_INTEGRATION_ROOT === '1'
 const VERSION = '7.8.0-lossless.999999'
 const HISTORICAL_VERSION = '7.8.0-lossless.9'
-const RECORDED_VERSION = '7.8.0-lossless.11'
+const RECORDED_VERSION = '7.8.0-lossless.12'
 const CONSUMER_PNPM_VERSION = '11.1.1'
 const SOURCE_COMMIT = '0123456789abcdef0123456789abcdef01234567'
 const RECORDED_FIXTURE = readIndependentPrivateReleaseFixture(RECORDED_VERSION)
@@ -429,7 +429,7 @@ function fixtureConsumerCommand(outputPath: string): string[] {
     const fs = require('node:fs');
     const result = spawnSync(
       'npm',
-      ['view', 'prisma-lossless@${VERSION}', 'version', '--json'],
+      ['view', '@prisma-lossless/cli@${VERSION}', 'version', '--json'],
       { encoding: 'utf-8', env: process.env },
     );
     if (result.status !== 0) {
@@ -482,11 +482,11 @@ function writeRealConsumerPackageJson(consumerDir: string): void {
     [
       'allowBuilds:',
       "  '@prisma-lossless/engines': true",
-      '  prisma-lossless: true',
+      "  '@prisma-lossless/cli': true",
       '',
       'onlyBuiltDependencies:',
       "  - '@prisma-lossless/engines'",
-      '  - prisma-lossless',
+      "  - '@prisma-lossless/cli'",
       '',
       'packages:',
       '  - .',

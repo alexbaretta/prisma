@@ -30,7 +30,8 @@ import {
   promptTemplateSelection,
 } from './template-scaffold'
 
-const PRISMA_CLI_PACKAGE_NAME = 'prisma-lossless'
+const PRISMA_CLI_BIN_NAME = 'prisma-lossless'
+const PRISMA_CLI_PACKAGE_NAME = '@prisma-lossless/cli'
 const PRISMA_CLIENT_PACKAGE_NAME = '@prisma-lossless/client'
 const PRISMA_CLIENT_NODE_MODULES_PATH = ['node_modules', '@prisma-lossless', 'client']
 
@@ -39,7 +40,7 @@ const PRISMA_CLIENT_NODE_MODULES_PATH = ['node_modules', '@prisma-lossless', 'cl
  * Returns the absolute path if found, null otherwise.
  */
 function findLocalPrismaBin(baseDir: string): string | null {
-  const candidate = path.join(baseDir, 'node_modules', '.bin', PRISMA_CLI_PACKAGE_NAME)
+  const candidate = path.join(baseDir, 'node_modules', '.bin', PRISMA_CLI_BIN_NAME)
   return fs.existsSync(candidate) ? candidate : null
 }
 
@@ -208,12 +209,12 @@ ${bold('Examples')}
             templateScaffolded = steps.template === 'completed'
             if (!templateScaffolded) {
               return new HelpError(
-                `\n${bold(red('!'))} Template download failed and no project exists to fall back to.\n\nInitialize a project first, then re-run ${bold(`${PRISMA_CLI_PACKAGE_NAME} bootstrap`)}:\n  ${dim('$')} npm init -y ${dim('  (or pnpm init / yarn init / bun init)')}\n  ${dim('$')} npx ${PRISMA_CLI_PACKAGE_NAME} bootstrap`,
+                `\n${bold(red('!'))} Template download failed and no project exists to fall back to.\n\nInitialize a project first, then re-run ${bold(`${PRISMA_CLI_BIN_NAME} bootstrap`)}:\n  ${dim('$')} npm init -y ${dim('  (or pnpm init / yarn init / bun init)')}\n  ${dim('$')} npx ${PRISMA_CLI_PACKAGE_NAME} bootstrap`,
               )
             }
           } else {
             return new HelpError(
-              `\n${bold(red('!'))} Cannot proceed without a project.\n\nInitialize a project first, then re-run ${bold(`${PRISMA_CLI_PACKAGE_NAME} bootstrap`)}:\n  ${dim('$')} npm init -y ${dim('  (or pnpm init / yarn init / bun init)')}\n  ${dim('$')} npx ${PRISMA_CLI_PACKAGE_NAME} bootstrap`,
+              `\n${bold(red('!'))} Cannot proceed without a project.\n\nInitialize a project first, then re-run ${bold(`${PRISMA_CLI_BIN_NAME} bootstrap`)}:\n  ${dim('$')} npm init -y ${dim('  (or pnpm init / yarn init / bun init)')}\n  ${dim('$')} npx ${PRISMA_CLI_PACKAGE_NAME} bootstrap`,
             )
           }
         } else if (templateName) {
@@ -279,7 +280,7 @@ ${bold('Examples')}
           await emitStepFailed(telemetryCtx, 'install_deps', sanitizeErrorMessage(msg))
           return new HelpError(
             `\n${bold(red('!'))} Dependency installation failed. Please install dependencies manually and re-run ${bold(
-              `${PRISMA_CLI_PACKAGE_NAME} bootstrap`,
+              `${PRISMA_CLI_BIN_NAME} bootstrap`,
             )}.`,
           )
         }
@@ -406,7 +407,7 @@ ${bold('Examples')}
       // it uses the Management API shipped with this CLI version.
       //
       // `migrate` and `seed` are ORM concerns that depend on the user's local Prisma setup.
-      // A user may run `npx prisma-lossless@latest bootstrap` on a project that has an older Prisma
+      // A user may run `npx @prisma-lossless/cli@latest bootstrap` on a project that has an older Prisma
       // version installed locally (e.g., Prisma 6 with `url` in schema.prisma instead of
       // prisma.config.ts). Running migrate in-process would force this CLI's engine version
       // on their project, causing version mismatches or hard failures.
@@ -424,7 +425,7 @@ ${bold('Examples')}
         const modelSummary =
           modelCount > 0 ? ` ${modelCount} model${modelCount === 1 ? '' : 's'} (${modelNames.join(', ')})` : ' schema'
         const shouldMigrate = await confirm({
-          message: `Apply${modelSummary} to database with ${PRISMA_CLI_PACKAGE_NAME} migrate dev?`,
+          message: `Apply${modelSummary} to database with ${PRISMA_CLI_BIN_NAME} migrate dev?`,
           default: true,
         })
 

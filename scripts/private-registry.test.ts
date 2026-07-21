@@ -60,10 +60,10 @@ describe('lossless private registry contract', () => {
     const config = buildVerdaccioConfig(getRegistryRuntimePaths('/private/tmp/prisma-lossless-test-registry'))
 
     expect(config).toContain("'@prisma-lossless/*':")
-    expect(config).toContain("'prisma-lossless':")
+    expect(config).not.toContain("'prisma-lossless':")
     expect(config).toContain(`max_body_size: ${PRIVATE_REGISTRY_MAX_BODY_SIZE}`)
     expect(config).toMatch(
-      /'@prisma-lossless\/\*':\n {4}access: \$all\n {4}publish: \$authenticated\n {4}unpublish: \$authenticated\n {2}'prisma-lossless':/,
+      /'@prisma-lossless\/\*':\n {4}access: \$all\n {4}publish: \$authenticated\n {4}unpublish: \$authenticated\n {2}'@prisma\/\*':/,
     )
   })
 })

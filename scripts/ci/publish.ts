@@ -12,8 +12,17 @@ import { blue, bold, cyan, dim, magenta, red, underline } from 'kleur/colors'
 import pRetry from 'p-retry'
 import semver from 'semver'
 
+import {
+  assertAvailablePrivateReleaseIdentity,
+  readPrivateReleaseIdentity,
+  RELEASE_PACKAGES,
+  validateReleasePackageMetadata,
+} from '../private-release'
+
 const onlyPackages = process.env.ONLY_PACKAGES ? process.env.ONLY_PACKAGES.split(',') : null
 const skipPackages = process.env.SKIP_PACKAGES ? process.env.SKIP_PACKAGES.split(',') : null
+const LOSSLESS_PUBLIC_DIST_TAG = 'lossless'
+export const LOSSLESS_PUBLIC_PACKAGE_NAMES = RELEASE_PACKAGES.map((releasePackage) => releasePackage.name)
 
 async function getLatestCommitHash(dir: string): Promise<string> {
   if (process.env.GITHUB_CONTEXT) {
@@ -43,6 +52,20 @@ async function runResult(cwd: string, cmd: string): Promise<string> {
   } catch (_e) {
     const e = _e as ExecaError
     throw new Error(red(`Error running ${bold(cmd)} in ${underline(cwd)}:`) + (e.stderr || e.stack || e.message))
+  }
+}
+
+async function runResultOrError(cwd: string, cmd: string): Promise<{ status: number; stdout: string; stderr: string }> {
+  try {
+    const result = await execaCommand(cmd, {
+      cwd,
+      stdio: 'pipe',
+      shell: true,
+    })
+    return { status: result.exitCode, stdout: result.stdout, stderr: result.stderr }
+  } catch (_e) {
+    const e = _e as ExecaError
+    return { status: e.exitCode ?? 1, stdout: e.stdout ?? '', stderr: e.stderr ?? e.message }
   }
 }
 
@@ -119,6 +142,7 @@ export type Packages = { [packageName: string]: Package }
 export type PublishCommandFlags = {
   '--test'?: boolean
   '--publish'?: boolean
+  '--lossless-public-release'?: string
 }
 
 export function shouldUseLocalTestVersion(args: PublishCommandFlags, dryRun: boolean): boolean {
@@ -126,13 +150,72 @@ export function shouldUseLocalTestVersion(args: PublishCommandFlags, dryRun: boo
 }
 
 export function getLocalTestVersion(packages: Packages): string {
-  const cliPackage = packages['prisma-lossless'] ?? packages.prisma
+  const cliPackage = packages['@prisma-lossless/cli'] ?? packages.prisma
 
   if (!cliPackage) {
     throw new Error('Could not find local Prisma CLI package version for test-only run')
   }
 
   return cliPackage.version
+}
+
+export function filterPublishOrderToPackages(publishOrder: string[][], packageNames: readonly string[]): string[][] {
+  const packageNameSet = new Set(packageNames)
+
+  return publishOrder
+    .map((batch) => batch.filter((packageName) => packageNameSet.has(packageName)))
+    .filter((batch) => batch.length > 0)
+}
+
+export function getLosslessPublicPackages(packages: Packages): Package[] {
+  return LOSSLESS_PUBLIC_PACKAGE_NAMES.map((packageName) => {
+    const releasePackage = packages[packageName]
+
+    if (!releasePackage) {
+      throw new Error(`Lossless public release package is missing from the workspace: ${packageName}`)
+    }
+
+    if (releasePackage.private) {
+      throw new Error(`Lossless public release package is marked private: ${packageName}`)
+    }
+
+    return releasePackage
+  })
+}
+
+export function assertLosslessPublicPackageMetadata(packages: Packages, version: string): void {
+  const releaseIdentity = readPrivateReleaseIdentity(version)
+  assertAvailablePrivateReleaseIdentity(releaseIdentity)
+
+  for (const releasePackage of getLosslessPublicPackages(packages)) {
+    validateReleasePackageMetadata(
+      releasePackage.packageJson as Record<string, unknown>,
+      version,
+      releaseIdentity.sourceCommit,
+    )
+  }
+}
+
+async function assertLosslessPublicVersionsUnpublished(
+  packageNames: readonly string[],
+  version: string,
+): Promise<void> {
+  for (const packageName of packageNames) {
+    const packageSpec = `${packageName}@${version}`
+    const result = await runResultOrError(
+      '.',
+      `npm view ${packageSpec} version --json --registry https://registry.npmjs.org/`,
+    )
+    const output = `${result.stdout}\n${result.stderr}`
+
+    if (result.status === 0) {
+      throw new Error(`Refusing to publish ${packageSpec}; that version already exists on npmjs.org`)
+    }
+
+    if (!output.includes('E404') && !output.includes('404 Not Found')) {
+      throw new Error(`Could not verify npm absence for ${packageSpec}: ${output.trim()}`)
+    }
+  }
 }
 
 export function getPackageDependencies(packages: RawPackages): Packages {
@@ -481,11 +564,8 @@ async function publish() {
     '--release': String, // TODO What does that do? Can we remove this? probably
     '--test': Boolean,
     '--custom-dist-tag': String,
+    '--lossless-public-release': String,
   })
-
-  if (!process.env.GITHUB_REF_NAME) {
-    throw new Error(`Missing env var GITHUB_REF_NAME`)
-  }
 
   if (process.env.DRY_RUN === 'true') {
     console.log(blue(bold(`\nThe DRY_RUN env var is set, so we'll do a dry run!\n`)))
@@ -493,8 +573,13 @@ async function publish() {
   }
 
   const dryRun = args['--dry-run'] ?? false
+  const losslessPublicRelease = args['--lossless-public-release']
 
-  if (args['--publish'] && process.env.RELEASE_VERSION) {
+  if (losslessPublicRelease) {
+    args['--publish'] = true
+  }
+
+  if (args['--publish'] && process.env.RELEASE_VERSION && !losslessPublicRelease) {
     if (args['--release']) {
       throw new Error(`Can't provide env var RELEASE_VERSION and --release at the same time`)
     }
@@ -511,6 +596,10 @@ async function publish() {
 
   if (!args['--test'] && !args['--publish'] && !dryRun) {
     throw new Error('Please either provide --test or --publish or --dry-run')
+  }
+
+  if (args['--release'] && losslessPublicRelease) {
+    throw new Error(`Can't provide --release and --lossless-public-release at the same time`)
   }
 
   if (args['--release']) {
@@ -545,15 +634,23 @@ async function publish() {
   let tag: undefined | string
   let tagForEcosystemTestsCheck: undefined | string
 
-  const patchBranch = getPatchBranch()
-  console.log({ patchBranch })
-
   // TODO: can be refactored into one branch utility
   const branch = await getPrismaBranch()
   console.log({ branch })
 
+  const patchBranch = getPatchBranch(branch)
+  console.log({ patchBranch })
+
   // For branches that are named "integration/" we publish to the integration npm tag
-  if (shouldUseLocalTestVersion(args, dryRun)) {
+  if (losslessPublicRelease) {
+    if (!semver.valid(losslessPublicRelease)) {
+      throw new Error(`Lossless public release version ${bold(underline(losslessPublicRelease))} is not valid semver.`)
+    }
+
+    assertLosslessPublicPackageMetadata(packages, losslessPublicRelease)
+    prismaVersion = losslessPublicRelease
+    tag = args['--custom-dist-tag'] ?? LOSSLESS_PUBLIC_DIST_TAG
+  } else if (shouldUseLocalTestVersion(args, dryRun)) {
     prismaVersion = getLocalTestVersion(packages)
     tag = 'test'
   } else if (branch && (process.env.FORCE_INTEGRATION_RELEASE === 'true' || branch.startsWith('integration/'))) {
@@ -619,16 +716,28 @@ Check them out at https://github.com/prisma/ecosystem-tests/actions?query=workfl
       }
     }
 
-    const publishOrder = filterPublishOrder(getPublishOrder(packages), ['@prisma-lossless/integration-tests'])
+    const publishOrder = losslessPublicRelease
+      ? filterPublishOrderToPackages(getPublishOrder(packages), LOSSLESS_PUBLIC_PACKAGE_NAMES)
+      : filterPublishOrder(getPublishOrder(packages), ['@prisma-lossless/integration-tests'])
+
+    if (losslessPublicRelease) {
+      await assertLosslessPublicVersionsUnpublished(LOSSLESS_PUBLIC_PACKAGE_NAMES, losslessPublicRelease)
+    }
 
     if (!dryRun) {
       console.log(`Let's first do a dry run!`)
-      await publishPackages(packages, publishOrder, true, prismaVersion, tag, args['--release'])
+      await publishPackages(packages, publishOrder, true, prismaVersion, tag, args['--release'], {
+        staticPackageMetadata: losslessPublicRelease !== undefined,
+        executeNpmDryRun: losslessPublicRelease !== undefined,
+      })
       console.log(`Waiting 5 sec so you can check it out first...`)
       await new Promise((r) => setTimeout(r, 5_000))
     }
 
-    await publishPackages(packages, publishOrder, dryRun, prismaVersion, tag, args['--release'])
+    await publishPackages(packages, publishOrder, dryRun, prismaVersion, tag, args['--release'], {
+      staticPackageMetadata: losslessPublicRelease !== undefined,
+      executeNpmDryRun: losslessPublicRelease !== undefined,
+    })
 
     const enginesCommitHash = getEnginesCommitHash()
     const enginesCommitInfo = await getCommitInfo('prisma-engines', enginesCommitHash)
@@ -728,6 +837,7 @@ async function publishPackages(
   prismaVersion: string,
   tag: string,
   releaseVersion?: string,
+  options: { staticPackageMetadata?: boolean; executeNpmDryRun?: boolean } = {},
 ): Promise<void> {
   // we need to release a new `prisma` CLI in all cases.
   // if there is a change in prisma-client-js, it will also use this new version
@@ -796,33 +906,39 @@ async function publishPackages(
       // Why is this needed?
       // Was introduced in the first version of this script on Apr 14, 2020
       // https://github.com/prisma/prisma/commit/7d6a26c1777c59ee945356687673102de4b1fe55#diff-51cd3eaba5264dc956e45fabcc02d5d21d8a8c473bd1bd00a297f9f4550c115bR790-R797
-      const prismaDeps = [...pkg.uses, ...pkg.usesDev]
-      if (prismaDeps.length > 0) {
-        await pRetry(
-          async () => {
-            await run(pkgDir, `pnpm update ${prismaDeps.join(' ')} --filter "${pkgName}"`, dryRun)
-          },
-          {
-            retries: 6,
-            onFailedAttempt: (e) => {
-              console.error(e)
+      if (options.staticPackageMetadata) {
+        if (pkg.version !== newVersion) {
+          throw new Error(`${pkgName} records ${pkg.version}; expected public release ${newVersion}`)
+        }
+      } else {
+        const prismaDeps = [...pkg.uses, ...pkg.usesDev]
+        if (prismaDeps.length > 0) {
+          await pRetry(
+            async () => {
+              await run(pkgDir, `pnpm update ${prismaDeps.join(' ')} --filter "${pkgName}"`, dryRun)
             },
-          },
-        )
-      }
+            {
+              retries: 6,
+              onFailedAttempt: (e) => {
+                console.error(e)
+              },
+            },
+          )
+        }
 
-      // set the version in package.json for current package
-      await writeVersion(pkgDir, newVersion, dryRun)
+        // set the version in package.json for current package
+        await writeVersion(pkgDir, newVersion, dryRun)
 
-      // For package `prisma`, get latest commit hash (that is being released)
-      // and put into `prisma.prismaCommit` in `package.json` before publishing
-      if (pkgName === 'prisma') {
-        const latestCommitHash = await getLatestCommitHash('.')
-        await writeToPkgJson(pkgDir, (pkg) => {
-          // Note: this is the only non-deprecated usage of `prisma` config in `package.json`.
-          // It's for internal usage only.
-          pkg.prisma.prismaCommit = latestCommitHash
-        })
+        // For package `prisma`, get latest commit hash (that is being released)
+        // and put into `prisma.prismaCommit` in `package.json` before publishing
+        if (pkgName === 'prisma') {
+          const latestCommitHash = await getLatestCommitHash('.')
+          await writeToPkgJson(pkgDir, (pkg) => {
+            // Note: this is the only non-deprecated usage of `prisma` config in `package.json`.
+            // It's for internal usage only.
+            pkg.prisma.prismaCommit = latestCommitHash
+          })
+        }
       }
 
       if (!isSkipped(pkgName)) {
@@ -834,7 +950,9 @@ async function publishPackages(
          *  - Your working directory is clean (there are no uncommitted changes).
          *  - The branch is up-to-date.
          */
-        await run(pkgDir, `pnpm publish --no-git-checks --access public --tag ${tag}`, dryRun)
+        const dryRunFlag = dryRun && options.executeNpmDryRun ? ' --dry-run' : ''
+        const commandDryRun = dryRun && !options.executeNpmDryRun
+        await run(pkgDir, `pnpm publish --no-git-checks --access public --tag ${tag}${dryRunFlag}`, commandDryRun)
       }
     }
   }
@@ -879,13 +997,17 @@ async function writeVersion(pkgDir: string, version: string, dryRun?: boolean) {
   }
 }
 
-async function getPrismaBranch(): Promise<string | undefined> {
-  if (process.env.GITHUB_REF_NAME) {
-    return process.env.GITHUB_REF_NAME
+export async function getPrismaBranch(
+  env: Pick<NodeJS.ProcessEnv, 'GITHUB_REF_NAME'> = process.env,
+  readCurrentBranch: () => Promise<string> = () =>
+    runResult('.', 'git rev-parse --symbolic-full-name --abbrev-ref HEAD'),
+): Promise<string | undefined> {
+  if (env.GITHUB_REF_NAME && env.GITHUB_REF_NAME.length > 0) {
+    return env.GITHUB_REF_NAME
   }
+
   try {
-    // TODO: this can probably be simplified, we don't publish locally, remove?
-    return await runResult('.', 'git rev-parse --symbolic-full-name --abbrev-ref HEAD')
+    return await readCurrentBranch()
   } catch (e) {}
 
   return undefined
@@ -904,13 +1026,13 @@ async function areEcosystemTestsPassing(tag: string): Promise<boolean> {
   return res.includes('passing')
 }
 
-function getPatchBranch() {
-  if (process.env.GITHUB_REF_NAME) {
-    const versions = getSemverFromPatchBranch(process.env.GITHUB_REF_NAME)
+export function getPatchBranch(branch: string | undefined | null): string | null {
+  if (branch) {
+    const versions = getSemverFromPatchBranch(branch)
     console.debug('versions from patch branch:', versions)
 
     if (versions !== undefined) {
-      return process.env.GITHUB_REF_NAME
+      return branch
     }
   }
 

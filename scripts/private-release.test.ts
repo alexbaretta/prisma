@@ -55,29 +55,32 @@ describe('lossless private release graph', () => {
     const staleChunkIdentity = readPrivateReleaseIdentity('7.8.0-lossless.8')
     const missingLifecycleIdentity = readPrivateReleaseIdentity('7.8.0-lossless.9')
     const stagedMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.10')
-    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.11')
+    const unscopedPublicIdentity = readPrivateReleaseIdentity('7.8.0-lossless.11')
+    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.12')
     const historicalFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.5')
-    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.11')
+    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.12')
 
     expect(identity.sourceCommit).toBe('f98f2e0f42cd7d9d9556567f9236c98eed00da16')
     expect(identity.status).toBe('unavailable')
-    expect(identity.replacementVersion).toBe('7.8.0-lossless.11')
+    expect(identity.replacementVersion).toBe('7.8.0-lossless.12')
     expect(retiredIdentity.status).toBe('unavailable')
-    expect(retiredIdentity.replacementVersion).toBe('7.8.0-lossless.11')
+    expect(retiredIdentity.replacementVersion).toBe('7.8.0-lossless.12')
     expect(randomMapIdentity.status).toBe('unavailable')
-    expect(randomMapIdentity.replacementVersion).toBe('7.8.0-lossless.11')
+    expect(randomMapIdentity.replacementVersion).toBe('7.8.0-lossless.12')
     expect(staleChunkIdentity.status).toBe('unavailable')
-    expect(staleChunkIdentity.replacementVersion).toBe('7.8.0-lossless.11')
+    expect(staleChunkIdentity.replacementVersion).toBe('7.8.0-lossless.12')
     expect(missingLifecycleIdentity.status).toBe('unavailable')
-    expect(missingLifecycleIdentity.replacementVersion).toBe('7.8.0-lossless.11')
+    expect(missingLifecycleIdentity.replacementVersion).toBe('7.8.0-lossless.12')
     expect(stagedMetadataIdentity.status).toBe('unavailable')
-    expect(stagedMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.11')
+    expect(stagedMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.12')
     expect(identity.packages).toEqual(
       historicalFixture.packages.map(({ name, integrity }) => ({
         name,
         integrity,
       })),
     )
+    expect(unscopedPublicIdentity.status).toBe('unavailable')
+    expect(unscopedPublicIdentity.replacementVersion).toBe('7.8.0-lossless.12')
     expect(currentIdentity.status).toBe('available')
     expect(identity.packages).toHaveLength(RELEASE_PACKAGES.length)
     expect(identity.packages[1]).toEqual({
@@ -100,6 +103,7 @@ describe('lossless private release graph', () => {
     const staleChunkIdentity = readPrivateReleaseIdentity('7.8.0-lossless.8')
     const missingLifecycleIdentity = readPrivateReleaseIdentity('7.8.0-lossless.9')
     const stagedMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.10')
+    const unscopedPublicIdentity = readPrivateReleaseIdentity('7.8.0-lossless.11')
 
     expect(() => assertAvailablePrivateReleaseIdentity(identity)).toThrow(
       /Private release 7\.8\.0-lossless\.5 is recorded as unavailable/,
@@ -119,12 +123,16 @@ describe('lossless private release graph', () => {
     expect(() => assertAvailablePrivateReleaseIdentity(stagedMetadataIdentity)).toThrow(
       /Private release 7\.8\.0-lossless\.10 is recorded as unavailable/,
     )
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7\.8\.0-lossless\.11/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.6')).toThrow(/Use 7\.8\.0-lossless\.11/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.7')).toThrow(/Use 7\.8\.0-lossless\.11/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.8')).toThrow(/Use 7\.8\.0-lossless\.11/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.9')).toThrow(/Use 7\.8\.0-lossless\.11/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.10')).toThrow(/Use 7\.8\.0-lossless\.11/)
+    expect(() => assertAvailablePrivateReleaseIdentity(unscopedPublicIdentity)).toThrow(
+      /Private release 7\.8\.0-lossless\.11 is recorded as unavailable/,
+    )
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7\.8\.0-lossless\.12/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.6')).toThrow(/Use 7\.8\.0-lossless\.12/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.7')).toThrow(/Use 7\.8\.0-lossless\.12/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.8')).toThrow(/Use 7\.8\.0-lossless\.12/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.9')).toThrow(/Use 7\.8\.0-lossless\.12/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.10')).toThrow(/Use 7\.8\.0-lossless\.12/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.11')).toThrow(/Use 7\.8\.0-lossless\.12/)
   })
 
   test('rejects incomplete or mismatched release identities', () => {
@@ -259,7 +267,7 @@ describe('lossless private release graph', () => {
       '@prisma-lossless/client-runtime-utils',
       '@prisma-lossless/adapter-pg',
       '@prisma-lossless/client',
-      'prisma-lossless',
+      '@prisma-lossless/cli',
     ])
     expect(() => assertReleaseGraphDependencyOrder()).not.toThrow()
   })
@@ -393,35 +401,39 @@ describe('lossless private release graph', () => {
           fs.readFileSync(path.join(process.cwd(), releasePackage.sourceDir, 'package.json'), 'utf-8'),
         )
 
-        validateReleasePackageMetadata(packageJson, '7.8.0-lossless.11', sourceCommit)
+        validateReleasePackageMetadata(packageJson, '7.8.0-lossless.12', sourceCommit)
         return [releasePackage.name, packageJson]
       }),
     )
     const clientPackageJson = manifests.get('@prisma-lossless/client')
-    const cliPackageJson = manifests.get('prisma-lossless')
+    const cliPackageJson = manifests.get('@prisma-lossless/cli')
 
     expect(clientPackageJson).toMatchObject({
-      version: '7.8.0-lossless.11',
+      version: '7.8.0-lossless.12',
       dependencies: {
-        '@prisma-lossless/client-runtime-utils': '7.8.0-lossless.11',
+        '@prisma-lossless/client-runtime-utils': '7.8.0-lossless.12',
       },
       peerDependencies: {
-        'prisma-lossless': '7.8.0-lossless.11',
+        '@prisma-lossless/cli': '7.8.0-lossless.12',
       },
     })
     expect(cliPackageJson).toMatchObject({
-      version: '7.8.0-lossless.11',
+      name: '@prisma-lossless/cli',
+      version: '7.8.0-lossless.12',
       dependencies: {
-        '@prisma-lossless/config': '7.8.0-lossless.11',
-        '@prisma-lossless/engines': '7.8.0-lossless.11',
+        '@prisma-lossless/config': '7.8.0-lossless.12',
+        '@prisma-lossless/engines': '7.8.0-lossless.12',
+      },
+      bin: {
+        'prisma-lossless': 'build/index.js',
       },
     })
 
     expect(manifests.get('@prisma-lossless/adapter-pg')).toMatchObject({
       name: '@prisma-lossless/adapter-pg',
-      version: '7.8.0-lossless.11',
+      version: '7.8.0-lossless.12',
       dependencies: {
-        '@prisma-lossless/driver-adapter-utils': '7.8.0-lossless.11',
+        '@prisma-lossless/driver-adapter-utils': '7.8.0-lossless.12',
       },
     })
   })

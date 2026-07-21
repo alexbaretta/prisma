@@ -25,10 +25,10 @@ const MANIFEST: PrivateReleaseManifest = {
   sourceCommit: '0123456789abcdef',
   packages: [
     {
-      name: 'prisma-lossless',
+      name: '@prisma-lossless/cli',
       version: '7.8.0-lossless.99',
       sourceCommit: '0123456789abcdef',
-      tarballPath: '/private/tmp/prisma-lossless.tgz',
+      tarballPath: '/private/tmp/prisma-lossless-cli.tgz',
     },
   ],
 }

@@ -10,8 +10,9 @@ import clientPkg from '../../client/package.json'
 
 export const debug = Debug('prisma:generator')
 
-const PRISMA_CLI_PACKAGE_NAME = 'prisma-lossless'
-const PRISMA_GENERATE_COMMAND = `${PRISMA_CLI_PACKAGE_NAME} generate`
+const PRISMA_CLI_PACKAGE_NAME = '@prisma-lossless/cli'
+const PRISMA_CLI_BIN_NAME = 'prisma-lossless'
+const PRISMA_GENERATE_COMMAND = `${PRISMA_CLI_BIN_NAME} generate`
 
 /**
  * Resolves the path to the Prisma Client to determine the default output directory.

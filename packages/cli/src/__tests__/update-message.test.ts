@@ -30,7 +30,7 @@ describe('update available message', () => {
         },
       })
       const message = ctx.mocked['console.error'].mock.calls[0][0]
-      expect(message).toContain('npm i --save-dev prisma-lossless@dev')
+      expect(message).toContain('npm i --save-dev @prisma-lossless/cli@dev')
       expect(message).toContain('npm i @prisma-lossless/client@dev')
       expect(message).toMatchSnapshot()
     })
@@ -49,7 +49,7 @@ describe('update available message', () => {
       })
       const message = ctx.mocked['console.error'].mock.calls[0][0]
       expect(message).toContain('This is a major update')
-      expect(message).toContain('npm i --save-dev prisma-lossless@dev')
+      expect(message).toContain('npm i --save-dev @prisma-lossless/cli@dev')
       expect(message).toContain('npm i @prisma-lossless/client@dev')
       expect(message).toMatchSnapshot()
     })
@@ -67,7 +67,7 @@ describe('update available message', () => {
         },
       })
       const message = ctx.mocked['console.error'].mock.calls[0][0]
-      expect(message).toContain('npm i --save-dev prisma-lossless@latest')
+      expect(message).toContain('npm i --save-dev @prisma-lossless/cli@latest')
       expect(message).toContain('npm i @prisma-lossless/client@latest')
       expect(message).toMatchSnapshot()
     })
@@ -85,7 +85,7 @@ describe('update available message', () => {
         },
       })
       const message = ctx.mocked['console.error'].mock.calls[0][0]
-      expect(message).toContain('npm i --save-dev prisma-lossless@latest')
+      expect(message).toContain('npm i --save-dev @prisma-lossless/cli@latest')
       expect(message).not.toContain('npm i --save-dev prisma@latest')
       expect(message).toContain('npm i @prisma-lossless/client@latest')
       expect(message).toMatchSnapshot()
@@ -105,7 +105,7 @@ describe('update available message', () => {
       })
       const message = ctx.mocked['console.error'].mock.calls[0][0]
       expect(message).toContain('This is a major update')
-      expect(message).toContain('npm i --save-dev prisma-lossless@latest')
+      expect(message).toContain('npm i --save-dev @prisma-lossless/cli@latest')
       expect(message).toContain('npm i @prisma-lossless/client@latest')
       expect(message).toMatchSnapshot()
     })

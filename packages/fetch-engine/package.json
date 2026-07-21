@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/fetch-engine",
-  "version": "7.8.0-lossless.11",
+  "version": "7.8.0-lossless.12",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,9 +36,9 @@
     "typescript": "5.4.5"
   },
   "dependencies": {
-    "@prisma-lossless/debug": "7.8.0-lossless.11",
+    "@prisma-lossless/debug": "7.8.0-lossless.12",
     "@prisma/engines-version": "7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a",
-    "@prisma-lossless/get-platform": "7.8.0-lossless.11"
+    "@prisma-lossless/get-platform": "7.8.0-lossless.12"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

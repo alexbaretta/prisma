@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/sqlcommenter",
-  "version": "7.8.0-lossless.11",
+  "version": "7.8.0-lossless.12",
   "description": "SQL commenter types for Prisma",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -35,6 +35,6 @@
   ],
   "sideEffects": false,
   "devDependencies": {
-    "@prisma-lossless/json-protocol": "7.8.0-lossless.11"
+    "@prisma-lossless/json-protocol": "7.8.0-lossless.12"
   }
 }

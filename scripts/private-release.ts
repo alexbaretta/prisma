@@ -68,7 +68,7 @@ export const RELEASE_PACKAGES: readonly ReleasePackage[] = [
   },
   { name: '@prisma-lossless/adapter-pg', sourceDir: 'packages/adapter-pg' },
   { name: '@prisma-lossless/client', sourceDir: 'packages/client' },
-  { name: 'prisma-lossless', sourceDir: 'packages/cli' },
+  { name: '@prisma-lossless/cli', sourceDir: 'packages/cli' },
 ]
 
 export const PRIVATE_RELEASE_SOURCE_DIRS: readonly string[] = [
@@ -79,6 +79,18 @@ export const PRIVATE_RELEASE_SOURCE_DIRS: readonly string[] = [
 ]
 
 const RELEASE_PACKAGE_NAMES = new Set(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name))
+const LEGACY_UNSCOPED_CLI_RELEASE_PACKAGE_NAMES: readonly string[] = [
+  '@prisma-lossless/debug',
+  '@prisma-lossless/driver-adapter-utils',
+  '@prisma-lossless/get-platform',
+  '@prisma-lossless/fetch-engine',
+  '@prisma-lossless/engines',
+  '@prisma-lossless/config',
+  '@prisma-lossless/client-runtime-utils',
+  '@prisma-lossless/adapter-pg',
+  '@prisma-lossless/client',
+  'prisma-lossless',
+]
 const RELEASE_PACKAGE_MTIME = new Date('1985-10-26T08:15:00.000Z')
 const ROOT_LICENSE_FILE = path.join(process.cwd(), 'LICENSE')
 
@@ -352,8 +364,10 @@ export function validatePrivateReleaseIdentity(releaseIdentity: PrivateReleaseId
     )
   }
 
+  const expectedPackageNames = getExpectedPrivateReleasePackageNames(releaseIdentity)
+
   releaseIdentity.packages.forEach((releasePackage, index) => {
-    const expectedName = RELEASE_PACKAGES[index].name
+    const expectedName = expectedPackageNames[index]
 
     if (releasePackage.name !== expectedName) {
       throw new Error(
@@ -366,6 +380,17 @@ export function validatePrivateReleaseIdentity(releaseIdentity: PrivateReleaseId
       throw new Error(`Private release ${releaseIdentity.version} package ${releasePackage.name} has bad integrity`)
     }
   })
+}
+
+function getExpectedPrivateReleasePackageNames(releaseIdentity: PrivateReleaseIdentity): readonly string[] {
+  if (
+    releaseIdentity.status === 'unavailable' &&
+    releaseIdentity.packages[releaseIdentity.packages.length - 1]?.name === 'prisma-lossless'
+  ) {
+    return LEGACY_UNSCOPED_CLI_RELEASE_PACKAGE_NAMES
+  }
+
+  return RELEASE_PACKAGES.map((releasePackage) => releasePackage.name)
 }
 
 export function validateReleaseManifestIntegrity(
