@@ -256,6 +256,17 @@ Verdaccio startup.
 | --- | ----------------------------------------------------------------------------------- | -------- | ------ | ------------ |
 | 026 | [Prove fresh release reproducibility](./026-prove-fresh-release-reproducibility.md) | High     | [DONE] | 025          |
 
+### Sprint 13: Lifecycle Build Output Preservation
+
+Sprint 13 fixes the Tasklet 026 follow-up defect where
+`7.8.0-lossless.9` reproduces byte-for-byte but cannot complete a
+normal cold consumer install because the engines lifecycle JavaScript
+outputs are removed during the clean build.
+
+| ID  | Tasklet                                                                       | Priority | Status | Dependencies |
+| --- | ----------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 027 | [Preserve lifecycle build outputs](./027-preserve-lifecycle-build-outputs.md) | High     | [ ]    | 026          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This

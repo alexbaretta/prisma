@@ -139,18 +139,44 @@ async function executeEsBuild(options: BuildOptions) {
  */
 export async function build(options: BuildOptions[]) {
   const cleanedOutputDirs = new Set<string>()
+  cleanBuildOutputDirectoriesOnce(options, cleanedOutputDirs)
 
   return transduce.async(
     createBuildOptions(options),
-    pipe.async(
-      computeOptions,
-      logStartBuild,
-      addExtensionFormat,
-      addDefaultOutDir,
-      (options) => cleanBuildOutputDirectoryOnce(options, cleanedOutputDirs),
-      executeEsBuild,
+    pipe.async(computeOptions, logStartBuild, addExtensionFormat, addDefaultOutDir, executeEsBuild),
+  )
+}
+
+export function cleanBuildOutputDirectoriesOnce(
+  optionsList: readonly BuildOptions[],
+  cleanedOutputDirs: Set<string>,
+  watchMode = process.env.WATCH === 'true',
+): readonly string[] {
+  if (watchMode) {
+    return []
+  }
+
+  const outputDirectories = Array.from(
+    new Set(
+      optionsList
+        .map((options) => getResolvedOutputDirectory(options))
+        .filter((outputDirectory): outputDirectory is string =>
+          Boolean(outputDirectory && isGeneratedOutputDirectory(outputDirectory)),
+        ),
     ),
   )
+  const directoriesToClean = selectAncestorOutputDirectories(outputDirectories)
+
+  for (const outputDirectory of directoriesToClean) {
+    if (cleanedOutputDirs.has(outputDirectory)) {
+      continue
+    }
+
+    rmSync(outputDirectory, { recursive: true, force: true })
+    cleanedOutputDirs.add(outputDirectory)
+  }
+
+  return directoriesToClean
 }
 
 export function cleanBuildOutputDirectoryOnce(
@@ -158,23 +184,38 @@ export function cleanBuildOutputDirectoryOnce(
   cleanedOutputDirs: Set<string>,
   watchMode = process.env.WATCH === 'true',
 ): BuildOptions {
-  if (watchMode) {
-    return options
-  }
-
-  const outputDirectory = getResolvedOutputDirectory(options)
-
-  if (!outputDirectory || !isGeneratedOutputDirectory(outputDirectory) || cleanedOutputDirs.has(outputDirectory)) {
-    return options
-  }
-
-  rmSync(outputDirectory, { recursive: true, force: true })
-  cleanedOutputDirs.add(outputDirectory)
+  cleanBuildOutputDirectoriesOnce([options], cleanedOutputDirs, watchMode)
   return options
 }
 
 function isGeneratedOutputDirectory(outputDirectory: string): boolean {
   return GENERATED_OUTPUT_DIRECTORY_NAMES.has(path.basename(outputDirectory))
+}
+
+function selectAncestorOutputDirectories(outputDirectories: readonly string[]): readonly string[] {
+  const sortedOutputDirectories = [...outputDirectories].sort((a, b) => a.length - b.length || a.localeCompare(b))
+  const selectedOutputDirectories: string[] = []
+
+  for (const outputDirectory of sortedOutputDirectories) {
+    if (
+      selectedOutputDirectories.some((selectedOutputDirectory) =>
+        isSameOrChildPath(selectedOutputDirectory, outputDirectory),
+      )
+    ) {
+      continue
+    }
+
+    selectedOutputDirectories.push(outputDirectory)
+  }
+
+  return selectedOutputDirectories
+}
+
+function isSameOrChildPath(parentPath: string, candidatePath: string): boolean {
+  const relativePath = path.relative(parentPath, candidatePath)
+  return (
+    relativePath === '' || (relativePath !== '' && !relativePath.startsWith('..') && !path.isAbsolute(relativePath))
+  )
 }
 
 /**
