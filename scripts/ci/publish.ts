@@ -22,6 +22,7 @@ import {
 const onlyPackages = process.env.ONLY_PACKAGES ? process.env.ONLY_PACKAGES.split(',') : null
 const skipPackages = process.env.SKIP_PACKAGES ? process.env.SKIP_PACKAGES.split(',') : null
 const LOSSLESS_PUBLIC_DIST_TAG = 'lossless'
+const LOSSLESS_PUBLIC_DEFAULT_DIST_TAG = 'latest'
 export const LOSSLESS_PUBLIC_PACKAGE_NAMES = RELEASE_PACKAGES.map((releasePackage) => releasePackage.name)
 
 async function getLatestCommitHash(dir: string): Promise<string> {
@@ -196,6 +197,14 @@ export function isAlreadyPublishedPackageError(error: unknown, packageName: stri
     output.includes('previously published versions') &&
     (output.includes('E403') || output.includes('403 Forbidden'))
   )
+}
+
+export function getNpmDistTagAddCommand(packageName: string, version: string, tag: string): string {
+  return `npm dist-tag add ${packageName}@${version} ${tag} --registry=https://registry.npmjs.org/`
+}
+
+export function getNpmDistTagAddCommands(packageNames: readonly string[], version: string, tag: string): string[] {
+  return packageNames.map((packageName) => getNpmDistTagAddCommand(packageName, version, tag))
 }
 
 function getPublishErrorOutput(error: Error): string {
@@ -728,6 +737,10 @@ Check them out at https://github.com/prisma/ecosystem-tests/actions?query=workfl
       skipAlreadyPublished: losslessPublicRelease !== undefined,
     })
 
+    if (losslessPublicRelease) {
+      await addLosslessPublicDefaultDistTags(prismaVersion, dryRun)
+    }
+
     const enginesCommitHash = getEnginesCommitHash()
     const enginesCommitInfo = await getCommitInfo('prisma-engines', enginesCommitHash)
     const prismaCommitHash = await getLatestCommitHash('.')
@@ -749,6 +762,18 @@ Check them out at https://github.com/prisma/ecosystem-tests/actions?query=workfl
         console.error(e)
       }
     }
+  }
+}
+
+async function addLosslessPublicDefaultDistTags(version: string, dryRun: boolean): Promise<void> {
+  console.log(bold(`\nPromote lossless public packages to ${LOSSLESS_PUBLIC_DEFAULT_DIST_TAG}.`))
+
+  for (const command of getNpmDistTagAddCommands(
+    LOSSLESS_PUBLIC_PACKAGE_NAMES,
+    version,
+    LOSSLESS_PUBLIC_DEFAULT_DIST_TAG,
+  )) {
+    await run('.', command, dryRun)
   }
 }
 

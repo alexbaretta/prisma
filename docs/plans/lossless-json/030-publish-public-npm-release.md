@@ -438,6 +438,82 @@ scripts/ci/publish.test.ts` passed with 32 tests.
 - Full repo validation was not run; this was kept focused for the
   requested quick version switch.
 
+### [DONE] Tasklet 031: Promote Latest Dist Tag
+
+Status: approved for implementation by the user prompt to make this
+the default behavior of `pnpm run publish-lossless-public`.
+
+## Pre-Implementation Review: Promote Latest Dist Tag
+
+Observed problem: `pnpm run publish-lossless-public` publishes each
+package with the `lossless` npm dist-tag. npmjs.org therefore records
+`7.8.0-lossless.13` as the `lossless` version, but the package page
+and default install metadata still show stale `latest` values from
+older partial releases.
+
+Violated contract or invariant: the public prisma-lossless fork owns
+its npm namespace. A successful public release command must leave the
+new immutable release as the default package identity for consumers of
+that namespace, not only as a secondary tag.
+
+Owning layer: `scripts/ci/publish.ts` owns npm publication and npm
+tagging for the public release command. Tag promotion should happen in
+that layer after the package publish loop succeeds or skips packages
+that npm already accepted during a retry.
+
+Intended solution: make the lossless public publish path promote every
+validated package in the release graph to npm's `latest` dist-tag after
+publication. Dry-runs must log the exact `npm dist-tag add` commands
+without mutating the registry, while real publishes must run them
+against npmjs.org.
+
+Rejected solution: do not ask users to repair npm tags manually in the
+npm website, and do not add a second standalone tag-repair script as
+the normal path. That would split the release contract across tools
+and leave the default command producing surprising registry state.
+
+Validation that proves the fix: focused unit tests must prove the
+generated `npm dist-tag add` commands cover the complete
+prisma-lossless public package graph and target `latest` at the
+requested release version. Formatting and the focused publish test
+suite must pass.
+
+## Post-Implementation Review: Promote Latest Dist Tag
+
+Observed result: the lossless public publish path now promotes all ten
+validated prisma-lossless package names to npm's `latest` dist-tag
+after the package publish loop. Dry-run mode logs the exact
+`npm dist-tag add <name>@<version> latest` commands without mutating
+the registry.
+
+Contract review: the fix remains inside Prisma's existing
+`scripts/ci/publish.ts` release tooling. It does not add a second
+publisher, does not rewrite package metadata, and does not rely on
+manual npm website repair. Because the tag step runs after the publish
+loop, retries that skip already-published packages still repair the
+default dist-tag state for the same immutable version.
+
+Rejected wrong-layer solution retained: do not leave `latest` repair
+as an external checklist item. The default public publish command must
+produce the registry state consumers see by default.
+
+Validation evidence:
+
+- `pnpm exec vitest run scripts/ci/publish.test.ts` passed with 16
+  tests.
+- `pnpm exec prettier --check scripts/ci/publish.ts
+scripts/ci/publish.test.ts
+docs/plans/lossless-json/030-publish-public-npm-release.md` passed.
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm exec eslint
+scripts/ci/publish.ts scripts/ci/publish.test.ts` passed with 0
+  errors and 6 existing unsafe-`any` warnings in `publish.ts`.
+- `pnpm run publish-lossless-public-dryrun` passed outside the
+  sandbox after the sandboxed attempt hit a `tsx` IPC `EPERM`
+  restriction. The dry-run printed all ten
+  `npm dist-tag add ... latest --registry=https://registry.npmjs.org/`
+  commands with `(dry)`.
+- No actual npm dist-tags were mutated by this Codex run.
+
 ## Implementation Steps
 
 1. Add `--lossless-public-release <version>` to `scripts/ci/publish.ts`.
@@ -446,13 +522,14 @@ scripts/ci/publish.test.ts` passed with 32 tests.
 4. Validate the requested immutable release identity is available.
 5. Assert source package versions and fork-owned dependency specifiers
    already match the requested version.
-6. Verify every target package/version is absent from npmjs.org before
-   publishing.
+6. Treat already-published target package versions as retryable during
+   the package publish loop.
 7. Publish with `--access public` and `--tag lossless` in dependency
    order, without package metadata rewrites.
-8. Update `MIGRATION_FROM_PRISMA.md` with public npm install guidance.
-9. Run focused tests, formatting, lint, repo build, npm dry-run, and
-   the user-approved public npm publish.
+8. Promote every target package/version to npm's `latest` dist-tag.
+9. Update `MIGRATION_FROM_PRISMA.md` with public npm install guidance.
+10. Run focused tests, formatting, lint, repo build, npm dry-run, and
+    the user-approved public npm publish.
 
 ## Acceptance Criteria
 
@@ -460,12 +537,11 @@ scripts/ci/publish.test.ts` passed with 32 tests.
   standalone publisher.
 - The mode publishes only the ten validated lossless release packages.
 - The mode refuses unavailable or unknown immutable release versions.
-- The mode refuses to publish if any package/version already exists on
-  npmjs.org.
+- The mode can be retried when npm already accepted a package/version.
 - The mode does not rewrite package names, versions, dependencies, or
   generated metadata before publishing.
-- The public dist-tag is `lossless` unless an explicit override is
-  supplied.
+- The public publish command tags the release as `lossless` and
+  promotes the same version to `latest` after publication.
 - `MIGRATION_FROM_PRISMA.md` documents normal public npm install
   commands after publication.
 - All ten packages are publicly published to npmjs.org when the final

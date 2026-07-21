@@ -5,6 +5,7 @@ import {
   filterPublishOrderToPackages,
   getLocalTestVersion,
   getLosslessPublicPackages,
+  getNpmDistTagAddCommands,
   getPatchBranch,
   getPrismaBranch,
   getSlackReleaseFeedWebhook,
@@ -148,6 +149,15 @@ describe('lossless public publish mode', () => {
         LOSSLESS_PUBLIC_PACKAGE_NAMES,
       ),
     ).toEqual([['@prisma-lossless/debug'], ['@prisma-lossless/client'], ['@prisma-lossless/cli']])
+  })
+
+  test('promotes every public package to the latest dist tag', () => {
+    expect(getNpmDistTagAddCommands(LOSSLESS_PUBLIC_PACKAGE_NAMES, '7.8.0-lossless.13', 'latest')).toEqual(
+      LOSSLESS_PUBLIC_PACKAGE_NAMES.map(
+        (packageName) =>
+          `npm dist-tag add ${packageName}@7.8.0-lossless.13 latest --registry=https://registry.npmjs.org/`,
+      ),
+    )
   })
 
   test('treats missing or blank Slack webhooks as optional', () => {
