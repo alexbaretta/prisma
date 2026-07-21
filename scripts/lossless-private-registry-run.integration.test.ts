@@ -37,7 +37,7 @@ const RUN_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION ===
 const RUN_FRESH_CHECKOUT_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_FRESH_CHECKOUT_INTEGRATION === '1'
 const VERSION = '7.8.0-lossless.999999'
 const HISTORICAL_VERSION = '7.8.0-lossless.7'
-const RECORDED_VERSION = '7.8.0-lossless.8'
+const RECORDED_VERSION = '7.8.0-lossless.9'
 const CONSUMER_PNPM_VERSION = '11.1.1'
 const SOURCE_COMMIT = '0123456789abcdef0123456789abcdef01234567'
 const RECORDED_FIXTURE = readIndependentPrivateReleaseFixture(RECORDED_VERSION)
@@ -184,7 +184,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
         consumerDir,
         builtDependencies(unavailableRoots),
       ),
-    ).rejects.toThrow(/Use 7\.8\.0-lossless\.8/)
+    ).rejects.toThrow(/Use 7\.8\.0-lossless\.9/)
     expectRootsRemoved(unavailableRoots)
 
     const manifest = prepareBuiltPrivateReleaseCandidates(RECORDED_VERSION, repoLocalReleaseRoot(root, 'mismatch'))

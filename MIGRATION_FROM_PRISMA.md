@@ -10,11 +10,11 @@ Replace stock Prisma packages in your application:
 ```json
 {
   "dependencies": {
-    "@prisma-lossless/client": "7.8.0-lossless.8",
-    "@prisma-lossless/adapter-pg": "7.8.0-lossless.8"
+    "@prisma-lossless/client": "7.8.0-lossless.9",
+    "@prisma-lossless/adapter-pg": "7.8.0-lossless.9"
   },
   "devDependencies": {
-    "prisma-lossless": "7.8.0-lossless.8"
+    "prisma-lossless": "7.8.0-lossless.9"
   }
 }
 ```
@@ -25,9 +25,10 @@ Remove these stock packages from direct application dependencies:
 - `@prisma/client`
 - `@prisma/adapter-pg`
 
-Use `7.8.0-lossless.8` or newer. Historical
-`7.8.0-lossless.5`, `7.8.0-lossless.6`, and
-`7.8.0-lossless.7` identities are known, but the current wrapper
+Use `7.8.0-lossless.9` or newer. Historical
+`7.8.0-lossless.5`, `7.8.0-lossless.6`,
+`7.8.0-lossless.7`, and `7.8.0-lossless.8`
+identities are known, but the current wrapper
 rejects them instead of serving package bytes that do not match their
 immutable release identity or cannot be reproduced from a clean
 checkout.
@@ -49,7 +50,7 @@ and release artifacts on success or failure:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.8 \
+  --from-built 7.8.0-lossless.9 \
   -- corepack pnpm install --frozen-lockfile
 ```
 
@@ -73,7 +74,7 @@ installation stage, for example:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.8 \
+  --from-built 7.8.0-lossless.9 \
   -- \
   docker build \
     --build-arg PRISMA_LOSSLESS_DOCKER_REGISTRY_URL \
@@ -117,12 +118,12 @@ After changing dependencies and imports, reinstall and regenerate:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.8 \
+  --from-built 7.8.0-lossless.9 \
   -- corepack pnpm install --frozen-lockfile
 
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.8 \
+  --from-built 7.8.0-lossless.9 \
   -- corepack pnpm exec prisma-lossless generate
 ```
 

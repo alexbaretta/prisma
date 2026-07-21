@@ -17,7 +17,7 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.5',
     sourceCommit: 'f98f2e0f42cd7d9d9556567f9236c98eed00da16',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.8',
+    replacementVersion: '7.8.0-lossless.9',
     unavailableReason:
       'The historical client tarball integrity is known from the GWEN lockfile, ' +
       'but the current built graph cannot reproduce those package bytes.',
@@ -68,7 +68,7 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.6',
     sourceCommit: 'f98f2e0f42cd7d9d9556567f9236c98eed00da16',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.8',
+    replacementVersion: '7.8.0-lossless.9',
     unavailableReason:
       'The release installed with correct package metadata, but generated ' +
       'clients still carried the development version placeholder.',
@@ -119,7 +119,7 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.7',
     sourceCommit: 'de26dd06509902ef202e675bb3eb2d2ee9b7fc4a',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.8',
+    replacementVersion: '7.8.0-lossless.9',
     unavailableReason:
       'The release was produced with random fill-plugin source-map ' +
       'names and cannot be reproduced from a fresh clean checkout.',
@@ -169,7 +169,12 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
   {
     version: '7.8.0-lossless.8',
     sourceCommit: 'e44a7eb72e49bdac92b34f820dee9fbb1248abad',
-    status: 'available',
+    status: 'unavailable',
+    replacementVersion: '7.8.0-lossless.9',
+    unavailableReason:
+      'The release was produced from a checkout with a stale ignored ' +
+      '@prisma-lossless/get-platform dist chunk and cannot be reproduced ' +
+      'from a fresh clean checkout.',
     packages: [
       {
         name: '@prisma-lossless/debug',
@@ -210,6 +215,53 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
       {
         name: 'prisma-lossless',
         integrity: 'sha512-60SstnN8xZGWy/aWJuP/7WxvYUNtUU07Sbr0jRkWpmEwfhfwgfBuI/PTRy2piotSewDDfC+K0r4Gd2ke22MLwA==',
+      },
+    ],
+  },
+  {
+    version: '7.8.0-lossless.9',
+    sourceCommit: '790912aad9a5a1a562d5038c65d91f70d023de4c',
+    status: 'available',
+    packages: [
+      {
+        name: '@prisma-lossless/debug',
+        integrity: 'sha512-pG2Hd8Fx4piA8pRYD0pzYikRaV4Uc9Sx7iHo5XzJoxhgVFpsKgQdEiR/8P4EJRrHHwhDe2EZpInKIjAPpX2Ovw==',
+      },
+      {
+        name: '@prisma-lossless/driver-adapter-utils',
+        integrity: 'sha512-zKqRLokSEllGq9s4ITrWnj/oBF8Bzrj1Uq6n2FDA8mIHyt4+hEt5V5qHkbsCaxt3RPcCtLnIUHbx32cTS6+nuw==',
+      },
+      {
+        name: '@prisma-lossless/get-platform',
+        integrity: 'sha512-Mo1SE+qx7joSh02/gg4oavvZENx5Gyv6m33E4PEy8HGsjc88TIaI0uxFiF+lbz1ZMnmCVxcXJVE3XDM1PBnF3w==',
+      },
+      {
+        name: '@prisma-lossless/fetch-engine',
+        integrity: 'sha512-SroAXaOe+YxP7Pf4I8dqZb34IDnDADoo8FnMVtuo/WJx3zUxmqqIvDqpSZ3ZVNcgWTmqVnO6AKagZL6CAeZhyg==',
+      },
+      {
+        name: '@prisma-lossless/engines',
+        integrity: 'sha512-bnu9MPLjJGpt+XdRnxT1mQxsLWWIJVmrLIEutDOEp8OkZwtArXUO5cCoRA3quunlqfOxSZOhFzmAoHStRuC7xw==',
+      },
+      {
+        name: '@prisma-lossless/config',
+        integrity: 'sha512-FZxIZLI3rGD6nxBAzQBxqAWKv90twuMZFV0Mtd2iyXkE/tB4votAsb2/GhPMolXZ/cuD2FJKihujgEKmL9atDA==',
+      },
+      {
+        name: '@prisma-lossless/client-runtime-utils',
+        integrity: 'sha512-9iBUGpk97M6kUtREMgPNAWMu88pYAkjZFaH/k5ZC/dhbX8SAw+kW4kfAmw+hmOKBurxdEo6TgFrsN9u4J4mUdw==',
+      },
+      {
+        name: '@prisma-lossless/adapter-pg',
+        integrity: 'sha512-HCjHHf9H2kFkjRK11mUvzHozEW8ov47t3/icGXXpUA0filhKs3qmhse1296ikfuI11hOE/f4g3QShq7V1CoBOg==',
+      },
+      {
+        name: '@prisma-lossless/client',
+        integrity: 'sha512-vPWG12Wj//MfwHPh30z0QXR1E16c1cmChm9ttxcPWCsz2xHioLyazWrrSijR0PZpAcYm4e/Y5OJAXkYqt3S9tA==',
+      },
+      {
+        name: 'prisma-lossless',
+        integrity: 'sha512-OW8v1bLTH2eIuGkHJQi0lLpy1fiSPqpaL6RE2F9WbWOcg/FUczUl1pPO+ITOokEQz009SoJZULoAzBKDkxdqKw==',
       },
     ],
   },
