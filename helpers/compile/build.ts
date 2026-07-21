@@ -1,7 +1,7 @@
 import { ChokidarOptions, watch as createWatcher } from 'chokidar'
 import * as esbuild from 'esbuild'
 import { BuildContext } from 'esbuild'
-import { writeFileSync } from 'fs'
+import { rmSync, writeFileSync } from 'fs'
 import glob from 'globby'
 import path from 'path'
 
@@ -136,10 +136,39 @@ async function executeEsBuild(options: BuildOptions) {
  * @param options
  */
 export async function build(options: BuildOptions[]) {
+  const cleanedOutputDirs = new Set<string>()
+
   return transduce.async(
     createBuildOptions(options),
-    pipe.async(computeOptions, logStartBuild, addExtensionFormat, addDefaultOutDir, executeEsBuild),
+    pipe.async(
+      computeOptions,
+      logStartBuild,
+      addExtensionFormat,
+      addDefaultOutDir,
+      (options) => cleanBuildOutputDirectoryOnce(options, cleanedOutputDirs),
+      executeEsBuild,
+    ),
   )
+}
+
+export function cleanBuildOutputDirectoryOnce(
+  options: BuildOptions,
+  cleanedOutputDirs: Set<string>,
+  watchMode = process.env.WATCH === 'true',
+): BuildOptions {
+  if (watchMode) {
+    return options
+  }
+
+  const outputDirectory = getResolvedOutputDirectory(options)
+
+  if (!outputDirectory || cleanedOutputDirs.has(outputDirectory)) {
+    return options
+  }
+
+  rmSync(outputDirectory, { recursive: true, force: true })
+  cleanedOutputDirs.add(outputDirectory)
+  return options
 }
 
 /**
@@ -201,6 +230,12 @@ function getOutDir(options: BuildOptions) {
   }
 
   return options.outdir ?? 'dist'
+}
+
+function getResolvedOutputDirectory(options: BuildOptions): string | undefined {
+  const outputDirectory = options.outdir ?? (options.outfile ? path.dirname(options.outfile) : undefined)
+
+  return outputDirectory ? path.resolve(process.cwd(), outputDirectory) : undefined
 }
 
 // get the output file from an original path
