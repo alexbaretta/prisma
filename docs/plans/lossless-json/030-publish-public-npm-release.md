@@ -1,6 +1,6 @@
 # Sprint 16
 
-### [ ] Tasklet 030: Publish Public Npm Release
+### [DONE] Tasklet 030: Publish Public Npm Release
 
 Branch: `target-7.8.0-lossless`
 
@@ -404,6 +404,39 @@ still owns future partial-publish recovery.
 Validation that proves the fix: focused release and publish unit tests
 must pass, formatting must pass for touched files, and npmjs.org must
 report `.13` absent before the user runs the actual public publish.
+
+## Post-Implementation Review: Mint Public Version 13
+
+Observed result: the package graph, root public publish commands,
+lockfile specifiers, migration guide, and release tests now target
+`7.8.0-lossless.13`. A new immutable `.13` release identity is
+recorded against source provenance
+`7fc4bafb1882d52bee610816d0479828430c68e9`.
+
+Contract review: the fix keeps Prisma's existing
+`scripts/ci/publish.ts` as the public publish path. It does not add a
+manual publisher or require npm website repair. The retry classifier
+now inspects nested publish error output, but unrelated publish errors
+remain fatal.
+
+Rejected wrong-layer solution retained: do not keep retrying `.12` as
+the recommended public target, and do not ask the user to manually
+publish individual packages.
+
+Validation evidence:
+
+- `pnpm exec vitest run scripts/private-release.test.ts
+scripts/ci/publish.test.ts` passed with 32 tests.
+- `prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.13')`
+  passed after the public dry-run rebuilt package artifacts.
+- `npm view` against `https://registry.npmjs.org/` reported all ten
+  `7.8.0-lossless.13` packages absent before publication.
+- `pnpm run publish-lossless-public-dryrun` passed for all ten
+  packages under the `lossless` tag. The engines dry-run tarball
+  included `dist/scripts/postinstall.js` and
+  `dist/scripts/localinstall.js`.
+- Full repo validation was not run; this was kept focused for the
+  requested quick version switch.
 
 ## Implementation Steps
 
