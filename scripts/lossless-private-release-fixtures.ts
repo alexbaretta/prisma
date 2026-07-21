@@ -347,6 +347,62 @@ export const INDEPENDENT_PRIVATE_RELEASE_FIXTURES: readonly IndependentPrivateRe
       },
     ],
   },
+  {
+    version: '7.8.0-lossless.11',
+    sourceCommit: '65e86f5c32ac361ab31ea95967bdac8256cb0775',
+    packages: [
+      {
+        name: '@prisma-lossless/debug',
+        version: '7.8.0-lossless.11',
+        integrity: 'sha512-fmjKOQZWxT/IJ2s7GYEkgmN9cqB6HEarViFMhwuGXhAtnXUTy/bTS28xT8yyBfRpKfNizqAJMFpNxb98mpgzLw==',
+      },
+      {
+        name: '@prisma-lossless/driver-adapter-utils',
+        version: '7.8.0-lossless.11',
+        integrity: 'sha512-YXEPL7Ua22jy1S/QeS4LE07QOBUF+5veU1/Ki1LYBFFSoVWOcJ/tIWKcOuvrSw4DFrz94Ev/oIpY8brq2bdR1w==',
+      },
+      {
+        name: '@prisma-lossless/get-platform',
+        version: '7.8.0-lossless.11',
+        integrity: 'sha512-qc8YUQ6PP1Sdb/M1C/JHh2sDXAM1m1btksiRKQLt1pwaht9pen5WWq36DXzDcSM/dlwhmSKicR1PR2N0C3qYYA==',
+      },
+      {
+        name: '@prisma-lossless/fetch-engine',
+        version: '7.8.0-lossless.11',
+        integrity: 'sha512-MmPAUHSuDMmWfDwpe5x5UrxboRrlGLgYyp1SXWF+uJOD/P1iXsVAPJ40zTroXUCqScTqPJCWoUbn7bDQ7LxggQ==',
+      },
+      {
+        name: '@prisma-lossless/engines',
+        version: '7.8.0-lossless.11',
+        integrity: 'sha512-C/F6Piav1pHQZutHZR9SfJWn7ka2NaWI8nxSc2QyayZGyDu3lE6alfiZ2OwOuLRZa7muaUu2vxcIWuA9iYJi6A==',
+      },
+      {
+        name: '@prisma-lossless/config',
+        version: '7.8.0-lossless.11',
+        integrity: 'sha512-bpJqFgHTtmdEysY+qxmOAwmdgbqeJzolHeXDY71ss0sIKjmuStymTPxIoTtLDgy4I9pM5hI0TkENhIaby+t+dQ==',
+      },
+      {
+        name: '@prisma-lossless/client-runtime-utils',
+        version: '7.8.0-lossless.11',
+        integrity: 'sha512-qUiUk1XMXFPRHILKHtf2FRXB9wc069jUBYqllSu7RxNF8kAT7Z6Se+M4ZmaxkMHBBsRVgzjvKikTmO9sCLI4Pg==',
+      },
+      {
+        name: '@prisma-lossless/adapter-pg',
+        version: '7.8.0-lossless.11',
+        integrity: 'sha512-7wroe4uDLJaX4pHxTCOw2cZXfksyFFaGqf/woQfFW8wG3aTh1GctKf0Y1HNtHFHMIKgRnHDganQ9NUK10Zs6qA==',
+      },
+      {
+        name: '@prisma-lossless/client',
+        version: '7.8.0-lossless.11',
+        integrity: 'sha512-ZdCZz2ivmcT0JVvyyRJqBISZgia8rD1dWPwO6/8E1v8RCbvE+tcb+j+hOAqNZUP7UTzqsBS4aljv//C/hjlY4A==',
+      },
+      {
+        name: 'prisma-lossless',
+        version: '7.8.0-lossless.11',
+        integrity: 'sha512-0oCj8EQWRz6ixgQQ6hxDMFVyjopsVYFZ+XkMKlU7Kl0lARaQQzAXq3x9gBhOfgCH5ljfJC+h7a1AIsBPwxl3Pg==',
+      },
+    ],
+  },
 ]
 
 export function readIndependentPrivateReleaseFixture(version: string): IndependentPrivateReleaseFixture {
