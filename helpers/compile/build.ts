@@ -33,6 +33,8 @@ const DEFAULT_BUILD_OPTIONS = {
   metafile: true,
 } as const
 
+const GENERATED_OUTPUT_DIRECTORY_NAMES = new Set(['build', 'dist', 'preinstall', 'runtime'])
+
 /**
  * Apply defaults to the original build options
  * @param options the original build options
@@ -162,13 +164,17 @@ export function cleanBuildOutputDirectoryOnce(
 
   const outputDirectory = getResolvedOutputDirectory(options)
 
-  if (!outputDirectory || cleanedOutputDirs.has(outputDirectory)) {
+  if (!outputDirectory || !isGeneratedOutputDirectory(outputDirectory) || cleanedOutputDirs.has(outputDirectory)) {
     return options
   }
 
   rmSync(outputDirectory, { recursive: true, force: true })
   cleanedOutputDirs.add(outputDirectory)
   return options
+}
+
+function isGeneratedOutputDirectory(outputDirectory: string): boolean {
+  return GENERATED_OUTPUT_DIRECTORY_NAMES.has(path.basename(outputDirectory))
 }
 
 /**

@@ -183,6 +183,62 @@ must assert that compile helper changes are release-source inputs, and
 `.7` must be marked unavailable once the deterministic fix proves its
 recorded random source-map bytes cannot be reproduced.
 
+Confirmed subproblem: split-build packages can leave stale hashed
+chunks in `dist`. The recorded `.8` `@prisma-lossless/get-platform`
+tarball included `dist/chunk-WFCM4MDC.js`, but a fresh clean root build
+did not produce that file. Because `@prisma/get-platform` publishes the
+whole `dist` directory, the stale ignored chunk changed the package
+identity.
+
+Violated contract or invariant: package builds that produce hashed
+chunks must leave their output directories in a canonical state. A
+publishable package cannot include chunks from an earlier build that
+are not produced by the current source tree.
+
+Owning layer: the shared compile helper owns output-directory hygiene
+for packages built through `helpers/compile/build.ts`.
+
+Intended solution: clean each non-watch build output directory once
+before running that build pipeline, preserving multi-format outputs
+that intentionally share a directory within the same build invocation.
+
+Rejected solution: do not special-case `chunk-WFCM4MDC.js` in release
+packing and do not mark `.8` available with the stale file. That would
+preserve another session-local package identity.
+
+Validation that proves the subproblem fix: add focused tests for the
+output-directory selection and cleanup behavior, rerun a fresh
+checkout build, and prove the replacement release graph matches from
+both the normal checkout and a fresh clone.
+
+Confirmed subproblem: a blanket cleanup of every resolved output
+directory is too broad. The CLI intentionally writes `config.js` and
+`config.d.ts` at package root with `outdir: "."`, and the client build
+writes `scripts/default-index.js` beside tracked files under
+`packages/client/scripts`. Cleaning those directories deletes source
+owned by the package before the same build invocation can finish.
+
+Violated contract or invariant: build-output hygiene may remove stale
+generated files, but it must not delete source-owned package roots or
+tracked source directories.
+
+Owning layer: the shared compile helper owns the decision about which
+resolved output directories are safe to clean before esbuild runs.
+
+Intended solution: restrict automatic cleanup to known generated
+output directory names used by this build system, such as `dist`,
+`build`, `runtime`, and `preinstall`. Package-root outputs and
+source-owned directories are skipped.
+
+Rejected solution: do not require individual packages to recover from
+their sources being deleted, and do not solve this by restoring files
+after the build. The cleanup boundary itself must prevent unsafe
+deletion.
+
+Validation that proves the subproblem fix: add focused tests proving
+root outputs and source-owned `scripts` outputs are skipped while
+generated outputs are still cleaned, then rerun the repo-root build.
+
 ## Implementation Steps
 
 1. Reproduce the `.7` mismatch locally from the clean checkout and
