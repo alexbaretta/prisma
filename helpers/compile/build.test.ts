@@ -50,6 +50,32 @@ describe('compile build output cleanup', () => {
     }
   })
 
+  test('cleans default dist output directories', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-compile-default-clean-'))
+    const originalCwd = process.cwd()
+
+    try {
+      const outputDir = path.join(root, 'dist')
+      const staleFile = path.join(outputDir, 'chunk-stale.js')
+      const cleaned = new Set<string>()
+      const options = {} satisfies BuildOptions
+
+      fs.mkdirSync(outputDir, { recursive: true })
+      fs.writeFileSync(staleFile, 'stale')
+
+      process.chdir(root)
+
+      const resolvedOutputDir = fs.realpathSync(outputDir)
+
+      expect(cleanBuildOutputDirectoryOnce(options, cleaned)).toBe(options)
+      expect([...cleaned]).toEqual([resolvedOutputDir])
+      expect(fs.existsSync(staleFile)).toBe(false)
+    } finally {
+      process.chdir(originalCwd)
+      fs.rmSync(root, { recursive: true, force: true })
+    }
+  })
+
   test('cleans parent output once for nested generated outputs', () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-compile-nested-clean-'))
 

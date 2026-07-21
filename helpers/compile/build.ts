@@ -280,7 +280,7 @@ function getOutDir(options: BuildOptions) {
 }
 
 function getResolvedOutputDirectory(options: BuildOptions): string | undefined {
-  const outputDirectory = options.outdir ?? (options.outfile ? path.dirname(options.outfile) : undefined)
+  const outputDirectory = getOutDir(options)
 
   return outputDirectory ? path.resolve(process.cwd(), outputDirectory) : undefined
 }
