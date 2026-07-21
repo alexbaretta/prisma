@@ -276,8 +276,11 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
       const firstReleaseRoot = path.join(freshRoot, 'first-release')
       const secondReleaseRoot = path.join(freshRoot, 'second-release')
       const consumerDir = createConsumerDir(freshRoot, 'fresh-consumer')
+      const storeDir = path.join(freshRoot, 'fresh-pnpm-store')
+      const verifyOutput = path.join(freshRoot, 'fresh-consumer-result.json')
 
       fs.mkdirSync(freshRoot, { recursive: true })
+      fs.mkdirSync(storeDir)
       runRequired('git', ['clone', '--shared', process.cwd(), checkoutDir], process.cwd())
       runRequired('pnpm', ['install', '--frozen-lockfile', '--ignore-scripts'], checkoutDir)
       runRequired('pnpm', ['build'], checkoutDir)
@@ -351,15 +354,30 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
           '--from-built',
           RECORDED_VERSION,
           '--',
-          'corepack',
-          'pnpm',
-          'install',
-          '--frozen-lockfile',
-          '--reporter',
-          'append-only',
+          process.execPath,
+          writeVerifyScript(freshRoot, verifyOutput, storeDir, [
+            'install',
+            '--frozen-lockfile',
+            '--store-dir',
+            storeDir,
+            '--reporter',
+            'append-only',
+          ]),
         ],
         checkoutDir,
       )
+
+      const result = JSON.parse(fs.readFileSync(verifyOutput, 'utf-8')) as {
+        generatedClientVersion: string
+        generatedPackageVersion: string
+        losslessNumber: string
+        pnpmVersion: string
+      }
+
+      expect(result.generatedClientVersion).toBe(RECORDED_VERSION)
+      expect(result.generatedPackageVersion).toBe(RECORDED_VERSION)
+      expect(result.losslessNumber).toBe('9007199254740993')
+      expect(result.pnpmVersion).toBe(CONSUMER_PNPM_VERSION)
     },
     900_000,
   )

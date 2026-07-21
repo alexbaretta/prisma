@@ -260,6 +260,23 @@ normal lifecycle-enabled install, `--ignore-scripts` resolution,
 unavailable and mismatched identity rejection before child execution,
 and cleanup after child failure.
 
+Fresh-clean-checkout integration:
+
+```sh
+PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION=1 \
+  PRISMA_LOSSLESS_RUN_FRESH_CHECKOUT_INTEGRATION=1 \
+  pnpm exec vitest run \
+  scripts/lossless-private-registry-run.integration.test.ts \
+  -t "reproduces the recorded release from a fresh clean checkout"
+```
+
+Result: passed in `236.63s`. The test cloned the committed checkout,
+installed prerequisites, ran `pnpm build` in the clone, produced `.10`
+twice from clean release roots in separate processes, matched the
+independent fixture integrities, installed through the wrapper, ran
+generation in the temporary external consumer, and verified both the
+generated client version and `LosslessNumber` behavior.
+
 Repo-root build:
 
 ```sh
@@ -267,10 +284,6 @@ pnpm build
 ```
 
 Result: passed, `44` tasks successful.
-
-The fresh-clean-checkout integration is intentionally run after this
-tasklet state is committed, so the cloned checkout includes the final
-release identity fixture and wrapper test updates.
 
 ## Post-Implementation Review
 
