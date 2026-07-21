@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/client-common",
-  "version": "7.8.0-lossless.13",
+  "version": "7.8.0-lossless.14",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -24,12 +24,12 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@prisma-lossless/client-engine-runtime": "7.8.0-lossless.13",
-    "@prisma-lossless/dmmf": "7.8.0-lossless.13",
-    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.13",
-    "@prisma-lossless/generator": "7.8.0-lossless.13",
-    "@prisma-lossless/internals": "7.8.0-lossless.13",
-    "@prisma-lossless/param-graph": "7.8.0-lossless.13"
+    "@prisma-lossless/client-engine-runtime": "7.8.0-lossless.14",
+    "@prisma-lossless/dmmf": "7.8.0-lossless.14",
+    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.14",
+    "@prisma-lossless/generator": "7.8.0-lossless.14",
+    "@prisma-lossless/internals": "7.8.0-lossless.14",
+    "@prisma-lossless/param-graph": "7.8.0-lossless.14"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

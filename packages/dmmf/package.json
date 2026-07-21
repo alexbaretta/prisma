@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/dmmf",
-  "version": "7.8.0-lossless.13",
+  "version": "7.8.0-lossless.14",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

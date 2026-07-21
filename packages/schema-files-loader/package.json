@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/schema-files-loader",
-  "version": "7.8.0-lossless.13",
+  "version": "7.8.0-lossless.14",
   "description": "Package for resolving and loading schema files when schema is split into multiple files",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

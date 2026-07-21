@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/sqlcommenter-trace-context",
-  "version": "7.8.0-lossless.13",
+  "version": "7.8.0-lossless.14",
   "description": "W3C Trace Context (traceparent) plugin for Prisma SQL commenter",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -36,7 +36,7 @@
   ],
   "sideEffects": false,
   "devDependencies": {
-    "@prisma-lossless/instrumentation-contract": "7.8.0-lossless.13",
-    "@prisma-lossless/sqlcommenter": "7.8.0-lossless.13"
+    "@prisma-lossless/instrumentation-contract": "7.8.0-lossless.14",
+    "@prisma-lossless/sqlcommenter": "7.8.0-lossless.14"
   }
 }
