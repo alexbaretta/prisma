@@ -2,8 +2,8 @@
 /* eslint-disable jest/no-identical-title */
 import { stripVTControlCharacters } from 'node:util'
 
-import { jestContext } from '@prisma/get-platform'
-import { DbExecute, DbPull, DbPush, MigrateDev, MigrateReset } from '@prisma/migrate'
+import { jestContext } from '@prisma-lossless/get-platform'
+import { DbExecute, DbPull, DbPush, MigrateDev, MigrateReset } from '@prisma-lossless/migrate'
 import fs from 'fs'
 
 import { Format } from '../Format'

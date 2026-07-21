@@ -4,7 +4,7 @@ This document is for developers building observability tools, database monitorin
 
 ## Overview
 
-The `@prisma/sqlcommenter-query-insights` plugin adds a `prismaQuery` comment tag to SQL queries. This tag contains structured information about the Prisma operation that generated the query, encoded in a compact format suitable for SQL comments.
+The `@prisma-lossless/sqlcommenter-query-insights` plugin adds a `prismaQuery` comment tag to SQL queries. This tag contains structured information about the Prisma operation that generated the query, encoded in a compact format suitable for SQL comments.
 
 ## Comment Format
 

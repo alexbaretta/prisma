@@ -1,4 +1,4 @@
-import { defineConfig, env } from '@prisma/config'
+import { defineConfig, env } from '@prisma-lossless/config'
 
 const connectionString = env('TEST_POSTGRES_URI').replace('tests', 'tests-insensitive-postgresql-feature-flag')
 

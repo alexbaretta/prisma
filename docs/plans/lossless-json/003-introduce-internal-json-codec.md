@@ -65,17 +65,17 @@ Source checked during Sprint 0:
 
 ## Package Ownership Decision
 
-`@prisma/client-runtime-utils` owns the shared lossless JSON surface.
+`@prisma-lossless/client-runtime-utils` owns the shared lossless JSON surface.
 It already owns runtime-exported client utility values such as
 `Decimal`, SQL template helpers, and null sentinels, and both
-`@prisma/client` and `@prisma/client-engine-runtime` already depend on
+`@prisma-lossless/client` and `@prisma-lossless/client-engine-runtime` already depend on
 it. That dependency direction avoids introducing a reverse dependency
 from the client-engine runtime back into the generated client package.
 
 Sprint 1 will add `lossless-json` as a runtime dependency of
 `packages/client-runtime-utils`. Direct imports from `lossless-json`
 must stay inside that package. Other packages consume named Prisma
-helpers from `@prisma/client-runtime-utils`.
+helpers from `@prisma-lossless/client-runtime-utils`.
 
 The shared module should be named `json-codec.ts` and should export:
 
@@ -201,14 +201,14 @@ DB JSON preservation boundary.
 
 ## Pre-Implementation Review Records
 
-| Problem | Violated contract | Owning layer | Intended solution | Rejected solution | Validation |
-| --- | --- | --- | --- | --- | --- |
-| DB JSON reads use native parsing. | `Json` field numbers must not become lossy `number` values. | `client-runtime-utils` codec, called by client-engine data mapping and raw serializers. | Replace DB JSON text parsing with `parseJsonFieldValue`. | Driver JSON parser overrides or app-level helpers. | Unit tests for codec and mapper plus functional JSON precision reads. |
-| DB JSON writes use native stringification. | `LosslessNumber` input must write as an unquoted numeric token. | `client-runtime-utils` codec, called by parameterization. | Replace DB JSON value stringification with `stringifyJsonFieldValue`. | Calling `.toString()` through generic `toJSON()` and losing field context. | Unit tests for parameterization and functional write/read round trips. |
-| Generated JSON types only expose `number`. | Generated clients must type values returned by Prisma accurately. | Both client generators and exported runtime JSON types. | Add `LosslessNumber` to read and input JSON utility types. | Generated clients importing `lossless-json` directly. | Generator snapshot/type tests for JS and TS generators. |
-| JSON protocol can hide numeric text in objects. | Protocol transport must not force native numeric materialization. | Client serializer and client-engine JSON protocol helpers. | Encode lossless numeric values as JSON tagged values with string payloads. | Letting generic object traversal serialize `LosslessNumber` internals. | Serializer unit tests for top-level and nested JSON values. |
-| Cache keys may see class instances. | Query-plan cache keys must be deterministic. | Parameterization and client-engine cache boundary. | Parameterize JSON values to stable JSON strings before keying. | Relying on native `JSON.stringify` of `LosslessNumber`. | Cache-key tests with equivalent lossless JSON inputs. |
-| Special values may regress. | Existing BigInt, bytes, Decimal, Date, and null contracts must hold. | Codec plus existing protocol tag handlers. | Preserve existing non-JSON-number handling and add regression tests. | Treat all object-like values as plain JSON through lossless-json. | Existing protocol tests plus focused JSON edge tests. |
+| Problem                                         | Violated contract                                                    | Owning layer                                                                            | Intended solution                                                          | Rejected solution                                                          | Validation                                                             |
+| ----------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| DB JSON reads use native parsing.               | `Json` field numbers must not become lossy `number` values.          | `client-runtime-utils` codec, called by client-engine data mapping and raw serializers. | Replace DB JSON text parsing with `parseJsonFieldValue`.                   | Driver JSON parser overrides or app-level helpers.                         | Unit tests for codec and mapper plus functional JSON precision reads.  |
+| DB JSON writes use native stringification.      | `LosslessNumber` input must write as an unquoted numeric token.      | `client-runtime-utils` codec, called by parameterization.                               | Replace DB JSON value stringification with `stringifyJsonFieldValue`.      | Calling `.toString()` through generic `toJSON()` and losing field context. | Unit tests for parameterization and functional write/read round trips. |
+| Generated JSON types only expose `number`.      | Generated clients must type values returned by Prisma accurately.    | Both client generators and exported runtime JSON types.                                 | Add `LosslessNumber` to read and input JSON utility types.                 | Generated clients importing `lossless-json` directly.                      | Generator snapshot/type tests for JS and TS generators.                |
+| JSON protocol can hide numeric text in objects. | Protocol transport must not force native numeric materialization.    | Client serializer and client-engine JSON protocol helpers.                              | Encode lossless numeric values as JSON tagged values with string payloads. | Letting generic object traversal serialize `LosslessNumber` internals.     | Serializer unit tests for top-level and nested JSON values.            |
+| Cache keys may see class instances.             | Query-plan cache keys must be deterministic.                         | Parameterization and client-engine cache boundary.                                      | Parameterize JSON values to stable JSON strings before keying.             | Relying on native `JSON.stringify` of `LosslessNumber`.                    | Cache-key tests with equivalent lossless JSON inputs.                  |
+| Special values may regress.                     | Existing BigInt, bytes, Decimal, Date, and null contracts must hold. | Codec plus existing protocol tag handlers.                                              | Preserve existing non-JSON-number handling and add regression tests.       | Treat all object-like values as plain JSON through lossless-json.          | Existing protocol tests plus focused JSON edge tests.                  |
 
 ## Sprint 1 Implementation Notes
 
@@ -230,9 +230,9 @@ coverage for every supported adapter path.
 
 ## Tasklet Validation Performed
 
-- `rg` confirmed that `@prisma/client` and
-  `@prisma/client-engine-runtime` both depend on
-  `@prisma/client-runtime-utils`.
+- `rg` confirmed that `@prisma-lossless/client` and
+  `@prisma-lossless/client-engine-runtime` both depend on
+  `@prisma-lossless/client-runtime-utils`.
 - `rg` confirmed that no current package depends on `lossless-json`.
 - Reviewed the current native JSON DB value sites in
   `json-protocol.ts`, `parameterize.ts`, `utils.ts`, and

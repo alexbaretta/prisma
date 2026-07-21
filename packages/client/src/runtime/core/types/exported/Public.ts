@@ -1,4 +1,4 @@
-import { Operation } from '@prisma/client-common'
+import { Operation } from '@prisma-lossless/client-common'
 
 import { GetResult } from './Result'
 import { Exact } from './Utils'

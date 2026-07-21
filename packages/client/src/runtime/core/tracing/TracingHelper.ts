@@ -5,7 +5,7 @@ import {
   getGlobalTracingHelper,
   SpanCallback,
   TracingHelper,
-} from '@prisma/instrumentation-contract'
+} from '@prisma-lossless/instrumentation-contract'
 
 export const disabledTracingHelper: TracingHelper = {
   isEnabled() {

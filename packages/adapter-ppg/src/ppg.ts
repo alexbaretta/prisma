@@ -7,6 +7,7 @@
  * @module ppg
  */
 
+import { type Client, client, type Session, type Statements } from '@prisma/ppg'
 import {
   type ConnectionInfo,
   type IsolationLevel,
@@ -16,8 +17,7 @@ import {
   type SqlResultSet,
   type Transaction,
   type TransactionOptions,
-} from '@prisma/driver-adapter-utils'
-import { type Client, client, type Session, type Statements } from '@prisma/ppg'
+} from '@prisma-lossless/driver-adapter-utils'
 
 import { builtinParsers, convertArgs, fieldToColumnType, isolationLevelToSql } from './conversion'
 import { convertDriverError } from './errors'
@@ -41,7 +41,7 @@ export interface PrismaPostgresAdapterConfig {
  *
  * @example
  * ```ts
- * import { PrismaClient } from '@prisma/client';
+ * import { PrismaClient } from '@prisma-lossless/client';
  * import { PrismaPostgresAdapter } from '@prisma/ppg/adapter';
  *
  * const adapter = new PrismaPostgresAdapter({

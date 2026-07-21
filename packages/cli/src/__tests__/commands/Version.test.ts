@@ -1,5 +1,5 @@
-import { enginesVersion } from '@prisma/engines'
-import { jestConsoleContext, jestContext } from '@prisma/get-platform'
+import { enginesVersion } from '@prisma-lossless/engines'
+import { jestConsoleContext, jestContext } from '@prisma-lossless/get-platform'
 import { version as typeScriptVersion } from 'typescript'
 
 import packageJson from '../../../package.json'
@@ -34,7 +34,7 @@ describe('version', () => {
 
 function cleanSnapshot(str: string, versionOverride?: string): string {
   // sanitize engine path
-  // Schema Engine : schema-engine e996df5d66a2314d1da15d31047f9777fc2fbdd9 (at ../../home/runner/work/prisma/prisma/node_modules/.pnpm/@prisma+engines@3.11.0-41.e996df5d66a2314d1da15d31047f9777fc2fbdd9/node_modules/@prisma/engines/schema-engine-TEST_PLATFORM)
+  // Schema Engine : schema-engine e996df5d66a2314d1da15d31047f9777fc2fbdd9 (at ../../home/runner/work/prisma/prisma/node_modules/.pnpm/@prisma+engines@3.11.0-41.e996df5d66a2314d1da15d31047f9777fc2fbdd9/node_modules/@prisma-lossless/engines/schema-engine-TEST_PLATFORM)
   // +
   // Schema Engine : schema-engine 5a2e5869b69a983e279380ec68596b71beae9eff (at ../../cli/src/__tests__/commands/version-test-engines/schema-engine-TEST_PLATFORM, resolved by PRISMA_SCHEMA_ENGINE_BINARY)
   // =>

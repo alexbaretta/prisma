@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/get-platform",
+  "name": "@prisma-lossless/get-platform",
   "version": "0.0.0",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
@@ -27,7 +27,7 @@
     "typescript": "5.4.5"
   },
   "dependencies": {
-    "@prisma/debug": "workspace:*"
+    "@prisma-lossless/debug": "workspace:*"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

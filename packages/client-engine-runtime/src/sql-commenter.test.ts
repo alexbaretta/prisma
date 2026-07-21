@@ -1,4 +1,4 @@
-import type { SqlCommenterContext, SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import type { SqlCommenterContext, SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 import { describe, expect, test, vi } from 'vitest'
 
 import { appendSqlComment, applySqlCommenters, buildSqlComment, formatSqlComment } from './sql-commenter'

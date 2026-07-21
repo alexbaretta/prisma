@@ -7,7 +7,7 @@ import {
   isJsonNull,
   JsonNull,
   PrismaClientValidationError,
-} from '@prisma/client-runtime-utils'
+} from '@prisma-lossless/client-runtime-utils'
 
 import { Prisma as PrismaBrowser } from '../generated/prisma/browser'
 import { Prisma } from '../generated/prisma/client'

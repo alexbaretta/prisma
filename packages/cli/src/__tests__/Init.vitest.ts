@@ -1,5 +1,5 @@
-import { defaultTestConfig } from '@prisma/config'
-import { jestConsoleContext, jestContext } from '@prisma/get-platform'
+import { defaultTestConfig } from '@prisma-lossless/config'
+import { jestConsoleContext, jestContext } from '@prisma-lossless/get-platform'
 import fs from 'fs'
 import { join } from 'path'
 import stripAnsi from 'strip-ansi'

@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { getPackedPackage } from '@prisma/internals'
+import { getPackedPackage } from '@prisma-lossless/internals'
 import copy from '@timsuchanek/copy'
 import tsd, { formatter } from 'tsd'
 

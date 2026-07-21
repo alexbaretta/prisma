@@ -1,4 +1,4 @@
-import type { GeneratorManifest } from '@prisma/generator'
+import type { GeneratorManifest } from '@prisma-lossless/generator'
 
 export function getEngineVersionForGenerator(
   manifest?: GeneratorManifest,

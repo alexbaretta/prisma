@@ -1,5 +1,5 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import { enginesVersion } from '@prisma/engines'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import { enginesVersion } from '@prisma-lossless/engines'
 import {
   arg,
   BinaryType,
@@ -14,7 +14,7 @@ import {
   loadSchemaContext,
   resolveEngine,
   wasm,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import { bold, dim, red } from 'kleur/colors'
 import os from 'os'
 

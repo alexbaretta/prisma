@@ -1,5 +1,5 @@
-import { uncapitalize } from '@prisma/client-common'
-import * as ts from '@prisma/ts-builders'
+import { uncapitalize } from '@prisma-lossless/client-common'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { DMMFHelper } from '../dmmf'
 import { getOmitName } from '../utils'

@@ -1,4 +1,4 @@
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import { PrismaBetterSqlite3 } from '@prisma-lossless/adapter-better-sqlite3'
 
 import { Db, NewPrismaClient } from '../../_utils/types'
 import testMatrix from './_matrix'

@@ -1,6 +1,6 @@
-import { uncapitalize } from '@prisma/client-common'
-import { isObjectEnumValue } from '@prisma/client-runtime-utils'
-import { Writer } from '@prisma/ts-builders'
+import { uncapitalize } from '@prisma-lossless/client-common'
+import { isObjectEnumValue } from '@prisma-lossless/client-runtime-utils'
+import { Writer } from '@prisma-lossless/ts-builders'
 
 import { ErrorFormat } from '../../getPrismaClient'
 import { isValidDate } from '../../utils/date'

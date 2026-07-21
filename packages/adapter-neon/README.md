@@ -17,7 +17,7 @@ The [Neon serverless driver](https://github.com/neondatabase/serverless) is a lo
 To get started, install the Prisma adapter for Neon's serverless driver and `ws` packages:
 
 ```sh
-npm install @prisma/adapter-neon
+npm install @prisma-lossless/adapter-neon
 npm install ws
 ```
 
@@ -26,8 +26,8 @@ Update your Prisma Client instance to use the Neon serverless driver using a Web
 ```ts
 // Import needed packages
 import { neonConfig } from '@neondatabase/serverless'
-import { PrismaNeon } from '@prisma/adapter-neon'
-import { PrismaClient } from '@prisma/client'
+import { PrismaNeon } from '@prisma-lossless/adapter-neon'
+import { PrismaClient } from '@prisma-lossless/client'
 import ws from 'ws'
 
 // Setup

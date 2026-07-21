@@ -1,5 +1,5 @@
-import { PrismaClientJsGenerator } from '@prisma/client-generator-js'
-import { PrismaClientTsGenerator } from '@prisma/client-generator-ts'
+import { PrismaClientJsGenerator } from '@prisma-lossless/client-generator-js'
+import { PrismaClientTsGenerator } from '@prisma-lossless/client-generator-ts'
 
 import { GeneratorRegistry } from './registry'
 

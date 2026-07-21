@@ -24,7 +24,7 @@ migration ..20201019093934-init
 +
 +generator client {
 +  provider = "prisma-client-js"
-+  output   = "@prisma/client"
++  output   = "@prisma-lossless/client"
 +}
 +
 +model Blogss {

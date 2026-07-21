@@ -1,6 +1,6 @@
-import { uniqueBy } from '@prisma/client-common'
-import type * as DMMF from '@prisma/dmmf'
-import * as ts from '@prisma/ts-builders'
+import { uniqueBy } from '@prisma-lossless/client-common'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import * as ts from '@prisma-lossless/ts-builders'
 import indent from 'indent-string'
 
 import { GenericArgsInfo } from '../GenericsArgsInfo'

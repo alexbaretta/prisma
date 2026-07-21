@@ -25,18 +25,18 @@ export {
   type GetPrismaClientConfig,
   type Operation,
   type RuntimeDataModel,
-} from '@prisma/client-common'
-export { deserializeJsonObject } from '@prisma/client-engine-runtime'
-export type { RawValue, Value } from '@prisma/client-runtime-utils'
-export type { AnyNullClass, DbNullClass, JsonNullClass } from '@prisma/client-runtime-utils'
+} from '@prisma-lossless/client-common'
+export { deserializeJsonObject } from '@prisma-lossless/client-engine-runtime'
+export type { RawValue, Value } from '@prisma-lossless/client-runtime-utils'
+export type { AnyNullClass, DbNullClass, JsonNullClass } from '@prisma-lossless/client-runtime-utils'
 export {
   PrismaClientInitializationError,
   PrismaClientKnownRequestError,
   PrismaClientRustPanicError,
   PrismaClientUnknownRequestError,
   PrismaClientValidationError,
-} from '@prisma/client-runtime-utils'
-export { empty, join, raw, Sql, sql as sqltag } from '@prisma/client-runtime-utils'
+} from '@prisma-lossless/client-runtime-utils'
+export { empty, join, raw, Sql, sql as sqltag } from '@prisma-lossless/client-runtime-utils'
 export {
   AnyNull,
   DbNull,
@@ -47,16 +47,16 @@ export {
   JsonNull,
   NullTypes,
   ObjectEnumValue,
-} from '@prisma/client-runtime-utils'
-export { Decimal, LosslessNumber } from '@prisma/client-runtime-utils'
-export { Debug } from '@prisma/debug'
-export * as DMMF from '@prisma/dmmf'
-export type { SqlDriverAdapterFactory } from '@prisma/driver-adapter-utils'
-export { warnOnce } from '@prisma/internals'
+} from '@prisma-lossless/client-runtime-utils'
+export { Decimal, LosslessNumber } from '@prisma-lossless/client-runtime-utils'
+export { Debug } from '@prisma-lossless/debug'
+export * as DMMF from '@prisma-lossless/dmmf'
+export type { SqlDriverAdapterFactory } from '@prisma-lossless/driver-adapter-utils'
+export { warnOnce } from '@prisma-lossless/internals'
 export type {
   SqlCommenterContext,
   SqlCommenterPlugin,
   SqlCommenterQueryInfo,
   SqlCommenterSingleQueryInfo,
   SqlCommenterTags,
-} from '@prisma/sqlcommenter'
+} from '@prisma-lossless/sqlcommenter'

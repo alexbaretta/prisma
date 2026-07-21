@@ -1,5 +1,5 @@
-import Debug from '@prisma/debug'
-import { enginesVersion } from '@prisma/engines'
+import Debug from '@prisma-lossless/debug'
+import { enginesVersion } from '@prisma-lossless/engines'
 import type {
   BinaryTargetsEnvValue,
   EngineType,
@@ -7,9 +7,9 @@ import type {
   GeneratorConfig,
   GeneratorOptions,
   SqlQueryOutput,
-} from '@prisma/generator'
-import type { BinaryTarget } from '@prisma/get-platform'
-import { binaryTargets, getBinaryTargetForCurrentPlatform } from '@prisma/get-platform'
+} from '@prisma-lossless/generator'
+import type { BinaryTarget } from '@prisma-lossless/get-platform'
+import { binaryTargets, getBinaryTargetForCurrentPlatform } from '@prisma-lossless/get-platform'
 import { bold, gray, green, red, underline, yellow } from 'kleur/colors'
 import pMap from 'p-map'
 import path from 'path'

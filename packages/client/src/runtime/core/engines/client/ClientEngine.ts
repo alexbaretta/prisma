@@ -1,4 +1,4 @@
-import { QueryCompiler, QueryCompilerConstructor, QueryEngineLogLevel } from '@prisma/client-common'
+import { QueryCompiler, QueryCompilerConstructor, QueryEngineLogLevel } from '@prisma-lossless/client-common'
 import {
   BatchResponse,
   convertCompactedRows,
@@ -9,20 +9,23 @@ import {
   safeJsonStringify,
   TransactionInfo,
   UserFacingError,
-} from '@prisma/client-engine-runtime'
+} from '@prisma-lossless/client-engine-runtime'
 import {
   PrismaClientInitializationError,
   PrismaClientKnownRequestError,
   PrismaClientRustPanicError,
   PrismaClientUnknownRequestError,
-} from '@prisma/client-runtime-utils'
-import { Debug } from '@prisma/debug'
-import type { IsolationLevel as SqlIsolationLevel, SqlDriverAdapterFactory } from '@prisma/driver-adapter-utils'
-import type { ActiveConnectorType } from '@prisma/generator'
-import type { TracingHelper } from '@prisma/instrumentation-contract'
-import { assertNever } from '@prisma/internals'
-import type { JsonBatchQuery, JsonQuery, RawJsonQuery } from '@prisma/json-protocol'
-import { ParamGraph } from '@prisma/param-graph'
+} from '@prisma-lossless/client-runtime-utils'
+import { Debug } from '@prisma-lossless/debug'
+import type {
+  IsolationLevel as SqlIsolationLevel,
+  SqlDriverAdapterFactory,
+} from '@prisma-lossless/driver-adapter-utils'
+import type { ActiveConnectorType } from '@prisma-lossless/generator'
+import type { TracingHelper } from '@prisma-lossless/instrumentation-contract'
+import { assertNever } from '@prisma-lossless/internals'
+import type { JsonBatchQuery, JsonQuery, RawJsonQuery } from '@prisma-lossless/json-protocol'
+import { ParamGraph } from '@prisma-lossless/param-graph'
 
 import { version as clientVersion } from '../../../../../package.json'
 import { deserializeRawParameters } from '../../../utils/deserializeRawParameters'

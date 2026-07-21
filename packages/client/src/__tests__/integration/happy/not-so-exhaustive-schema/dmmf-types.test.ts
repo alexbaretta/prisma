@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { getDMMF } from '@prisma/client-generator-js'
+import { getDMMF } from '@prisma-lossless/client-generator-js'
 
 import { compileFile } from '../../../../utils/compileFile'
 
@@ -20,7 +20,7 @@ test('dmmf-types', async () => {
 
   fs.writeFileSync(
     dmmfFile,
-    `import type * as DMMF from '@prisma/dmmf'
+    `import type * as DMMF from '@prisma-lossless/dmmf'
 
   const dmmf: DMMF.Document = ${JSON.stringify(dmmf, null, 2)}`,
   )

@@ -1,4 +1,4 @@
-import { getCommandWithExecutor, link, setClassName } from '@prisma/internals'
+import { getCommandWithExecutor, link, setClassName } from '@prisma-lossless/internals'
 import { bold, green } from 'kleur/colors'
 
 export class ConfigValidationError extends Error {

@@ -1,4 +1,4 @@
-import { uncapitalize } from '@prisma/client-common'
+import { uncapitalize } from '@prisma-lossless/client-common'
 import levenshtein from 'js-levenshtein'
 
 import {

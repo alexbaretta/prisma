@@ -1,4 +1,4 @@
-# @prisma/schema-files-loader
+# @prisma-lossless/schema-files-loader
 
 **INTERNAL PACKAGE**
 

@@ -1,4 +1,4 @@
-import type { JsonQuery } from '@prisma/json-protocol'
+import type { JsonQuery } from '@prisma-lossless/json-protocol'
 import { describe, expect, it } from 'vitest'
 
 import { parameterizeQuery } from '../parameterize'

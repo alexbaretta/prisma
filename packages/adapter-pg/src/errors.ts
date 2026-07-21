@@ -1,4 +1,4 @@
-import { Error as DriverAdapterErrorObject, MappedError } from '@prisma/driver-adapter-utils'
+import { Error as DriverAdapterErrorObject, MappedError } from '@prisma-lossless/driver-adapter-utils'
 import type { DatabaseError } from 'pg'
 
 const TLS_ERRORS = new Set([

@@ -1,5 +1,5 @@
-import Debug from '@prisma/debug'
-import { isCi, isInContainer, isInNpmLifecycleHook, isInteractive, maybeInGitHook } from '@prisma/internals'
+import Debug from '@prisma-lossless/debug'
+import { isCi, isInContainer, isInNpmLifecycleHook, isInteractive, maybeInGitHook } from '@prisma-lossless/internals'
 import * as checkpoint from 'checkpoint-client'
 import paths from 'env-paths'
 import fs from 'fs'

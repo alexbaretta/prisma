@@ -5,7 +5,7 @@ let prisma
 describe('can-not-connect-to-database', () => {
   beforeAll(async () => {
     await generateTestClient()
-    const { PrismaClient } = require('./node_modules/@prisma/client')
+    const { PrismaClient } = require('./node_modules/@prisma-lossless/client')
     prisma = new PrismaClient()
   })
 

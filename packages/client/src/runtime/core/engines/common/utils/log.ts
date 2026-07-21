@@ -1,4 +1,4 @@
-import { PrismaClientRustError } from '@prisma/client-runtime-utils'
+import { PrismaClientRustError } from '@prisma-lossless/client-runtime-utils'
 
 export type LogLevel = 'info' | 'trace' | 'debug' | 'warn' | 'error' | 'query'
 export interface RawRustLog {

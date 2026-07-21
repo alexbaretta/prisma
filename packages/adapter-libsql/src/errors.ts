@@ -1,5 +1,5 @@
 import { type LibsqlError } from '@libsql/client'
-import { Error as DriverAdapterErrorObject, MappedError } from '@prisma/driver-adapter-utils'
+import { Error as DriverAdapterErrorObject, MappedError } from '@prisma-lossless/driver-adapter-utils'
 
 const SQLITE_BUSY = 5
 const PRIMARY_ERROR_CODE_MASK = 0xff

@@ -2,8 +2,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import { Command, detect, getCommand } from '@antfu/ni'
-import { Debug } from '@prisma/debug'
-import { resolvePkg } from '@prisma/internals'
+import { Debug } from '@prisma-lossless/debug'
+import { resolvePkg } from '@prisma-lossless/internals'
 import { bold, green } from 'kleur/colors'
 
 import clientPkg from '../../client/package.json'

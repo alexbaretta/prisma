@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import { defaultTestConfig } from '@prisma/config'
+import { defaultTestConfig } from '@prisma-lossless/config'
 
 import { Studio } from '../packages/cli/src/Studio'
 

@@ -1,4 +1,4 @@
-import { getCommandWithExecutor } from '@prisma/internals'
+import { getCommandWithExecutor } from '@prisma-lossless/internals'
 import { bold, dim, green } from 'kleur/colors'
 
 import type { LinkResult } from './Link'

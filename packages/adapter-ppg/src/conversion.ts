@@ -1,4 +1,4 @@
-import { ArgType, ColumnType, ColumnTypeEnum, IsolationLevel } from '@prisma/driver-adapter-utils'
+import { ArgType, ColumnType, ColumnTypeEnum, IsolationLevel } from '@prisma-lossless/driver-adapter-utils'
 import { getTypeParser } from 'pg-types'
 import { parse as parseArray } from 'postgres-array'
 

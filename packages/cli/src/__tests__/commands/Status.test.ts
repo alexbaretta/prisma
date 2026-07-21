@@ -1,6 +1,6 @@
 import { stripVTControlCharacters } from 'node:util'
 
-import { defaultTestConfig } from '@prisma/config'
+import { defaultTestConfig } from '@prisma-lossless/config'
 
 import { Status } from '../../Status'
 

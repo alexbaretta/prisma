@@ -263,13 +263,13 @@ describe('lossless private release graph', () => {
     expect(PRIVATE_RELEASE_SOURCE_DIRS).toContain('helpers/compile')
   })
 
-  test('rewrites workspace metadata to an exact private version', () => {
+  test('stamps workspace metadata with an exact private version', () => {
     const rewritten = rewritePackageJsonForPrivateRelease(
       {
-        name: '@prisma/get-platform',
+        name: '@prisma-lossless/get-platform',
         version: '0.0.0',
         dependencies: {
-          '@prisma/debug': 'workspace:*',
+          '@prisma-lossless/debug': 'workspace:*',
           kleur: '4.1.5',
         },
         devDependencies: {
@@ -284,7 +284,7 @@ describe('lossless private release graph', () => {
       name: '@prisma-lossless/get-platform',
       version: releaseVersion,
       dependencies: {
-        '@prisma/debug': `npm:@prisma-lossless/debug@${releaseVersion}`,
+        '@prisma-lossless/debug': releaseVersion,
         kleur: '4.1.5',
       },
       prismaLosslessRelease: {
@@ -294,6 +294,19 @@ describe('lossless private release graph', () => {
     })
     expect(rewritten).not.toHaveProperty('devDependencies')
     expect(() => validateReleasePackageMetadata(rewritten, releaseVersion, sourceCommit)).not.toThrow()
+  })
+
+  test('rejects stock source package identities', () => {
+    expect(() =>
+      rewritePackageJsonForPrivateRelease(
+        {
+          name: '@prisma/get-platform',
+          version: '0.0.0',
+        },
+        releaseVersion,
+        sourceCommit,
+      ),
+    ).toThrow(/not in the private release graph/)
   })
 
   test('rejects forbidden release dependency specifiers', () => {
@@ -312,7 +325,7 @@ describe('lossless private release graph', () => {
       expect(() =>
         validateReleasePackageMetadata(
           {
-            name: '@prisma/debug',
+            name: '@prisma-lossless/debug',
             version: releaseVersion,
             dependencies: {
               bad: specifier,
@@ -329,7 +342,27 @@ describe('lossless private release graph', () => {
     }
   })
 
-  test('rewrites the lossless client dependency on the runtime closure', () => {
+  test('rejects npm aliases for fork-owned dependencies', () => {
+    expect(() =>
+      validateReleasePackageMetadata(
+        {
+          name: '@prisma-lossless/get-platform',
+          version: releaseVersion,
+          dependencies: {
+            '@prisma-lossless/debug': `npm:@prisma-lossless/debug@${releaseVersion}`,
+          },
+          prismaLosslessRelease: {
+            version: releaseVersion,
+            sourceCommit,
+          },
+        },
+        releaseVersion,
+        sourceCommit,
+      ),
+    ).toThrow(/forbidden npm alias specifier/)
+  })
+
+  test('stamps the lossless client dependency on the runtime closure', () => {
     const packageJsons = buildPrivateReleasePackageJsons(releaseVersion, sourceCommit)
     const clientPackageJson = packageJsons.get('@prisma-lossless/client')
     const cliPackageJson = packageJsons.get('prisma-lossless')
@@ -337,7 +370,7 @@ describe('lossless private release graph', () => {
     expect(clientPackageJson).toMatchObject({
       version: releaseVersion,
       dependencies: {
-        '@prisma/client-runtime-utils': `npm:@prisma-lossless/client-runtime-utils@${releaseVersion}`,
+        '@prisma-lossless/client-runtime-utils': releaseVersion,
       },
       peerDependencies: {
         'prisma-lossless': releaseVersion,
@@ -350,8 +383,8 @@ describe('lossless private release graph', () => {
     expect(cliPackageJson).toMatchObject({
       version: releaseVersion,
       dependencies: {
-        '@prisma/config': `npm:@prisma-lossless/config@${releaseVersion}`,
-        '@prisma/engines': `npm:@prisma-lossless/engines@${releaseVersion}`,
+        '@prisma-lossless/config': releaseVersion,
+        '@prisma-lossless/engines': releaseVersion,
       },
       prisma: {
         prismaCommit: sourceCommit,
@@ -366,7 +399,7 @@ describe('lossless private release graph', () => {
       name: '@prisma-lossless/adapter-pg',
       version: releaseVersion,
       dependencies: {
-        '@prisma/driver-adapter-utils': `npm:@prisma-lossless/driver-adapter-utils@${releaseVersion}`,
+        '@prisma-lossless/driver-adapter-utils': releaseVersion,
       },
       prismaLosslessRelease: {
         version: releaseVersion,
@@ -375,7 +408,7 @@ describe('lossless private release graph', () => {
     })
   })
 
-  test('rewrites staged generated client release artifacts', () => {
+  test('stamps staged generated client version artifacts', () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-lossless-staged-artifacts-'))
 
     try {
@@ -387,10 +420,7 @@ describe('lossless private release graph', () => {
       fs.writeFileSync(path.join(clientDir, 'runtime/client.js'), 'var clientVersion = "0.0.0";\n')
       fs.writeFileSync(path.join(clientDir, 'runtime/client.mjs'), 'var clientVersion = "0.0.0";\n')
       fs.writeFileSync(path.join(clientDir, 'scripts/default-index.js'), 'client: "0.0.0"\n')
-      fs.writeFileSync(
-        path.join(cliDir, 'build/index.js'),
-        'dependencies:{"@prisma/client-runtime-utils":clientVersion}\n',
-      )
+      fs.writeFileSync(path.join(cliDir, 'build/index.js'), 'dependencies:{}\n')
 
       rewriteStagedPrivateReleaseArtifacts(clientDir, '@prisma-lossless/client', releaseVersion)
       rewriteStagedPrivateReleaseArtifacts(cliDir, 'prisma-lossless', releaseVersion)
@@ -398,12 +428,7 @@ describe('lossless private release graph', () => {
       expect(fs.readFileSync(path.join(clientDir, 'runtime/client.js'), 'utf-8')).toContain(releaseVersion)
       expect(fs.readFileSync(path.join(clientDir, 'runtime/client.mjs'), 'utf-8')).toContain(releaseVersion)
       expect(fs.readFileSync(path.join(clientDir, 'scripts/default-index.js'), 'utf-8')).toContain(releaseVersion)
-      expect(fs.readFileSync(path.join(cliDir, 'build/index.js'), 'utf-8')).toContain(
-        '@prisma-lossless/client-runtime-utils',
-      )
-      expect(fs.readFileSync(path.join(cliDir, 'build/index.js'), 'utf-8')).not.toContain(
-        '@prisma/client-runtime-utils',
-      )
+      expect(fs.readFileSync(path.join(cliDir, 'build/index.js'), 'utf-8')).toBe('dependencies:{}\n')
     } finally {
       fs.rmSync(root, { recursive: true, force: true })
     }

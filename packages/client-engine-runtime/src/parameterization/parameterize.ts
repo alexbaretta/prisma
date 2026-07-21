@@ -6,7 +6,7 @@
  * both schema rules and runtime value types agree.
  */
 
-import { normalizeJsonFieldText, stringifyJsonFieldValue } from '@prisma/client-runtime-utils'
+import { normalizeJsonFieldText, stringifyJsonFieldValue } from '@prisma-lossless/client-runtime-utils'
 import type {
   JsonArgumentValue,
   JsonBatchQuery,
@@ -15,10 +15,10 @@ import type {
   JsonQuery,
   JsonSelectionSet,
   PlaceholderTaggedValue,
-} from '@prisma/json-protocol'
-import { PlaceholderType } from '@prisma/json-protocol'
-import type { InputEdge, InputNode } from '@prisma/param-graph'
-import { EdgeFlag, getScalarMask, hasFlag, ParamGraph, ScalarMask } from '@prisma/param-graph'
+} from '@prisma-lossless/json-protocol'
+import { PlaceholderType } from '@prisma-lossless/json-protocol'
+import type { InputEdge, InputNode } from '@prisma-lossless/param-graph'
+import { EdgeFlag, getScalarMask, hasFlag, ParamGraph, ScalarMask } from '@prisma-lossless/param-graph'
 
 import { deserializeJsonObject } from '../json-protocol'
 import { classifyValue, isPlainObject, isTaggedValue, ValueClass } from './classify'

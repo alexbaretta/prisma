@@ -8,13 +8,13 @@ importers:
 
   .:
     dependencies:
-      '@prisma/adapter-d1':
+      '@prisma-lossless/adapter-d1':
         specifier: /tmp/prisma-adapter-d1-0.0.0.tgz
         version: file:../../tmp/prisma-adapter-d1-0.0.0.tgz
-      '@prisma/client':
+      '@prisma-lossless/client':
         specifier: /tmp/prisma-client-0.0.0.tgz
         version: file:../../tmp/prisma-client-0.0.0.tgz(prisma@file:../../tmp/prisma-0.0.0.tgz)
-      '@prisma/client-runtime-utils':
+      '@prisma-lossless/client-runtime-utils':
         specifier: /tmp/prisma-client-runtime-utils-0.0.0.tgz
         version: file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz
     devDependencies:
@@ -57,15 +57,15 @@ packages:
     resolution: {integrity: sha512-u3UPsIilWKOM3F9CXtrG8LEJmNxwoCQC/XVj4IKYXvvpx7QIi/Kg1LI5uDmDpKlac62NUtX7eLjRh+jVZcLOzw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
-  '@prisma/adapter-d1@file:../../tmp/prisma-adapter-d1-0.0.0.tgz':
+  '@prisma-lossless/adapter-d1@file:../../tmp/prisma-adapter-d1-0.0.0.tgz':
     resolution: {integrity: sha512-reypwouLkBmiB5a6uuEW++2zmp6eQA6vPSQi3hRr9KP+szSD5YKNmHNG/yKnAnnSG39T+z1pKEct+Aw+MamoHA==, tarball: file:../../tmp/prisma-adapter-d1-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/client-runtime-utils@file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz':
+  '@prisma-lossless/client-runtime-utils@file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz':
     resolution: {integrity: sha512-vOTr95e6MYaqlv2JQFNYyZkgOCiNEcYDzx6C2w3T9oh3Jga9IoLOfvMAQtvLeYvfYBNw1sW/EOQLQVuu/2EyWA==, tarball: file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/client@file:../../tmp/prisma-client-0.0.0.tgz':
+  '@prisma-lossless/client@file:../../tmp/prisma-client-0.0.0.tgz':
     resolution: {integrity: sha512-bKbh9QEkPv0b5ddr6yexty1DiRWJpGgQo4osOzwmKgaQTABIlVK5PXmUU1P+DZQMtvulsuHxp8tRSeeP8CCrcA==, tarball: file:../../tmp/prisma-client-0.0.0.tgz}
     version: 0.0.0
     engines: {node: ^20.19 || ^22.12 || ^24.0}
@@ -78,30 +78,30 @@ packages:
       typescript:
         optional: true
 
-  '@prisma/config@file:../../tmp/prisma-config-0.0.0.tgz':
+  '@prisma-lossless/config@file:../../tmp/prisma-config-0.0.0.tgz':
     resolution: {integrity: sha512-jSlQcZumYwK3CFEeFQ7dVPYeK2wq6hbmihSpTOANHuX0fv1yZsdBJehpj9NHr3+w4JsAJnE5dgUhrkFGP/FuBw==, tarball: file:../../tmp/prisma-config-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/debug@file:../../tmp/prisma-debug-0.0.0.tgz':
+  '@prisma-lossless/debug@file:../../tmp/prisma-debug-0.0.0.tgz':
     resolution: {integrity: sha512-zHvroKTHICJzI+ehqo2Dor+oEoUKiDCZzc7J4FinftNJtC27M/FEGHGfjNkd5bRgqSyYsK50uw/IqVzmW3blQw==, tarball: file:../../tmp/prisma-debug-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
+  '@prisma-lossless/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
     resolution: {integrity: sha512-d7qYqZGFogvxfB0RJadqONOX04Dg0MHoIIJT2GNyGIZa0udigBUwcek1tq3eqc/JCBbbuVGGeDz3xm1jdHwjgg==, tarball: file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz}
     version: 0.0.0
 
   '@prisma/engines-version@6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f':
     resolution: {integrity: sha512-T7Af4QsJQnSgWN1zBbX+Cha5t4qjHRxoeoWpK4JugJzG/ipmmDMY5S+O0N1ET6sCBNVkf6lz+Y+ZNO9+wFU8pQ==}
 
-  '@prisma/engines@file:../../tmp/prisma-engines-0.0.0.tgz':
+  '@prisma-lossless/engines@file:../../tmp/prisma-engines-0.0.0.tgz':
     resolution: {integrity: sha512-Yev9K948DCFD5W3uIg+GlmUUYbgAh1e9d7/F++u30f2kG2w/MZnDaxJYc+7G7gQwQoFYXZOUFLVDtq9L6E8mxQ==, tarball: file:../../tmp/prisma-engines-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/fetch-engine@file:../../tmp/prisma-fetch-engine-0.0.0.tgz':
+  '@prisma-lossless/fetch-engine@file:../../tmp/prisma-fetch-engine-0.0.0.tgz':
     resolution: {integrity: sha512-TBk9ZC0iMg+S4Kf/ru8odZWLMSagZ/Sixo2+iHMRGehwXEqwLuaswoOiZBmKYwnxqwyEzHHZydAwDhWpYnwPjA==, tarball: file:../../tmp/prisma-fetch-engine-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/get-platform@file:../../tmp/prisma-get-platform-0.0.0.tgz':
+  '@prisma-lossless/get-platform@file:../../tmp/prisma-get-platform-0.0.0.tgz':
     resolution: {integrity: sha512-st640lzeU647Ohvb7fSHGjQOE2jiJIUq2YVkAEpU7xlNe3umd4DlMI2APwqwDEO4OHxe1KX25VxBpBp6SgZ31Q==, tarball: file:../../tmp/prisma-get-platform-0.0.0.tgz}
     version: 0.0.0
 
@@ -416,21 +416,21 @@ snapshots:
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
-  '@prisma/adapter-d1@file:../../tmp/prisma-adapter-d1-0.0.0.tgz':
+  '@prisma-lossless/adapter-d1@file:../../tmp/prisma-adapter-d1-0.0.0.tgz':
     dependencies:
       '@cloudflare/workers-types': 4.20251001.0
-      '@prisma/driver-adapter-utils': file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz
+      '@prisma-lossless/driver-adapter-utils': file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz
       ky: 1.7.5
 
-  '@prisma/client-runtime-utils@file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz': {}
+  '@prisma-lossless/client-runtime-utils@file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz': {}
 
-  '@prisma/client@file:../../tmp/prisma-client-0.0.0.tgz(prisma@file:../../tmp/prisma-0.0.0.tgz)':
+  '@prisma-lossless/client@file:../../tmp/prisma-client-0.0.0.tgz(prisma@file:../../tmp/prisma-0.0.0.tgz)':
     dependencies:
-      '@prisma/client-runtime-utils': file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz
+      '@prisma-lossless/client-runtime-utils': file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz
     optionalDependencies:
       prisma: file:../../tmp/prisma-0.0.0.tgz
 
-  '@prisma/config@file:../../tmp/prisma-config-0.0.0.tgz':
+  '@prisma-lossless/config@file:../../tmp/prisma-config-0.0.0.tgz':
     dependencies:
       c12: 3.1.0
       deepmerge-ts: 7.1.5
@@ -439,30 +439,30 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@prisma/debug@file:../../tmp/prisma-debug-0.0.0.tgz': {}
+  '@prisma-lossless/debug@file:../../tmp/prisma-debug-0.0.0.tgz': {}
 
-  '@prisma/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
+  '@prisma-lossless/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
     dependencies:
-      '@prisma/debug': file:../../tmp/prisma-debug-0.0.0.tgz
+      '@prisma-lossless/debug': file:../../tmp/prisma-debug-0.0.0.tgz
 
   '@prisma/engines-version@6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f': {}
 
-  '@prisma/engines@file:../../tmp/prisma-engines-0.0.0.tgz':
+  '@prisma-lossless/engines@file:../../tmp/prisma-engines-0.0.0.tgz':
     dependencies:
-      '@prisma/debug': file:../../tmp/prisma-debug-0.0.0.tgz
+      '@prisma-lossless/debug': file:../../tmp/prisma-debug-0.0.0.tgz
       '@prisma/engines-version': 6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f
-      '@prisma/fetch-engine': file:../../tmp/prisma-fetch-engine-0.0.0.tgz
-      '@prisma/get-platform': file:../../tmp/prisma-get-platform-0.0.0.tgz
+      '@prisma-lossless/fetch-engine': file:../../tmp/prisma-fetch-engine-0.0.0.tgz
+      '@prisma-lossless/get-platform': file:../../tmp/prisma-get-platform-0.0.0.tgz
 
-  '@prisma/fetch-engine@file:../../tmp/prisma-fetch-engine-0.0.0.tgz':
+  '@prisma-lossless/fetch-engine@file:../../tmp/prisma-fetch-engine-0.0.0.tgz':
     dependencies:
-      '@prisma/debug': file:../../tmp/prisma-debug-0.0.0.tgz
+      '@prisma-lossless/debug': file:../../tmp/prisma-debug-0.0.0.tgz
       '@prisma/engines-version': 6.18.0-8.34b5a692b7bd79939a9a2c3ef97d816e749cda2f
-      '@prisma/get-platform': file:../../tmp/prisma-get-platform-0.0.0.tgz
+      '@prisma-lossless/get-platform': file:../../tmp/prisma-get-platform-0.0.0.tgz
 
-  '@prisma/get-platform@file:../../tmp/prisma-get-platform-0.0.0.tgz':
+  '@prisma-lossless/get-platform@file:../../tmp/prisma-get-platform-0.0.0.tgz':
     dependencies:
-      '@prisma/debug': file:../../tmp/prisma-debug-0.0.0.tgz
+      '@prisma-lossless/debug': file:../../tmp/prisma-debug-0.0.0.tgz
 
   '@sinclair/typebox@0.27.8': {}
 
@@ -699,8 +699,8 @@ snapshots:
 
   prisma@file:../../tmp/prisma-0.0.0.tgz:
     dependencies:
-      '@prisma/config': file:../../tmp/prisma-config-0.0.0.tgz
-      '@prisma/engines': file:../../tmp/prisma-engines-0.0.0.tgz
+      '@prisma-lossless/config': file:../../tmp/prisma-config-0.0.0.tgz
+      '@prisma-lossless/engines': file:../../tmp/prisma-engines-0.0.0.tgz
     transitivePeerDependencies:
       - magicast
 

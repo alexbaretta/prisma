@@ -186,7 +186,7 @@ recorded random source-map bytes cannot be reproduced.
 Confirmed subproblem: split-build packages can leave stale hashed
 chunks in `dist`. The recorded `.8` `@prisma-lossless/get-platform`
 tarball included `dist/chunk-WFCM4MDC.js`, but a fresh clean root build
-did not produce that file. Because `@prisma/get-platform` publishes the
+did not produce that file. Because `@prisma-lossless/get-platform` publishes the
 whole `dist` directory, the stale ignored chunk changed the package
 identity.
 
@@ -241,7 +241,7 @@ generated outputs are still cleaned, then rerun the repo-root build.
 
 Confirmed subproblem: the fresh-checkout integration cannot use a
 plain `pnpm install --frozen-lockfile` in a source tree whose build
-outputs are intentionally absent. The workspace `@prisma/engines`
+outputs are intentionally absent. The workspace `@prisma-lossless/engines`
 postinstall script expects built `dist/scripts/*.js` files, so install
 fails before the test can run the source build.
 

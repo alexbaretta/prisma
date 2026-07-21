@@ -1,4 +1,4 @@
-import { binaryTargets } from '@prisma/get-platform'
+import { binaryTargets } from '@prisma-lossless/get-platform'
 import escapeString from 'escape-string-regexp'
 
 /**

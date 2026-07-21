@@ -1,4 +1,4 @@
-import { printGeneratorConfig } from '@prisma/internals'
+import { printGeneratorConfig } from '@prisma-lossless/internals'
 
 import { EngineNotFoundErrorInput } from './EngineNotFoundErrorInput'
 

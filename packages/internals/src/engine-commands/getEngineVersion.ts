@@ -1,4 +1,4 @@
-import { BinaryType } from '@prisma/fetch-engine'
+import { BinaryType } from '@prisma-lossless/fetch-engine'
 import { execa } from 'execa'
 import * as TE from 'fp-ts/TaskEither'
 

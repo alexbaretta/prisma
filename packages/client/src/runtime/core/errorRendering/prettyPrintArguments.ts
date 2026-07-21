@@ -1,4 +1,4 @@
-import { Writer } from '@prisma/ts-builders'
+import { Writer } from '@prisma-lossless/ts-builders'
 
 import { JsArgs } from '../types/exported/JsApi'
 import { buildArgumentsRenderingTree } from './ArgumentsRenderingTree'

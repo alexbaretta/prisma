@@ -1,6 +1,6 @@
-import { getInternalDMMF } from '@prisma/get-dmmf'
-import { ParamGraph } from '@prisma/param-graph'
-import { buildAndSerializeParamGraph } from '@prisma/param-graph-builder'
+import { getInternalDMMF } from '@prisma-lossless/get-dmmf'
+import { ParamGraph } from '@prisma-lossless/param-graph'
+import { buildAndSerializeParamGraph } from '@prisma-lossless/param-graph-builder'
 
 /**
  * Prisma schema that simulates a User model with common fields and filters,

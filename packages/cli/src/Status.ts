@@ -1,6 +1,6 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import type { Command } from '@prisma/internals'
-import { arg, format, HelpError, isError } from '@prisma/internals'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import type { Command } from '@prisma-lossless/internals'
+import { arg, format, HelpError, isError } from '@prisma-lossless/internals'
 import { bold, dim, red } from 'kleur/colors'
 
 import { fetchStatus } from './status-page'

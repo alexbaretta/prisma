@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import type { PrismaConfig } from '@prisma/config'
+import type { PrismaConfig } from '@prisma-lossless/config'
 
 import { SchemaContext } from './schemaContext'
 

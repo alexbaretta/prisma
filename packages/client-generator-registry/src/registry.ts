@@ -1,5 +1,5 @@
-import type { Generator } from '@prisma/generator'
-import type { GeneratorRegistry as IGeneratorRegistry, GeneratorRegistryEntry } from '@prisma/internals'
+import type { Generator } from '@prisma-lossless/generator'
+import type { GeneratorRegistry as IGeneratorRegistry, GeneratorRegistryEntry } from '@prisma-lossless/internals'
 
 export class GeneratorRegistry {
   #generators = new Map<string, Generator>()

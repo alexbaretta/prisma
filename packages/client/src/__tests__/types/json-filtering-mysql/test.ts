@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma-lossless/client'
 
 // This file will not be executed, just compiled to check if the typings are valid
 async function main() {

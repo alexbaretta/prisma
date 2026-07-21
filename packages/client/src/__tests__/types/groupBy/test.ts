@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma-lossless/client'
 import { expectType } from 'tsd'
 
 // This file will not be executed, just compiled to check if the typings are valid

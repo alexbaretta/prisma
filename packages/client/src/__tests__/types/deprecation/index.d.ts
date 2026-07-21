@@ -1,1 +1,1 @@
-export { PrismaClient, SortOrder, UserCreateArgs } from '@prisma/client'
+export { PrismaClient, SortOrder, UserCreateArgs } from '@prisma-lossless/client'

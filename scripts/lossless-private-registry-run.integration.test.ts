@@ -167,7 +167,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
     expect(result.generatedClientVersion).toBe(RECORDED_VERSION)
     expect(result.generatedPackageVersion).toBe(RECORDED_VERSION)
     expect(result.generatedDependencyNames).toContain('@prisma-lossless/client-runtime-utils')
-    expect(result.generatedDependencyNames).not.toContain('@prisma/client-runtime-utils')
+    expect(result.generatedDependencyNames).not.toContain('@prisma-lossless/client-runtime-utils')
     expect(result.generatedOutput).toContain(`Generated Prisma Client (v${RECORDED_VERSION})`)
     expect(result.generatedOutput).not.toContain('0.0.0')
     expect(result.generatedOutput).not.toMatch(/Versions of .*don't match/)

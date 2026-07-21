@@ -51,10 +51,10 @@ must reach the database as unquoted numeric JSON tokens. They must not
 be flattened into strings, object-shaped implementation details, or
 ordinary lossy JavaScript numbers before DB JSON parameterization.
 
-Owning layer: `@prisma/client` owns conversion from JavaScript arguments
-to the JSON protocol tree, and `@prisma/client-engine-runtime` owns
+Owning layer: `@prisma-lossless/client` owns conversion from JavaScript arguments
+to the JSON protocol tree, and `@prisma-lossless/client-engine-runtime` owns
 schema-aware parameterization from that protocol tree into placeholder
-values. The shared codec in `@prisma/client-runtime-utils` owns the
+values. The shared codec in `@prisma-lossless/client-runtime-utils` owns the
 actual JSON field stringification policy.
 
 Intended solution: teach the client serializer to recognize
@@ -110,7 +110,7 @@ owns and leaves the generated-client round trip to Tasklets 009 and 010.
 Focused parameterization tests:
 
 ```sh
-pnpm --filter @prisma/client-engine-runtime test parameterize.test.ts
+pnpm --filter @prisma-lossless/client-engine-runtime test parameterize.test.ts
 ```
 
 Result: passed. The tests cover primitive JSON scalar parameterization,
@@ -121,7 +121,7 @@ protocol values.
 Focused client serializer tests:
 
 ```sh
-pnpm --filter @prisma/client test serializeJsonQuery.test.ts
+pnpm --filter @prisma-lossless/client test serializeJsonQuery.test.ts
 ```
 
 Result: passed after building missing workspace prerequisites. The
@@ -132,8 +132,8 @@ object handling can expose implementation fields.
 Affected package builds:
 
 ```sh
-pnpm --filter @prisma/client-engine-runtime build
-pnpm --filter @prisma/client build
+pnpm --filter @prisma-lossless/client-engine-runtime build
+pnpm --filter @prisma-lossless/client build
 ```
 
 Result: both passed.

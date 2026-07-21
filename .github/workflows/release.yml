@@ -31,10 +31,10 @@ on:
         description: 'Skip ecosystem tests checks'
         type: boolean
       skipPackages:
-        description: 'Skip publishing some packages? (e.g. `@prisma/debug,@prisma/internals`)'
+        description: 'Skip publishing some packages? (e.g. `@prisma-lossless/debug,@prisma-lossless/internals`)'
         type: string
       onlyPackages:
-        description: 'Only publish some packages? (e.g. `@prisma/debug,@prisma/internals`)'
+        description: 'Only publish some packages? (e.g. `@prisma-lossless/debug,@prisma-lossless/internals`)'
         type: string
       dryRun:
         description: 'Check to do a dry run (does not publish packages)'

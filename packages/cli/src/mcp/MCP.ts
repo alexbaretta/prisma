@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
-import type { PrismaConfigInternal } from '@prisma/config'
-import { Command, link } from '@prisma/internals'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import { Command, link } from '@prisma-lossless/internals'
 import execa from 'execa'
 import { z } from 'zod'
 

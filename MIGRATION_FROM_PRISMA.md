@@ -22,8 +22,8 @@ Replace stock Prisma packages in your application:
 Remove these stock packages from direct application dependencies:
 
 - `prisma`
-- `@prisma/client`
-- `@prisma/adapter-pg`
+- `@prisma-lossless/client`
+- `@prisma-lossless/adapter-pg`
 
 If the consumer uses pnpm 11, allow Prisma lifecycle scripts in the
 consumer repository before running a normal install:

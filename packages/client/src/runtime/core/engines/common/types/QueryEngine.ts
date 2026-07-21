@@ -1,6 +1,6 @@
-import type { DataSource, GeneratorConfig } from '@prisma/generator'
-import type { EngineSpan, EngineTraceEvent } from '@prisma/instrumentation-contract'
-import type { JsonBatchQuery } from '@prisma/json-protocol'
+import type { DataSource, GeneratorConfig } from '@prisma-lossless/generator'
+import type { EngineSpan, EngineTraceEvent } from '@prisma-lossless/instrumentation-contract'
+import type { JsonBatchQuery } from '@prisma-lossless/json-protocol'
 
 import { RequestError } from './RequestError'
 import { IsolationLevel } from './Transaction'

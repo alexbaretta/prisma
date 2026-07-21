@@ -1,5 +1,5 @@
 import { Context, context, Span, trace, Tracer } from '@opentelemetry/api'
-import { TracingHelper } from '@prisma/client-engine-runtime'
+import { TracingHelper } from '@prisma-lossless/client-engine-runtime'
 import { Temporal } from 'temporal-polyfill'
 
 import { TracingCollector, tracingCollectorContext } from './collector'
@@ -7,7 +7,7 @@ import { ExtendedSpanOptions, normalizeSpanOptions } from './options'
 import { SpanProxy } from './span'
 
 /**
- * An implementation of {@link TracingHelper} from `@prisma/client-engine-runtime`
+ * An implementation of {@link TracingHelper} from `@prisma-lossless/client-engine-runtime`
  * that both hooks into into the real OpenTelemetry instrumentation and, if there
  * is an active {@link TracingCollector}, converts the spans into the format
  * expected by the client and sends them to the collector.

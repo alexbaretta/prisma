@@ -1,4 +1,4 @@
-import { BaseDMMF, lazyProperty, RuntimeDataModel } from '@prisma/client-common'
+import { BaseDMMF, lazyProperty, RuntimeDataModel } from '@prisma-lossless/client-common'
 
 export function defineDmmfProperty(target: object, runtimeDataModel: RuntimeDataModel) {
   const dmmfLazy = lazyProperty(() => runtimeDataModelToBaseDmmf(runtimeDataModel))

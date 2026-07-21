@@ -1,5 +1,5 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import Debug from '@prisma/debug'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import Debug from '@prisma-lossless/debug'
 import {
   arg,
   checkUnsupportedDataProxy,
@@ -18,7 +18,7 @@ import {
   relativizePathInPSLError,
   toSchemasContainer,
   validatePrismaConfigWithDatasource,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import { bold, dim, green, italic, red, underline, yellow } from 'kleur/colors'
 import path from 'path'
 

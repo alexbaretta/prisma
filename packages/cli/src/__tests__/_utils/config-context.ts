@@ -1,5 +1,5 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import type { BaseContext } from '@prisma/get-platform'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import type { BaseContext } from '@prisma-lossless/get-platform'
 import * as colors from 'kleur/colors'
 
 import { loadConfig } from '../../utils/loadConfig'

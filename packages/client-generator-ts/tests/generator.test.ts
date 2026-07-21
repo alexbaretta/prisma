@@ -2,8 +2,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { stripVTControlCharacters } from 'node:util'
 
-import { omit } from '@prisma/client-common'
-import { GeneratorRegistry, getGenerator, parseEnvValue } from '@prisma/internals'
+import { omit } from '@prisma-lossless/client-common'
+import { GeneratorRegistry, getGenerator, parseEnvValue } from '@prisma-lossless/internals'
 import { describe, expect, test } from 'vitest'
 
 import { PrismaClientTsGenerator } from '../src/generator'

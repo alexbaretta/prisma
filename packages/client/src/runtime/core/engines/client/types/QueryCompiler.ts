@@ -1,4 +1,4 @@
-import { QueryCompilerConstructor } from '@prisma/client-common'
+import { QueryCompilerConstructor } from '@prisma-lossless/client-common'
 
 import { EngineConfig } from '../../common/Engine'
 

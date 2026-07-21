@@ -25,7 +25,7 @@ an offer failure must never fail `generate`.
    `.claude/skills/prisma-*` / `.windsurf/skills/prisma-*` / `.agents/skills/prisma-*`
    under `process.cwd()`. If present,
    write the acknowledgement with outcome `already-installed` and return (never scan again).
-3. `isInteractive()` (from `@prisma/internals`), not Deno (same guard/rationale as
+3. `isInteractive()` (from `@prisma-lossless/internals`), not Deno (same guard/rationale as
    `survey.ts` — readline on Deno blocks generate), `!isCi()`, `!maybeInGitHook()`,
    `!isInNpmLifecycleHook()`, `!isInContainer()`, `daysSinceFirstCommand(...) >= 1`.
 

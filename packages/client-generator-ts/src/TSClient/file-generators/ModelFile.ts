@@ -1,4 +1,4 @@
-import * as ts from '@prisma/ts-builders'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { GenerateContext } from '../GenerateContext'
 import { Model } from '../Model'

@@ -1,4 +1,4 @@
-import { setClassName } from '@prisma/internals'
+import { setClassName } from '@prisma-lossless/internals'
 
 export class PrismaClientConstructorValidationError extends Error {
   constructor(message: string) {

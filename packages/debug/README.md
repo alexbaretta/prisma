@@ -1,4 +1,4 @@
-# @prisma/debug
+# @prisma-lossless/debug
 
 A cached [`debug`](https://github.com/visionmedia/debug/).
 
@@ -12,7 +12,7 @@ If you are using this package, it would be helpful if you could help us gain an 
 ## Usage
 
 ```ts
-import Debug, { getLogs } from '@prisma/debug'
+import Debug, { getLogs } from '@prisma-lossless/debug'
 
 const debug = Debug('my-namespace')
 

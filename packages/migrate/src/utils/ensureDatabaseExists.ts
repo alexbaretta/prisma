@@ -1,8 +1,13 @@
 import path from 'node:path'
 
-import { DataSource } from '@prisma/generator'
-import type { DatabaseCredentials, PrismaConfigWithDatasource } from '@prisma/internals'
-import { canConnectToDatabase, createDatabase, PRISMA_POSTGRES_PROVIDER, uriToCredentials } from '@prisma/internals'
+import { DataSource } from '@prisma-lossless/generator'
+import type { DatabaseCredentials, PrismaConfigWithDatasource } from '@prisma-lossless/internals'
+import {
+  canConnectToDatabase,
+  createDatabase,
+  PRISMA_POSTGRES_PROVIDER,
+  uriToCredentials,
+} from '@prisma-lossless/internals'
 import { bold } from 'kleur/colors'
 
 import { ConnectorType } from './printDatasources'

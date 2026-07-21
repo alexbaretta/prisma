@@ -1,4 +1,4 @@
-import { RawValue, Sql } from '@prisma/client-runtime-utils'
+import { RawValue, Sql } from '@prisma-lossless/client-runtime-utils'
 
 import { UnknownTypedSql } from './TypedSql'
 

@@ -1,4 +1,4 @@
-import type { MultipleSchemas } from '@prisma/get-dmmf'
+import type { MultipleSchemas } from '@prisma-lossless/get-dmmf'
 
 import { SchemaContext } from '../cli/schemaContext'
 import { MigrateTypes } from '../migrateTypes'

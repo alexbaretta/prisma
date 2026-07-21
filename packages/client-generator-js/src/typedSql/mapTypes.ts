@@ -1,6 +1,6 @@
-import { QueryIntrospectionBuiltinType, QueryIntrospectionType } from '@prisma/generator'
-import { isValidJsIdentifier } from '@prisma/internals'
-import * as ts from '@prisma/ts-builders'
+import { QueryIntrospectionBuiltinType, QueryIntrospectionType } from '@prisma-lossless/generator'
+import { isValidJsIdentifier } from '@prisma-lossless/internals'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { DbEnumsList } from './buildDbEnums'
 

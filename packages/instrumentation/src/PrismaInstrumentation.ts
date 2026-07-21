@@ -8,7 +8,7 @@ import {
   clearGlobalTracingHelper,
   getGlobalTracingHelper,
   setGlobalTracingHelper,
-} from '@prisma/instrumentation-contract'
+} from '@prisma-lossless/instrumentation-contract'
 
 import { ActiveTracingHelper } from './ActiveTracingHelper'
 import { MODULE_NAME, NAME, VERSION } from './constants'

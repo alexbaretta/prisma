@@ -1,10 +1,10 @@
-import { CompilerWasmLoadingConfig, RuntimeDataModel } from '@prisma/client-common'
-import type { SqlDriverAdapterFactory } from '@prisma/driver-adapter-utils'
-import type { DataSource, GeneratorConfig } from '@prisma/generator'
-import type { TracingHelper } from '@prisma/instrumentation-contract'
-import type { JsonQuery } from '@prisma/json-protocol'
-import type { SerializedParamGraph } from '@prisma/param-graph'
-import type { SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import { CompilerWasmLoadingConfig, RuntimeDataModel } from '@prisma-lossless/client-common'
+import type { SqlDriverAdapterFactory } from '@prisma-lossless/driver-adapter-utils'
+import type { DataSource, GeneratorConfig } from '@prisma-lossless/generator'
+import type { TracingHelper } from '@prisma-lossless/instrumentation-contract'
+import type { JsonQuery } from '@prisma-lossless/json-protocol'
+import type { SerializedParamGraph } from '@prisma-lossless/param-graph'
+import type { SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 
 import type { LogEmitter } from './types/Events'
 import type { QueryEngineResultData } from './types/QueryEngine'
@@ -139,7 +139,7 @@ export interface EngineConfig {
 
   /**
    * The helper for interaction with OTEL tracing
-   * @remarks enabling is determined by the client and @prisma/instrumentation package
+   * @remarks enabling is determined by the client and @prisma-lossless/instrumentation package
    */
   tracingHelper: TracingHelper
 

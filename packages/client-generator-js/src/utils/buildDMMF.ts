@@ -3,8 +3,8 @@ import {
   PrunedRuntimeDataModel,
   pruneRuntimeDataModel,
   RuntimeDataModel,
-} from '@prisma/client-common'
-import type * as DMMF from '@prisma/dmmf'
+} from '@prisma-lossless/client-common'
+import type * as DMMF from '@prisma-lossless/dmmf'
 
 import { escapeJson } from '../TSClient/helpers'
 import { TSClientOptions } from '../TSClient/TSClient'

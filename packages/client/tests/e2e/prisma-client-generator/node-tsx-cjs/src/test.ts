@@ -1,6 +1,6 @@
 import * as assert from 'node:assert/strict'
 
-import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { PrismaLibSql } from '@prisma-lossless/adapter-libsql'
 
 import { PrismaClient } from './generated/prisma/client'
 

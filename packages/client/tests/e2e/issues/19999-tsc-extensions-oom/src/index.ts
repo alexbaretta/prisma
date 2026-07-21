@@ -1,5 +1,5 @@
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import { Prisma, PrismaClient } from '@prisma/client'
+import { PrismaBetterSqlite3 } from '@prisma-lossless/adapter-better-sqlite3'
+import { Prisma, PrismaClient } from '@prisma-lossless/client'
 
 const adapter = new PrismaBetterSqlite3({
   url: './dev.db',

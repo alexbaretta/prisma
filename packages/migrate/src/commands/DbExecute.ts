@@ -1,6 +1,6 @@
 import streamConsumer from 'node:stream/consumers'
 
-import type { PrismaConfigInternal } from '@prisma/config'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
 import {
   arg,
   checkUnsupportedDataProxy,
@@ -10,7 +10,7 @@ import {
   HelpError,
   isError,
   validatePrismaConfigWithDatasource,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import fs from 'fs'
 import { bold, dim, green, italic } from 'kleur/colors'
 import path from 'path'

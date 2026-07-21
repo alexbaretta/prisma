@@ -13,8 +13,8 @@ import type {
   SqlResultSet,
   Transaction,
   TransactionOptions,
-} from '@prisma/driver-adapter-utils'
-import { Debug, DriverAdapterError } from '@prisma/driver-adapter-utils'
+} from '@prisma-lossless/driver-adapter-utils'
+import { Debug, DriverAdapterError } from '@prisma-lossless/driver-adapter-utils'
 import { Mutex } from 'async-mutex'
 
 import { name as packageName } from '../package.json'

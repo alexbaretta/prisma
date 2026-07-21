@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/config",
+  "name": "@prisma-lossless/config",
   "version": "0.0.0",
   "description": "Internal package used to define and read Prisma configuration files",
   "main": "dist/index.js",
@@ -18,8 +18,8 @@
     "empathic": "2.0.0"
   },
   "devDependencies": {
-    "@prisma/debug": "workspace:*",
-    "@prisma/get-platform": "workspace:*",
+    "@prisma-lossless/debug": "workspace:*",
+    "@prisma-lossless/get-platform": "workspace:*",
     "dotenv": "17.2.3"
   },
   "scripts": {

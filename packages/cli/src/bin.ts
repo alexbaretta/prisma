@@ -5,11 +5,11 @@ import path from 'node:path'
 import { context, trace } from '@opentelemetry/api'
 import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks'
 import { BasicTracerProvider } from '@opentelemetry/sdk-trace-base'
-import { InjectFormatters } from '@prisma/config'
-import { Debug } from '@prisma/debug'
-import { enginesVersion } from '@prisma/engines'
-import { download } from '@prisma/fetch-engine'
-import { arg, handlePanic, HelpError, isRustPanic, link } from '@prisma/internals'
+import { InjectFormatters } from '@prisma-lossless/config'
+import { Debug } from '@prisma-lossless/debug'
+import { enginesVersion } from '@prisma-lossless/engines'
+import { download } from '@prisma-lossless/fetch-engine'
+import { arg, handlePanic, HelpError, isRustPanic, link } from '@prisma-lossless/internals'
 import {
   DbCommand,
   DbExecute,
@@ -25,7 +25,7 @@ import {
   MigrateReset,
   MigrateResolve,
   MigrateStatus,
-} from '@prisma/migrate'
+} from '@prisma-lossless/migrate'
 import { bold, dim, red, yellow } from 'kleur/colors'
 
 import { Bootstrap } from './bootstrap/Bootstrap'
@@ -44,7 +44,7 @@ import { Studio } from './Studio'
   When running bin.ts with ts-node with DEBUG="*"
   This error shows and blocks the execution
   Quick hack is to comment the Studio import and usage to use the CLI without building it...
-  prisma:cli Error: Cannot find module '@prisma/internals'
+  prisma:cli Error: Cannot find module '@prisma-lossless/internals'
   prisma:cli Require stack:
   prisma:cli - /Users/j42/Dev/prisma-meow/node_modules/.pnpm/@prisma+studio-pcw@0.456.0/node_modules/@prisma/studio-pcw/dist/index.js
 */
@@ -157,7 +157,7 @@ async function main(): Promise<number> {
     warn: (data) => console.warn(`${yellow(bold('warn'))} ${data}`),
     dim: (data) => dim(data),
 
-    // `terminal-link` is not easily installable in `@prisma/config` without introducing ESM/CJS incompatibility issues, or
+    // `terminal-link` is not easily installable in `@prisma-lossless/config` without introducing ESM/CJS incompatibility issues, or
     //  circular dependencies (requiring yet another `@prisma` package),
     link: (data) => link(data),
   }
@@ -236,7 +236,7 @@ function handleIndividualError(error: Error): void {
 /**
  * Annotations for `pkg` so it bundles things correctly with yarn's hoisting
  * `node_modules/prisma/build/index.js` needs to get to:
- * `node_modules/@prisma/engines`
+ * `node_modules/@prisma-lossless/engines`
  */
 
 // macOS

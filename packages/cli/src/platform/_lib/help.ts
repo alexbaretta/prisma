@@ -1,4 +1,4 @@
-import { format } from '@prisma/internals'
+import { format } from '@prisma-lossless/internals'
 import { bold, dim } from 'kleur/colors'
 
 interface HelpOptions {

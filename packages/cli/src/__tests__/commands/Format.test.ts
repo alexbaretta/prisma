@@ -2,9 +2,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { defaultTestConfig } from '@prisma/config'
-import { jestConsoleContext, jestContext } from '@prisma/get-platform'
-import { extractSchemaContent, getSchemaWithPath } from '@prisma/internals'
+import { defaultTestConfig } from '@prisma-lossless/config'
+import { jestConsoleContext, jestContext } from '@prisma-lossless/get-platform'
+import { extractSchemaContent, getSchemaWithPath } from '@prisma-lossless/internals'
 
 import { Format } from '../../Format'
 import { Validate } from '../../Validate'

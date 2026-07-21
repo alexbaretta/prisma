@@ -51,7 +51,7 @@ function nodeRuntimeBuildConfig(targetBuildType: typeof TARGET_BUILD_TYPE, forma
     minify: shouldMinify,
     sourcemap: 'linked',
     emitTypes: ['library', 'client'].includes(targetBuildType),
-    external: ['@prisma/client-runtime-utils'],
+    external: ['@prisma-lossless/client-runtime-utils'],
     define: {
       NODE_CLIENT: 'true',
       TARGET_BUILD_TYPE: JSON.stringify(targetBuildType),
@@ -101,7 +101,7 @@ function browserBuildConfigs(): BuildOptions[] {
     bundle: true,
     minify: shouldMinify,
     sourcemap: 'linked',
-    external: ['@prisma/client-runtime-utils'],
+    external: ['@prisma-lossless/client-runtime-utils'],
   }))
 }
 
@@ -134,7 +134,7 @@ const runtimesCommonBuildConfig = {
   },
   logLevel: 'error',
   legalComments: 'none',
-  external: ['@prisma/client-runtime-utils'],
+  external: ['@prisma-lossless/client-runtime-utils'],
 } satisfies BuildOptions
 
 function wasmFileToBase64(wasmBuffer: Buffer, format: ModuleFormat = 'esm'): string {

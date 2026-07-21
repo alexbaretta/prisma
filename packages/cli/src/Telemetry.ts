@@ -1,4 +1,4 @@
-import { PrismaConfigInternal } from '@prisma/config'
+import { PrismaConfigInternal } from '@prisma-lossless/config'
 import {
   arg,
   Command,
@@ -7,7 +7,7 @@ import {
   getProjectHash,
   HelpError,
   isError,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import * as checkpoint from 'checkpoint-client'
 
 /**

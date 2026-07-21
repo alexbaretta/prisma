@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { PrismaPg } from '@prisma/adapter-pg'
-import { InvoiceStatus, PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
+import { InvoiceStatus, PrismaClient } from '@prisma-lossless/client'
 
 describe('Prisma External Tables and Enums', () => {
   let adapter: PrismaPg

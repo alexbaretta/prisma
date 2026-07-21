@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/driver-adapter-utils",
+  "name": "@prisma-lossless/driver-adapter-utils",
   "version": "0.0.0",
   "description": "Internal set of utilities and types for Prisma's driver adapters.",
   "main": "dist/index.js",
@@ -35,6 +35,6 @@
   "license": "Apache-2.0",
   "sideEffects": false,
   "dependencies": {
-    "@prisma/debug": "workspace:*"
+    "@prisma-lossless/debug": "workspace:*"
   }
 }

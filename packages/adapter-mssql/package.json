@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/adapter-mssql",
+  "name": "@prisma-lossless/adapter-mssql",
   "version": "0.0.0",
   "description": "Prisma's driver adapter for \"mssql\"",
   "main": "dist/index.js",
@@ -36,7 +36,7 @@
   "license": "Apache-2.0",
   "sideEffects": false,
   "dependencies": {
-    "@prisma/driver-adapter-utils": "workspace:*",
+    "@prisma-lossless/driver-adapter-utils": "workspace:*",
     "mssql": "^12.2.0",
     "async-mutex": "0.5.0"
   },

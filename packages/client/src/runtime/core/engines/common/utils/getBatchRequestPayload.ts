@@ -1,4 +1,4 @@
-import type { JsonBatchQuery, JsonQuery } from '@prisma/json-protocol'
+import type { JsonBatchQuery, JsonQuery } from '@prisma-lossless/json-protocol'
 
 import { TransactionOptions } from '../Engine'
 

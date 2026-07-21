@@ -1,4 +1,4 @@
-import { DatabaseCredentials } from '@prisma/internals'
+import { DatabaseCredentials } from '@prisma-lossless/internals'
 
 /**
  * match a string that looks like a unix file path

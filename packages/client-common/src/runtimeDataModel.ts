@@ -1,4 +1,4 @@
-import type * as DMMF from '@prisma/dmmf'
+import type * as DMMF from '@prisma-lossless/dmmf'
 
 export type RuntimeModel = Omit<DMMF.Model, 'name'>
 export type RuntimeEnum = Omit<DMMF.DatamodelEnum, 'name'>

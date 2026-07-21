@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import Debug from '@prisma/debug'
+import Debug from '@prisma-lossless/debug'
 import { bold, underline, yellow } from 'kleur/colors'
 
 import { BinaryType } from './BinaryType'

@@ -1,4 +1,4 @@
-import { keyBy, RuntimeModel } from '@prisma/client-common'
+import { keyBy, RuntimeModel } from '@prisma-lossless/client-common'
 
 import { FieldRefImpl } from './FieldRef'
 import { defaultProxyHandlers } from './utils/defaultProxyHandlers'

@@ -1,6 +1,6 @@
-import type { QueryPlanNode, TransactionOptions } from '@prisma/client-engine-runtime'
-import type { ConnectionInfo, Provider } from '@prisma/driver-adapter-utils'
-import type { SqlCommenterQueryInfo } from '@prisma/sqlcommenter'
+import type { QueryPlanNode, TransactionOptions } from '@prisma-lossless/client-engine-runtime'
+import type { ConnectionInfo, Provider } from '@prisma-lossless/driver-adapter-utils'
+import type { SqlCommenterQueryInfo } from '@prisma-lossless/sqlcommenter'
 
 import type { AccelerateExtensionFetch } from '../common/Engine'
 import type { InteractiveTransactionInfo } from '../common/types/Transaction'

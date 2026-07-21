@@ -1,6 +1,6 @@
 import timers from 'node:timers/promises'
 
-import type { SqlDriverAdapter, SqlQuery, SqlResultSet, Transaction } from '@prisma/driver-adapter-utils'
+import type { SqlDriverAdapter, SqlQuery, SqlResultSet, Transaction } from '@prisma-lossless/driver-adapter-utils'
 import { expect, test, vi } from 'vitest'
 
 import { noopTracingHelper } from '../tracing'

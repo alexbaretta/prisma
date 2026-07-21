@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { defineConfig } from '@prisma/config'
+import { defineConfig } from '@prisma-lossless/config'
 import 'dotenv/config'
  
 const SQLITE_PATH = 'file:dev.db'

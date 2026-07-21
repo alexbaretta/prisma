@@ -1,7 +1,7 @@
 import readline from 'node:readline'
 
-import type { Datasource } from '@prisma/config'
-import Debug from '@prisma/debug'
+import type { Datasource } from '@prisma-lossless/config'
+import Debug from '@prisma-lossless/debug'
 import {
   BinaryType,
   ErrorArea,
@@ -13,7 +13,7 @@ import {
   SchemaEngineExitCode,
   SchemaEngineLogLine,
   setClassName,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import type { ChildProcess } from 'child_process'
 import { spawn } from 'child_process'
 import { bold, red } from 'kleur/colors'

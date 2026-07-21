@@ -1,4 +1,4 @@
-import Debug from '@prisma/debug'
+import Debug from '@prisma-lossless/debug'
 import fs from 'fs'
 
 const debug = Debug('chmodPlusX')

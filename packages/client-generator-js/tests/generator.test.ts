@@ -3,8 +3,8 @@ import fsPromises from 'node:fs/promises'
 import path from 'node:path'
 import { stripVTControlCharacters } from 'node:util'
 
-import { omit } from '@prisma/client-common'
-import { GeneratorRegistry, getGenerator, getPackedPackage, parseEnvValue } from '@prisma/internals'
+import { omit } from '@prisma-lossless/client-common'
+import { GeneratorRegistry, getGenerator, getPackedPackage, parseEnvValue } from '@prisma-lossless/internals'
 import { describe, expect, test, vi } from 'vitest'
 
 import { PrismaClientJsGenerator } from '../src/generator'

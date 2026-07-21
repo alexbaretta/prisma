@@ -1,8 +1,8 @@
-import { capitalize, NonModelOperation, Operation, uncapitalize } from '@prisma/client-common'
-import type * as DMMF from '@prisma/dmmf'
-import type { DataSource } from '@prisma/generator'
-import { assertNever } from '@prisma/internals'
-import * as ts from '@prisma/ts-builders'
+import { capitalize, NonModelOperation, Operation, uncapitalize } from '@prisma-lossless/client-common'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import type { DataSource } from '@prisma-lossless/generator'
+import { assertNever } from '@prisma-lossless/internals'
+import * as ts from '@prisma-lossless/ts-builders'
 import indent from 'indent-string'
 
 import {
@@ -621,7 +621,7 @@ export type TransactionClient = Omit<Prisma.DefaultPrismaClient, ${transactionCl
     ) {
       clientOptions.add(
         ts.property('adapter', ts.namedType('runtime.SqlDriverAdapterFactory')).optional().setDocComment(ts.docComment`
-            A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by \`@prisma-lossless/adapter-pg\`, \`@prisma/adapter-libsql\`, \`@prisma/adapter-planetscale\`, etc.
+            A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by \`@prisma-lossless/adapter-pg\`, \`@prisma-lossless/adapter-libsql\`, \`@prisma-lossless/adapter-planetscale\`, etc.
 
             A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use \`accelerateUrl\` instead).
 

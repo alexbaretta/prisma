@@ -2,8 +2,8 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 
-import Debug from '@prisma/debug'
-import { BinaryTarget } from '@prisma/get-platform'
+import Debug from '@prisma-lossless/debug'
+import { BinaryTarget } from '@prisma-lossless/get-platform'
 import findCacheDir from 'find-cache-dir'
 import { ensureDir } from 'fs-extra'
 

@@ -9,6 +9,6 @@ void build([
     splitting: true,
     format: 'esm',
     plugins: [esmSplitCodeToCjs],
-    external: ['@prisma/debug', '@prisma/dmmf', '@prisma/generator'],
+    external: ['@prisma-lossless/debug', '@prisma-lossless/dmmf', '@prisma-lossless/generator'],
   },
 ])

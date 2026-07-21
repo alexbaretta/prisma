@@ -17,7 +17,7 @@ PlanetScale's serverless driver provides a way of communicating with your Planet
 To get started, install the Prisma adapter for PlanetScale and `undici` packages:
 
 ```sh
-npm install @prisma/adapter-planetscale
+npm install @prisma-lossless/adapter-planetscale
 npm install undici
 ```
 
@@ -27,8 +27,8 @@ Update your Prisma Client instance to use the PlanetsScale serverless driver:
 
 ```ts
 // Import needed packages
-import { PrismaPlanetScale } from '@prisma/adapter-planetscale'
-import { PrismaClient } from '@prisma/client'
+import { PrismaPlanetScale } from '@prisma-lossless/adapter-planetscale'
+import { PrismaClient } from '@prisma-lossless/client'
 import { fetch as undiciFetch } from 'undici'
 
 // Setup

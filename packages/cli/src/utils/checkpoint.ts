@@ -1,4 +1,4 @@
-import { Debug } from '@prisma/debug'
+import { Debug } from '@prisma-lossless/debug'
 import {
   arg,
   BuiltInProvider,
@@ -9,7 +9,7 @@ import {
   loadSchemaContext,
   parseEnvValue,
   type SchemaPathInput,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import type { Check } from 'checkpoint-client'
 import * as checkpoint from 'checkpoint-client'
 

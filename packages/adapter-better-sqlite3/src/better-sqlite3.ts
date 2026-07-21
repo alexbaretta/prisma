@@ -7,8 +7,8 @@ import type {
   SqlResultSet,
   Transaction,
   TransactionOptions,
-} from '@prisma/driver-adapter-utils'
-import { Debug, DriverAdapterError } from '@prisma/driver-adapter-utils'
+} from '@prisma-lossless/driver-adapter-utils'
+import { Debug, DriverAdapterError } from '@prisma-lossless/driver-adapter-utils'
 import { Mutex } from 'async-mutex'
 import type { Database as BetterSQLite3, Options as BetterSQLite3Options } from 'better-sqlite3'
 import Database from 'better-sqlite3'

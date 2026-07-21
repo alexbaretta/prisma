@@ -14,12 +14,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "../../packages/client",
-    "@prisma/adapter-better-sqlite3": "../../packages/adapter-better-sqlite3"
+    "@prisma-lossless/client": "../../packages/client",
+    "@prisma-lossless/adapter-better-sqlite3": "../../packages/adapter-better-sqlite3"
   },
   "devDependencies": {
     "@types/node": "~20.19.0",
-    "@prisma/config": "../../packages/config",
+    "@prisma-lossless/config": "../../packages/config",
     "prisma": "../../packages/cli",
     "ts-node": "10.9.2",
     "typescript": "5.4.5"

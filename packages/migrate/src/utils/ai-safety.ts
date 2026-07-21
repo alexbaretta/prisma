@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs'
 
-import Debug from '@prisma/debug'
+import Debug from '@prisma-lossless/debug'
 
 const debug = Debug('prisma:migrate:ai-safety')
 

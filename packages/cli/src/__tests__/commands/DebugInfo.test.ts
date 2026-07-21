@@ -1,7 +1,7 @@
 import { stripVTControlCharacters } from 'node:util'
 
-import { defaultTestConfig } from '@prisma/config'
-import { jestConsoleContext, jestContext } from '@prisma/get-platform'
+import { defaultTestConfig } from '@prisma-lossless/config'
+import { jestConsoleContext, jestContext } from '@prisma-lossless/get-platform'
 import path from 'path'
 
 import { DebugInfo } from '../../DebugInfo'

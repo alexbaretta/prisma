@@ -1,5 +1,5 @@
-import * as DMMF from '@prisma/dmmf'
-import * as ts from '@prisma/ts-builders'
+import * as DMMF from '@prisma-lossless/dmmf'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { extArgsParam, getIncludeName, getModelArgName, getOmitName, getSelectName } from '../utils'
 import { GenerateContext } from './GenerateContext'

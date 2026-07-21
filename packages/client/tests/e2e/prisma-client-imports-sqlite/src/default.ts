@@ -1,8 +1,8 @@
 import { D1Database } from '@cloudflare/workers-types'
-import { PrismaD1 } from '@prisma/adapter-d1'
-import { PrismaClient } from '@prisma/client'
-import { PrismaClientKnownRequestError as E1 } from '@prisma/client/runtime/client'
-import { PrismaClientKnownRequestError as E2 } from '@prisma/client/runtime/client.js'
+import { PrismaD1 } from '@prisma-lossless/adapter-d1'
+import { PrismaClient } from '@prisma-lossless/client'
+import { PrismaClientKnownRequestError as E1 } from '@prisma-lossless/client/runtime/client'
+import { PrismaClientKnownRequestError as E2 } from '@prisma-lossless/client/runtime/client.js'
 // import { withAccelerate } from '@prisma/extension-accelerate'
 // import { readReplicas } from '@prisma/extension-read-replicas'
 

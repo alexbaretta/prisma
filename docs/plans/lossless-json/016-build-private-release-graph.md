@@ -19,12 +19,12 @@ the release metadata.
 Publish candidate artifacts for the runtime closure already proven by
 Tasklet 013:
 
-- `@prisma/debug`;
-- `@prisma/get-platform`;
-- `@prisma/fetch-engine`;
-- `@prisma/engines`;
-- `@prisma/config`;
-- `@prisma/client-runtime-utils`;
+- `@prisma-lossless/debug`;
+- `@prisma-lossless/get-platform`;
+- `@prisma-lossless/fetch-engine`;
+- `@prisma-lossless/engines`;
+- `@prisma-lossless/config`;
+- `@prisma-lossless/client-runtime-utils`;
 - `@prisma-lossless/client`;
 - `prisma-lossless`.
 
@@ -97,12 +97,12 @@ validates every packed manifest before publication.
 
 The package graph and publish order are:
 
-1. `@prisma/debug`;
-2. `@prisma/get-platform`;
-3. `@prisma/fetch-engine`;
-4. `@prisma/engines`;
-5. `@prisma/config`;
-6. `@prisma/client-runtime-utils`;
+1. `@prisma-lossless/debug`;
+2. `@prisma-lossless/get-platform`;
+3. `@prisma-lossless/fetch-engine`;
+4. `@prisma-lossless/engines`;
+5. `@prisma-lossless/config`;
+6. `@prisma-lossless/client-runtime-utils`;
 7. `@prisma-lossless/client`;
 8. `prisma-lossless`.
 
@@ -217,9 +217,9 @@ Result: passed. Verdaccio `6.8.0` became healthy at
 Focused package build:
 
 ```sh
-pnpm --filter @prisma/debug --filter @prisma/get-platform \
-  --filter @prisma/fetch-engine --filter @prisma/engines \
-  --filter @prisma/config --filter @prisma/client-runtime-utils \
+pnpm --filter @prisma-lossless/debug --filter @prisma-lossless/get-platform \
+  --filter @prisma-lossless/fetch-engine --filter @prisma-lossless/engines \
+  --filter @prisma-lossless/config --filter @prisma-lossless/client-runtime-utils \
   --filter @prisma-lossless/client --filter prisma-lossless build
 ```
 

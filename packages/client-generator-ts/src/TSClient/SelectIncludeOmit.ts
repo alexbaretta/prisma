@@ -1,6 +1,6 @@
-import { uncapitalize } from '@prisma/client-common'
-import type * as DMMF from '@prisma/dmmf'
-import * as ts from '@prisma/ts-builders'
+import { uncapitalize } from '@prisma-lossless/client-common'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { DMMFHelper } from '../dmmf'
 import { appendSkipType, extArgsParam, getFieldArgName, getIncludeName, getOmitName, getSelectName } from '../utils'

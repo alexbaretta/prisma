@@ -95,8 +95,8 @@ not used as completion evidence. The accepted install used
 Adapter smoke harness build:
 
 ```sh
-pnpm --filter @prisma/driver-adapter-utils \
-  --filter @prisma/adapter-better-sqlite3 build
+pnpm --filter @prisma-lossless/driver-adapter-utils \
+  --filter @prisma-lossless/adapter-better-sqlite3 build
 ```
 
 Result: passed.
@@ -104,8 +104,8 @@ Result: passed.
 Adapter smoke harness package artifacts:
 
 ```sh
-pnpm --filter @prisma/driver-adapter-utils \
-  --filter @prisma/adapter-better-sqlite3 pack \
+pnpm --filter @prisma-lossless/driver-adapter-utils \
+  --filter @prisma-lossless/adapter-better-sqlite3 pack \
   --pack-destination /Users/alex/git/github/prisma/tmp/lossless-json-tasklet-014/artifacts
 ```
 
@@ -124,7 +124,7 @@ Working directory:
 
 Result: passed. Installed `@prisma-lossless/client@0.0.0`,
 `prisma-lossless@0.0.0`, the local `@prisma/*@0.0.0` package
-artifacts, `@prisma/adapter-better-sqlite3@0.0.0`,
+artifacts, `@prisma-lossless/adapter-better-sqlite3@0.0.0`,
 `better-sqlite3@12.11.1`, and `typescript@5.4.5`.
 
 Generated client from installed CLI:

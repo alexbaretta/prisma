@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/json-protocol",
+  "name": "@prisma-lossless/json-protocol",
   "version": "0.0.0",
   "description": "JSON protocol types for Prisma",
   "main": "dist/index.js",

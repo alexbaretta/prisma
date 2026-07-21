@@ -1,7 +1,7 @@
 import path from 'node:path'
 
-import type * as DMMF from '@prisma/dmmf'
-import { BuiltInProvider } from '@prisma/internals'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import { BuiltInProvider } from '@prisma-lossless/internals'
 
 import { TSClient } from '../../TSClient/TSClient'
 

@@ -1,5 +1,5 @@
-import { capitalize, uncapitalize } from '@prisma/client-common'
-import type * as DMMF from '@prisma/dmmf'
+import { capitalize, uncapitalize } from '@prisma-lossless/client-common'
+import type * as DMMF from '@prisma-lossless/dmmf'
 
 import { getGroupByArgsName, getModelArgName } from '../utils'
 

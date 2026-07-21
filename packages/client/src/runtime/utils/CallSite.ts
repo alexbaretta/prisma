@@ -1,4 +1,4 @@
-import { pathToPosix } from '@prisma/internals'
+import { pathToPosix } from '@prisma-lossless/internals'
 import * as stackTraceParser from 'stacktrace-parser'
 
 import { ErrorFormat } from '../getPrismaClient'

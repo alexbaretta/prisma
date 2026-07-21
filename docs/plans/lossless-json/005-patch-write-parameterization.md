@@ -60,7 +60,7 @@ large JSON integers and high-precision JSON decimals into JavaScript
 Violated contract: Prisma `Json` DB column numeric tokens must survive
 read and raw-query boundaries without client-side precision loss.
 
-Owning layer: `@prisma/client-engine-runtime` owns the current JSON
+Owning layer: `@prisma-lossless/client-engine-runtime` owns the current JSON
 tagged-value and raw-result materialization paths. Functional coverage
 under `packages/client/tests/functional/lossless-json` owns the
 end-to-end SQL column behavior.
@@ -76,7 +76,7 @@ Prisma Client results and the client-engine runtime materializers.
 Validation command before implementation:
 
 ```sh
-pnpm --filter @prisma/client-engine-runtime test json-protocol.test.ts serialize-sql.test.ts
+pnpm --filter @prisma-lossless/client-engine-runtime test json-protocol.test.ts serialize-sql.test.ts
 ```
 
 ## Validation
@@ -92,14 +92,14 @@ checkout did not have `node_modules`. Built the narrow prerequisites
 required for the focused test runner:
 
 ```sh
-pnpm --filter @prisma/debug build
-pnpm --filter @prisma/client-runtime-utils --filter @prisma/driver-adapter-utils build
+pnpm --filter @prisma-lossless/debug build
+pnpm --filter @prisma-lossless/client-runtime-utils --filter @prisma-lossless/driver-adapter-utils build
 ```
 
 Then ran:
 
 ```sh
-pnpm --filter @prisma/client-engine-runtime test json-protocol.test.ts serialize-sql.test.ts
+pnpm --filter @prisma-lossless/client-engine-runtime test json-protocol.test.ts serialize-sql.test.ts
 ```
 
 The command failed for the intended precision-loss reason:

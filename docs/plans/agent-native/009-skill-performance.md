@@ -12,7 +12,7 @@ gives them the Prisma-7-correct playbook.
 ### Investigation first
 
 - Turn on query logging (`log: ['query']` with event listeners for durations), tracing via
-  `@prisma/instrumentation`, and sqlcommenter tags to attribute SQL to call sites.
+  `@prisma-lossless/instrumentation`, and sqlcommenter tags to attribute SQL to call sites.
 - `EXPLAIN (ANALYZE, BUFFERS)` the hot queries; how to extract the exact SQL + params from
   Prisma logs to feed it.
 - Distinguish the three cost buckets: query plan shape (N+1, missing joins), database work
@@ -37,7 +37,7 @@ gives them the Prisma-7-correct playbook.
   sorting in JS; `distinct` caution — client-level `distinct` is applied **in memory**, use
   `nativeDistinct` preview where supported. Worked before/after query pairs for each.
 - Detecting in-memory processing: in Prisma 7 the query plan is executed by the TS interpreter
-  (`@prisma/client-engine-runtime`), so multi-query plans and in-memory joins/filters show up
+  (`@prisma-lossless/client-engine-runtime`), so multi-query plans and in-memory joins/filters show up
   as multiple SQL statements in the query log for one client call (in Prisma 6 the equivalent
   work hid inside the native engine). Teach: one client call emitting several queries or
   post-processing large row sets is the signal to restructure the query or enable

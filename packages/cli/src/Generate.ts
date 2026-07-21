@@ -1,7 +1,7 @@
-import { defaultRegistry } from '@prisma/client-generator-registry'
-import type { PrismaConfigInternal } from '@prisma/config'
-import { enginesVersion } from '@prisma/engines'
-import { SqlQueryOutput } from '@prisma/generator'
+import { defaultRegistry } from '@prisma-lossless/client-generator-registry'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import { enginesVersion } from '@prisma-lossless/engines'
+import { SqlQueryOutput } from '@prisma-lossless/generator'
 import {
   arg,
   BuiltInProvider,
@@ -19,7 +19,7 @@ import {
   parseEnvValue,
   type PrismaConfigWithDatasource,
   validatePrismaConfigWithDatasource,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import fs from 'fs'
 import { bold, dim, green, red, yellow } from 'kleur/colors'
 import logUpdate from 'log-update'

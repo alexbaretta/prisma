@@ -1,8 +1,8 @@
-import { Debug } from '@prisma/debug'
 import { enginesVersion } from '@prisma/engines-version'
-import type { BinaryPaths, DownloadOptions } from '@prisma/fetch-engine'
-import { BinaryType } from '@prisma/fetch-engine'
-import type { BinaryTarget } from '@prisma/get-platform'
+import { Debug } from '@prisma-lossless/debug'
+import type { BinaryPaths, DownloadOptions } from '@prisma-lossless/fetch-engine'
+import { BinaryType } from '@prisma-lossless/fetch-engine'
+import type { BinaryTarget } from '@prisma-lossless/get-platform'
 import path from 'path'
 
 const debug = Debug('prisma:engines')

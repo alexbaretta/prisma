@@ -1,4 +1,4 @@
-import { defaultTestConfig } from '@prisma/config'
+import { defaultTestConfig } from '@prisma-lossless/config'
 import { describe, expect, test, vi } from 'vitest'
 
 import { PostgresCommand } from '../PostgresCommand'

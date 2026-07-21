@@ -34,7 +34,7 @@ The isolated consumer must not use:
 Install from the private registry, generate the client, build the
 consumer, and run the PostgreSQL lossless smoke suite.
 
-Use the stock `@prisma/adapter-pg` release declared compatible with the
+Use the stock `@prisma-lossless/adapter-pg` release declared compatible with the
 fork unless the test proves a fork adapter is required.
 
 The smoke suite must cover:
@@ -115,7 +115,7 @@ targets. Credential state stays under
 tracked files, package manifests, lockfiles, or command arguments.
 
 The compatible adapter decision starts with the stock
-`@prisma/adapter-pg` package. If generation, build, or smoke execution
+`@prisma-lossless/adapter-pg` package. If generation, build, or smoke execution
 proves that public adapter cannot satisfy this fork, the failing
 boundary must be documented before broadening the private package
 closure.
@@ -129,9 +129,9 @@ version as release evidence.
 ## Adapter Substitution Subproblem Review
 
 Observed problem: the first isolated `npm install` with stock
-`@prisma/adapter-pg@7.8.0` succeeded, but lockfile inspection showed
-stock `@prisma/driver-adapter-utils@7.8.0` and stock
-`@prisma/debug@7.8.0` in the installed graph. That violates the Sprint
+`@prisma-lossless/adapter-pg@7.8.0` succeeded, but lockfile inspection showed
+stock `@prisma-lossless/driver-adapter-utils@7.8.0` and stock
+`@prisma-lossless/debug@7.8.0` in the installed graph. That violates the Sprint
 3 dependency-substitution check even though the direct fork packages
 resolved from the private registry.
 
@@ -147,7 +147,7 @@ private adapter version once stock adapter substitution has been
 proven.
 
 Intended solution: extend the private release graph with
-`@prisma/driver-adapter-utils` and `@prisma/adapter-pg`, rebuild a new
+`@prisma-lossless/driver-adapter-utils` and `@prisma-lossless/adapter-pg`, rebuild a new
 immutable private prerelease, publish it, and make the isolated
 consumer install exact `7.8.0-lossless.<N>` versions for the CLI,
 client, and PostgreSQL adapter.
@@ -159,7 +159,7 @@ consumer lockfile by hand.
 
 Validation that proves the fix: the isolated npm lockfile must show
 private-registry `7.8.0-lossless.<N>` resolution and integrity metadata
-for `@prisma/adapter-pg`, `@prisma/driver-adapter-utils`, and the fork
+for `@prisma-lossless/adapter-pg`, `@prisma-lossless/driver-adapter-utils`, and the fork
 runtime closure, with no `file:`, `workspace:`, `link:`, Git, branch,
 checkout, or home-directory dependency references.
 
@@ -236,7 +236,7 @@ add regression coverage for checkpoint results that still say
 `prisma`.
 
 Rejected unsafe or wrong-layer solution: do not rename internal
-workspace packages such as `@prisma/migrate` solely because tests print
+workspace packages such as `@prisma-lossless/migrate` solely because tests print
 their workspace names, and do not trust checkpoint metadata to carry
 the fork package name.
 
@@ -260,9 +260,9 @@ registry allowlist and does not add public npm, tarball, Git,
 workspace, sibling-checkout, or override adoption paths.
 
 The release graph now includes the PostgreSQL adapter closure because
-the isolated consumer proved that stock `@prisma/adapter-pg@7.8.0`
-would otherwise install stock `@prisma/driver-adapter-utils` and stock
-`@prisma/debug`. The fix belongs in release graph construction because
+the isolated consumer proved that stock `@prisma-lossless/adapter-pg@7.8.0`
+would otherwise install stock `@prisma-lossless/driver-adapter-utils` and stock
+`@prisma-lossless/debug`. The fix belongs in release graph construction because
 dependency substitution is a package-publication concern, not a
 consumer lockfile workaround.
 
@@ -297,14 +297,14 @@ Published immutable version:
 
 Published packages:
 
-- `@prisma/debug`;
-- `@prisma/driver-adapter-utils`;
-- `@prisma/get-platform`;
-- `@prisma/fetch-engine`;
-- `@prisma/engines`;
-- `@prisma/config`;
-- `@prisma/client-runtime-utils`;
-- `@prisma/adapter-pg`;
+- `@prisma-lossless/debug`;
+- `@prisma-lossless/driver-adapter-utils`;
+- `@prisma-lossless/get-platform`;
+- `@prisma-lossless/fetch-engine`;
+- `@prisma-lossless/engines`;
+- `@prisma-lossless/config`;
+- `@prisma-lossless/client-runtime-utils`;
+- `@prisma-lossless/adapter-pg`;
 - `@prisma-lossless/client`;
 - `prisma-lossless`.
 
@@ -319,7 +319,7 @@ npm view prisma-lossless@7.8.0-lossless.3 \
   name version dist.integrity dist.tarball \
   --registry http://127.0.0.1:4873/
 
-npm view @prisma/adapter-pg@7.8.0-lossless.3 \
+npm view @prisma-lossless/adapter-pg@7.8.0-lossless.3 \
   name version dist.integrity dist.tarball \
   --registry http://127.0.0.1:4873/
 ```
@@ -340,7 +340,7 @@ npm pack prisma-lossless@7.8.0-lossless.3 \
   --pack-destination \
   tmp/lossless-json-tasklet-017/downloads-7.8.0-lossless.3
 
-npm pack @prisma/adapter-pg@7.8.0-lossless.3 \
+npm pack @prisma-lossless/adapter-pg@7.8.0-lossless.3 \
   --registry http://127.0.0.1:4873/ \
   --pack-destination \
   tmp/lossless-json-tasklet-017/downloads-7.8.0-lossless.3
@@ -348,10 +348,10 @@ npm pack @prisma/adapter-pg@7.8.0-lossless.3 \
 
 Result: package manifests inside the downloaded tarballs recorded
 `7.8.0-lossless.3` and `prismaLosslessRelease.sourceCommit`. The
-client tarball recorded `@prisma/client-runtime-utils` and peer
+client tarball recorded `@prisma-lossless/client-runtime-utils` and peer
 `prisma-lossless` at `7.8.0-lossless.3`. The adapter tarball recorded
-`@prisma/driver-adapter-utils` at `7.8.0-lossless.3`. The CLI tarball
-recorded no dependency on `@prisma/migrate`.
+`@prisma-lossless/driver-adapter-utils` at `7.8.0-lossless.3`. The CLI tarball
+recorded no dependency on `@prisma-lossless/migrate`.
 
 Update-guidance inspection passed:
 
@@ -386,7 +386,7 @@ Isolated consumer:
 - package manager: `npm`;
 - dependencies: exact `7.8.0-lossless.3` versions for
   `prisma-lossless`, `@prisma-lossless/client`, and
-  `@prisma/adapter-pg`;
+  `@prisma-lossless/adapter-pg`;
 - no `file:`, `workspace:`, `link:`, Git, sibling checkout, or home
   directory references in `package-lock.json`.
 
@@ -419,12 +419,12 @@ resolves these package entries from `http://127.0.0.1:4873/` at
 
 - `node_modules/prisma-lossless`;
 - `node_modules/@prisma-lossless/client`;
-- `node_modules/@prisma/adapter-pg`;
-- `node_modules/@prisma/driver-adapter-utils`;
-- `node_modules/@prisma/debug`;
-- `node_modules/@prisma/client-runtime-utils`;
-- `node_modules/@prisma/config`;
-- `node_modules/@prisma/engines`.
+- `node_modules/@prisma-lossless/adapter-pg`;
+- `node_modules/@prisma-lossless/driver-adapter-utils`;
+- `node_modules/@prisma-lossless/debug`;
+- `node_modules/@prisma-lossless/client-runtime-utils`;
+- `node_modules/@prisma-lossless/config`;
+- `node_modules/@prisma-lossless/engines`.
 
 Failure coverage passed:
 
@@ -467,12 +467,12 @@ CI=true GITHUB_REF_NAME=target-7.8.0-lossless \
 
 Relevant root-test evidence:
 
-- `@prisma/migrate` passed (`33` suites, `352` tests, `580`
+- `@prisma-lossless/migrate` passed (`33` suites, `352` tests, `580`
   snapshots), with SQL Server and CockroachDB skipped by explicit
   local environment flags.
 - `@prisma-lossless/client` passed (`40` suites, `671` tests, `214`
   snapshots), including the generated type harness.
-- `@prisma/integration-tests` passed (`8` suites, `514` tests, `514`
+- `@prisma-lossless/integration-tests` passed (`8` suites, `514` tests, `514`
   snapshots).
 - `prisma-lossless` Jest passed (`22` suites, `244` tests, `152`
   snapshots).

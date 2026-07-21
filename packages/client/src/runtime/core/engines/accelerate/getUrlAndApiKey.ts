@@ -1,4 +1,4 @@
-import { isPrismaPostgresDev, PRISMA_POSTGRES_PROTOCOL } from '@prisma/internals'
+import { isPrismaPostgresDev, PRISMA_POSTGRES_PROTOCOL } from '@prisma-lossless/internals'
 
 import { InvalidDatasourceError } from './errors/invalid-datasource-error'
 

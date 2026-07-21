@@ -10,7 +10,7 @@ RUN npm -v
 # pnpm is pinned (and matches the repo's `packageManager`): leaving it unpinned
 # pulls the latest pnpm, which fails `pnpm install` here with
 # ERR_PNPM_IGNORED_BUILDS because the standalone e2e projects don't carry the
-# repo's `onlyBuiltDependencies` config for `prisma`/`@prisma/engines`.
+# repo's `onlyBuiltDependencies` config for `prisma`/`@prisma-lossless/engines`.
 RUN npm i -g \
   zx@7 \
   pnpm@10.15.1 \

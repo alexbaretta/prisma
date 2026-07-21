@@ -1,4 +1,4 @@
-import * as ts from '@prisma/ts-builders'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { Enum } from '../Enum'
 import { GenerateContext } from '../GenerateContext'

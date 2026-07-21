@@ -2,7 +2,7 @@
 
 exports[`migrate diff generic should fail with a hint when providing a --from-local-d1 parameter 1`] = `
 "
-\`--from-local-d1\` was removed. Please use \`--[from/to]-config-datasource\` in combination with a Prisma config file that contains the appropriate datasource instead. The \`@prisma/adapter-d1\` package exposes a \`listLocalDatabases()\` helper function to help you locate your local D1 databases. You can use the paths returned from that function to construct your datasource URL(s).
+\`--from-local-d1\` was removed. Please use \`--[from/to]-config-datasource\` in combination with a Prisma config file that contains the appropriate datasource instead. The \`@prisma-lossless/adapter-d1\` package exposes a \`listLocalDatabases()\` helper function to help you locate your local D1 databases. You can use the paths returned from that function to construct your datasource URL(s).
 
 Usage
 
@@ -138,7 +138,7 @@ Flags
 
 exports[`migrate diff generic should fail with a hint when providing a --to-local-d1 parameter 1`] = `
 "
-\`--to-local-d1\` was removed. Please use \`--[from/to]-config-datasource\` in combination with a Prisma config file that contains the appropriate datasource instead. The \`@prisma/adapter-d1\` package exposes a \`listLocalDatabases()\` helper function to help you locate your local D1 databases. You can use the paths returned from that function to construct your datasource URL(s).
+\`--to-local-d1\` was removed. Please use \`--[from/to]-config-datasource\` in combination with a Prisma config file that contains the appropriate datasource instead. The \`@prisma-lossless/adapter-d1\` package exposes a \`listLocalDatabases()\` helper function to help you locate your local D1 databases. You can use the paths returned from that function to construct your datasource URL(s).
 
 Usage
 

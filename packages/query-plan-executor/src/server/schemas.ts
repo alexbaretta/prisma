@@ -1,4 +1,4 @@
-import { ConnectionInfo, Provider } from '@prisma/driver-adapter-utils'
+import { ConnectionInfo, Provider } from '@prisma-lossless/driver-adapter-utils'
 import { z } from 'zod'
 
 import { ExportableLogEvent } from '../log/event'
@@ -9,7 +9,7 @@ import { ExportableSpan } from '../tracing/span'
  *
  * POST /query
  *
- * `plan` is not typed because `@prisma/client-engine-runtime` does not provide
+ * `plan` is not typed because `@prisma-lossless/client-engine-runtime` does not provide
  * a Zod schema and it's not feasible to maintain one here currently.
  */
 export const QueryRequestBody = z.object({

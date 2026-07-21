@@ -9,7 +9,7 @@ import {
   SimpleSpanProcessor,
 } from '@opentelemetry/sdk-trace-base'
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
-import { PrismaInstrumentation } from '@prisma/instrumentation'
+import { PrismaInstrumentation } from '@prisma-lossless/instrumentation'
 
 /** SETUP */
 

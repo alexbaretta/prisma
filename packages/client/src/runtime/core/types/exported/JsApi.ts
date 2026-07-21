@@ -1,11 +1,11 @@
-import { LosslessNumber, ObjectEnumValue } from '@prisma/client-runtime-utils'
-import type * as DMMF from '@prisma/dmmf'
+import { LosslessNumber, ObjectEnumValue } from '@prisma-lossless/client-runtime-utils'
+import type * as DMMF from '@prisma-lossless/dmmf'
 
 import { DecimalJsLike } from './DecimalJsLike'
 import { FieldRef } from './FieldRef'
 import { Skip } from './Skip'
 
-export type { JsOutputValue } from '@prisma/client-engine-runtime'
+export type { JsOutputValue } from '@prisma-lossless/client-engine-runtime'
 
 export type Action = keyof typeof DMMF.ModelAction | 'executeRaw' | 'queryRaw' | 'runCommandRaw'
 

@@ -1,4 +1,4 @@
-# @prisma/sqlcommenter
+# @prisma-lossless/sqlcommenter
 
 Type definitions for SQL commenter plugins in Prisma Client.
 
@@ -15,7 +15,7 @@ SQL comments are useful for:
 ## Installation
 
 ```bash
-npm install @prisma/sqlcommenter
+npm install @prisma-lossless/sqlcommenter
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ npm install @prisma/sqlcommenter
 A SQL commenter plugin is a function that receives query context and returns key-value pairs to be added as comments:
 
 ```typescript
-import type { SqlCommenterPlugin, SqlCommenterContext } from '@prisma/sqlcommenter'
+import type { SqlCommenterPlugin, SqlCommenterContext } from '@prisma-lossless/sqlcommenter'
 
 const myPlugin: SqlCommenterPlugin = (context: SqlCommenterContext) => {
   return {
@@ -40,8 +40,8 @@ const myPlugin: SqlCommenterPlugin = (context: SqlCommenterContext) => {
 Pass your plugins to the `comments` option when creating a PrismaClient instance:
 
 ```typescript
-import { PrismaClient } from '@prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '@prisma-lossless/client'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
 
 const adapter = new PrismaPg({ connectionString: `${process.env.DATABASE_URL}` })
 
@@ -53,9 +53,9 @@ const prisma = new PrismaClient({
 
 ### First-Party Plugins
 
-- [`@prisma/sqlcommenter-query-tags`](https://www.npmjs.com/package/@prisma/sqlcommenter-query-tags): appends arbitrary tags to all queries within an async context.
-- [`@prisma/sqlcommenter-trace-context`](https://www.npmjs.com/package/@prisma/sqlcommenter-trace-context): appends `traceparent` comments to SQL queries for distributed tracing.
-- [`@prisma/sqlcommenter-query-insights`](https://www.npmjs.com/package/@prisma/sqlcommenter-query-insights): enables query insights for [Prisma Postgres](https://www.prisma.io/postgres).
+- [`@prisma-lossless/sqlcommenter-query-tags`](https://www.npmjs.com/package/@prisma-lossless/sqlcommenter-query-tags): appends arbitrary tags to all queries within an async context.
+- [`@prisma-lossless/sqlcommenter-trace-context`](https://www.npmjs.com/package/@prisma-lossless/sqlcommenter-trace-context): appends `traceparent` comments to SQL queries for distributed tracing.
+- [`@prisma-lossless/sqlcommenter-query-insights`](https://www.npmjs.com/package/@prisma-lossless/sqlcommenter-query-insights): enables query insights for [Prisma Postgres](https://www.prisma.io/postgres).
 
 ### Query Context
 
@@ -68,7 +68,7 @@ See [API Reference](#api-reference) for more details.
 Plugins return a `SqlCommenterTags` object where keys can have `undefined` values. Keys with `undefined` values are automatically filtered out from the final comment:
 
 ```typescript
-import type { SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import type { SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 
 const conditionalPlugin: SqlCommenterPlugin = (context) => ({
   model: context.query.modelName, // undefined for raw queries, automatically omitted
@@ -81,7 +81,7 @@ const conditionalPlugin: SqlCommenterPlugin = (context) => ({
 ### Example: Custom Application Tags
 
 ```typescript
-import type { SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import type { SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 
 const applicationTags: SqlCommenterPlugin = (context) => ({
   application: 'my-service',
@@ -95,7 +95,7 @@ const applicationTags: SqlCommenterPlugin = (context) => ({
 
 ```typescript
 import { AsyncLocalStorage } from 'node:async_hooks'
-import type { SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import type { SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 
 const routeStorage = new AsyncLocalStorage<{ route: string }>()
 

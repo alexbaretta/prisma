@@ -17,10 +17,12 @@ function getAllTestSuiteTypeChecks(fileNames: string[]) {
     path.dirname(expect.getState().testPath),
   ).options
 
-  // currently used to resolve `@prisma/client/runtime` for client extensions for default-index.d.ts
-  // this tells it that imports from `@prisma/client/runtime` should be resolved to the runtime folder
+  // currently used to resolve `@prisma-lossless/client/runtime` for client extensions for default-index.d.ts
+  // this tells it that imports from `@prisma-lossless/client/runtime` should be resolved to the runtime folder
   options.paths ??= {}
-  options.paths['@prisma/client/runtime/client'] = [path.resolve(__dirname, '..', '..', '..', 'runtime', 'client')]
+  options.paths['@prisma-lossless/client/runtime/client'] = [
+    path.resolve(__dirname, '..', '..', '..', 'runtime', 'client'),
+  ]
 
   const program = ts.createProgram(fileNames, {
     ...options,

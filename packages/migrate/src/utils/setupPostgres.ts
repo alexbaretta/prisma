@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { credentialsToUri, uriToCredentials } from '@prisma/internals'
+import { credentialsToUri, uriToCredentials } from '@prisma-lossless/internals'
 import { Client } from 'pg'
 
 export type SetupParams = {

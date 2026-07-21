@@ -1,4 +1,4 @@
-import * as DMMF from '@prisma/dmmf'
+import * as DMMF from '@prisma-lossless/dmmf'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const dmmf: DMMF.Document = {

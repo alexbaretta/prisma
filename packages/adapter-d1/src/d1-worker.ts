@@ -13,7 +13,7 @@ import {
   SqlResultSet,
   Transaction,
   TransactionOptions,
-} from '@prisma/driver-adapter-utils'
+} from '@prisma-lossless/driver-adapter-utils'
 import { blue, cyan, red, yellow } from 'kleur/colors'
 
 import { name as packageName } from '../package.json'

@@ -4,7 +4,7 @@ global.beforeEach(() => {
   /**
    * Set up JITI aliasing for the test environment.
    * This allows us to load local modules in fixture tests using the `src/` and `test-utils/` aliases.
-   * Importing `src/index`, in particular, emulates real-world usage of `import { defineConfig } from '@prisma/config'`.
+   * Importing `src/index`, in particular, emulates real-world usage of `import { defineConfig } from '@prisma-lossless/config'`.
    *
    * See: https://github.com/unjs/jiti?tab=readme-ov-file#alias.
    */

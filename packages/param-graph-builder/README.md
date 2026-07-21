@@ -1,4 +1,4 @@
-# @prisma/param-graph-builder
+# @prisma-lossless/param-graph-builder
 
 This package is intended for Prisma's internal use.
 
@@ -6,4 +6,4 @@ Builds a ParamGraph from DMMF (Data Model Metadata Format) at client generation 
 
 The ParamGraph is a compact data structure that enables schema-aware parameterization at runtime. It stores only parameterizable paths and uses a string table to de-duplicate field names.
 
-This package is used by both `@prisma/client-generator-js` and `@prisma/client-generator-ts` to generate the parameterization schema that is embedded in the generated Prisma Client.
+This package is used by both `@prisma-lossless/client-generator-js` and `@prisma-lossless/client-generator-ts` to generate the parameterization schema that is embedded in the generated Prisma Client.

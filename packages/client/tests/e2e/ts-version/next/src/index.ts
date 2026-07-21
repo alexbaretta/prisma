@@ -1,1 +1,1 @@
-import '@prisma/client'
+import '@prisma-lossless/client'

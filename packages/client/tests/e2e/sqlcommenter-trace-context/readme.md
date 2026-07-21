@@ -1,6 +1,6 @@
 # SQL Commenter Trace Context E2E Test
 
-Tests that the `@prisma/sqlcommenter-trace-context` plugin correctly adds W3C Trace Context `traceparent` headers to SQL queries.
+Tests that the `@prisma-lossless/sqlcommenter-trace-context` plugin correctly adds W3C Trace Context `traceparent` headers to SQL queries.
 
 ## What this test verifies
 
@@ -10,4 +10,4 @@ Tests that the `@prisma/sqlcommenter-trace-context` plugin correctly adds W3C Tr
 
 ## Setup
 
-Uses `@prisma/adapter-better-sqlite3` with SQLite to test the SQL commenter functionality with OpenTelemetry tracing configured via `@prisma/instrumentation`.
+Uses `@prisma-lossless/adapter-better-sqlite3` with SQLite to test the SQL commenter functionality with OpenTelemetry tracing configured via `@prisma-lossless/instrumentation`.

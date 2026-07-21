@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { jestContext } from '@prisma/get-platform'
+import { jestContext } from '@prisma-lossless/get-platform'
 
 import { determineClientOutputPath } from './client-output-path'
 

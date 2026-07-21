@@ -1,4 +1,4 @@
-# @prisma/param-graph
+# @prisma-lossless/param-graph
 
 This package is intended for Prisma's internal use.
 

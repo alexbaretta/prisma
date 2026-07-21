@@ -1,4 +1,4 @@
-import type { SqlCommenterContext, SqlCommenterTags } from '@prisma/sqlcommenter'
+import type { SqlCommenterContext, SqlCommenterTags } from '@prisma-lossless/sqlcommenter'
 import { describe, expect, it } from 'vitest'
 
 import { queryTags, withMergedQueryTags, withQueryTags } from './index'

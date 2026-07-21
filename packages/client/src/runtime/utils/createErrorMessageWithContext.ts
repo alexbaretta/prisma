@@ -1,4 +1,4 @@
-import * as DMMF from '@prisma/dmmf'
+import * as DMMF from '@prisma-lossless/dmmf'
 import indentString from 'indent-string'
 import { bold, dim, gray, red, underline } from 'kleur/colors'
 

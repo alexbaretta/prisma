@@ -1,4 +1,4 @@
-import { Migrate } from '@prisma/migrate'
+import { Migrate } from '@prisma-lossless/migrate'
 import slugify from '@sindresorhus/slugify'
 import fs from 'fs-jetpack'
 import type { FSJetpack } from 'fs-jetpack/types'

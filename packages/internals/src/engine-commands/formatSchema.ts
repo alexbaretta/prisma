@@ -1,5 +1,5 @@
-import Debug from '@prisma/debug'
-import type { MultipleSchemas } from '@prisma/get-dmmf'
+import Debug from '@prisma-lossless/debug'
+import type { MultipleSchemas } from '@prisma-lossless/get-dmmf'
 
 import { logger } from '..'
 import { ErrorArea, getWasmError, RustPanic, WasmPanic } from '../panic'

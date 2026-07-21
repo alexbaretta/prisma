@@ -1,4 +1,4 @@
-import { isCi, isInteractive } from '@prisma/internals'
+import { isCi, isInteractive } from '@prisma-lossless/internals'
 import slugify from '@sindresorhus/slugify'
 import { prompt } from 'prompts'
 

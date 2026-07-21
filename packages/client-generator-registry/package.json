@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/client-generator-registry",
+  "name": "@prisma-lossless/client-generator-registry",
   "version": "0.0.0",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
@@ -24,10 +24,10 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@prisma/client-generator-js": "workspace:*",
-    "@prisma/client-generator-ts": "workspace:*",
-    "@prisma/generator": "workspace:*",
-    "@prisma/internals": "workspace:*"
+    "@prisma-lossless/client-generator-js": "workspace:*",
+    "@prisma-lossless/client-generator-ts": "workspace:*",
+    "@prisma-lossless/generator": "workspace:*",
+    "@prisma-lossless/internals": "workspace:*"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

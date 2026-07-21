@@ -1,4 +1,4 @@
-import { inferDirectoryConfig, loadSchemaContext, RustPanic } from '@prisma/internals'
+import { inferDirectoryConfig, loadSchemaContext, RustPanic } from '@prisma-lossless/internals'
 import { join } from 'path'
 
 import { Migrate } from '../Migrate'

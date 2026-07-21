@@ -1,5 +1,5 @@
 import { D1Database } from '@cloudflare/workers-types'
-import { SqlDriverAdapter, SqlDriverAdapterFactory } from '@prisma/driver-adapter-utils'
+import { SqlDriverAdapter, SqlDriverAdapterFactory } from '@prisma-lossless/driver-adapter-utils'
 
 import { name as packageName } from '../package.json'
 import { D1HttpParams, isD1HttpParams, PrismaD1HttpAdapterFactory } from './d1-http'

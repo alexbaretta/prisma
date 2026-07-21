@@ -1,4 +1,4 @@
-import { BasicBuilder, Writer } from '@prisma/ts-builders'
+import { BasicBuilder, Writer } from '@prisma-lossless/ts-builders'
 import { bold, dim, green, red } from 'kleur/colors'
 
 type ColorFn = (str: string) => string

@@ -17,7 +17,7 @@ describeIf(!process.env.TEST_SKIP_MSSQL)('referentialActions-onDelete-default-fo
       schemaPath: path.join(__dirname, 'schema.prisma'),
     })
     await generateTestClient()
-    const { PrismaClient } = require('./node_modules/@prisma/client')
+    const { PrismaClient } = require('./node_modules/@prisma-lossless/client')
     prisma = new PrismaClient()
 
     await prisma.post.deleteMany()

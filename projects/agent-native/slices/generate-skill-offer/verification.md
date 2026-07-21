@@ -1,7 +1,7 @@
 # Verification record — generate-skill-offer
 
 Evidence from S2-D3 live runs (2026-07-03; CLI built from `744539ec0`; scratch project cloned
-from the `example-project` fixture with `@prisma/client`/`@prisma/config` symlinked; curated
+from the `example-project` fixture with `@prisma-lossless/client`/`@prisma-lossless/config` symlinked; curated
 `env -i` environment; per-run isolated `XDG_CONFIG_HOME` with `prisma-nodejs/` pre-created
 and `commands.json` seeded 30 days back per the two suppression traps).
 

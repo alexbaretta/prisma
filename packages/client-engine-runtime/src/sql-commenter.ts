@@ -1,4 +1,4 @@
-import type { SqlCommenterContext, SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import type { SqlCommenterContext, SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 import { klona } from 'klona'
 
 /**

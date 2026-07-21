@@ -1,4 +1,4 @@
-# @prisma/get-platform
+# @prisma-lossless/get-platform
 
 Platform detection.
 
@@ -10,7 +10,7 @@ If you are using this package, it would be helpful if you could help us gain an 
 ## Usage
 
 ```ts
-import { getBinaryTargetForCurrentPlatform } from '@prisma/get-platform'
+import { getBinaryTargetForCurrentPlatform } from '@prisma-lossless/get-platform'
 
 const binaryTarget = await getBinaryTargetForCurrentPlatform()
 ```

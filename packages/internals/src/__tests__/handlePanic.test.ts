@@ -1,6 +1,6 @@
 import { stripVTControlCharacters } from 'node:util'
 
-import { vitestConsoleContext, vitestContext } from '@prisma/get-platform/src/test-utils/vitestContext'
+import { vitestConsoleContext, vitestContext } from '@prisma-lossless/get-platform/src/test-utils/vitestContext'
 import { ensureDir } from 'fs-extra'
 import { stdin } from 'mock-stdin'
 import prompt from 'prompts'

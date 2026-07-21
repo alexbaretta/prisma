@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
+import { PrismaClient } from '@prisma-lossless/client'
 
 const adapter = new PrismaPg({
   connectionString: process.env['TEST_E2E_POSTGRES_URI']!,

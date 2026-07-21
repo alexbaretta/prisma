@@ -14,13 +14,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "../../packages/client",
-    "@prisma/adapter-pg": "../../packages/adapter-pg",
+    "@prisma-lossless/client": "../../packages/client",
+    "@prisma-lossless/adapter-pg": "../../packages/adapter-pg",
     "@prisma/extension-accelerate": "2.0.2"
   },
   "devDependencies": {
     "@types/node": "~20.19.0",
-    "@prisma/config": "../../packages/config",
+    "@prisma-lossless/config": "../../packages/config",
     "prisma": "../../packages/cli",
     "ts-node": "10.9.1",
     "dotenv": "16.4.7",

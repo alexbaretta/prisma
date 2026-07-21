@@ -1,4 +1,4 @@
-import { assertNever } from '@prisma/internals'
+import { assertNever } from '@prisma-lossless/internals'
 import { copycat } from '@snaplet/copycat'
 
 import { Providers } from '../../_utils/providers'

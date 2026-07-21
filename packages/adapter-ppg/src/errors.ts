@@ -1,5 +1,5 @@
-import { Error as DriverAdapterErrorObject, MappedError } from '@prisma/driver-adapter-utils'
 import { DatabaseError } from '@prisma/ppg'
+import { Error as DriverAdapterErrorObject, MappedError } from '@prisma-lossless/driver-adapter-utils'
 
 export function convertDriverError(error: unknown): DriverAdapterErrorObject {
   if (isDriverError(error)) {

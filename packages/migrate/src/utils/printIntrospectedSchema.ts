@@ -1,4 +1,4 @@
-import { MigrateTypes } from '@prisma/internals'
+import { MigrateTypes } from '@prisma-lossless/internals'
 import path from 'path'
 import { Writable } from 'stream'
 

@@ -1,4 +1,4 @@
-import type { JsonBatchQuery } from '@prisma/json-protocol'
+import type { JsonBatchQuery } from '@prisma-lossless/json-protocol'
 import { describe, expect, it } from 'vitest'
 
 import { parameterizeBatch } from '../parameterize'

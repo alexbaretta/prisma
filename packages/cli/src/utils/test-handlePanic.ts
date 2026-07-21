@@ -1,5 +1,5 @@
-import { handlePanic, inferDirectoryConfig, loadSchemaContext, toSchemasContainer } from '@prisma/internals'
-import { Migrate } from '@prisma/migrate'
+import { handlePanic, inferDirectoryConfig, loadSchemaContext, toSchemasContainer } from '@prisma-lossless/internals'
+import { Migrate } from '@prisma-lossless/migrate'
 import path from 'path'
 
 async function main() {

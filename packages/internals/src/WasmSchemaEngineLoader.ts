@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import type { ErrorCapturingSqlDriverAdapterFactory } from '@prisma/driver-adapter-utils'
 import type { ConstructorOptions, SchemaEngine } from '@prisma/schema-engine-wasm'
+import type { ErrorCapturingSqlDriverAdapterFactory } from '@prisma-lossless/driver-adapter-utils'
 
 async function getSchemaEngineWasModule() {
   const runtimeBase = path.join(__dirname, '..', 'build')

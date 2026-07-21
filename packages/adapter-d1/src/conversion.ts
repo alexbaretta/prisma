@@ -1,4 +1,4 @@
-import { ArgType, ColumnType, ColumnTypeEnum, ResultValue } from '@prisma/driver-adapter-utils'
+import { ArgType, ColumnType, ColumnTypeEnum, ResultValue } from '@prisma-lossless/driver-adapter-utils'
 
 export type Value = null | string | number | object
 

@@ -1,4 +1,4 @@
-import { Decimal, isLosslessJsonNumber } from '@prisma/client-runtime-utils'
+import { Decimal, isLosslessJsonNumber } from '@prisma-lossless/client-runtime-utils'
 import { describe, expect, test } from 'vitest'
 
 import { deserializeJsonObject } from './json-protocol'

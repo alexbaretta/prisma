@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import path from 'node:path'
 
-import { vitestContext } from '@prisma/get-platform/src/test-utils/vitestContext'
+import { vitestContext } from '@prisma-lossless/get-platform/src/test-utils/vitestContext'
 import type { ParseError } from 'effect/ParseResult'
 import { PrismaConfigInternal } from 'src/PrismaConfig'
 import { beforeEach, describe, expect, it, test, vi } from 'vitest'

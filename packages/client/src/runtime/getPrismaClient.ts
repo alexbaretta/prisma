@@ -1,11 +1,11 @@
 import type { Context } from '@opentelemetry/api'
-import { GetPrismaClientConfig, RuntimeDataModel } from '@prisma/client-common'
-import { RawValue, Sql } from '@prisma/client-runtime-utils'
-import { clearLogs, Debug } from '@prisma/debug'
-import type { SqlDriverAdapterFactory } from '@prisma/driver-adapter-utils'
-import type { ExtendedSpanOptions, TracingHelper } from '@prisma/instrumentation-contract'
-import { logger } from '@prisma/internals'
-import type { SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import { GetPrismaClientConfig, RuntimeDataModel } from '@prisma-lossless/client-common'
+import { RawValue, Sql } from '@prisma-lossless/client-runtime-utils'
+import { clearLogs, Debug } from '@prisma-lossless/debug'
+import type { SqlDriverAdapterFactory } from '@prisma-lossless/driver-adapter-utils'
+import type { ExtendedSpanOptions, TracingHelper } from '@prisma-lossless/instrumentation-contract'
+import { logger } from '@prisma-lossless/internals'
+import type { SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 import { AsyncResource } from 'async_hooks'
 import { EventEmitter } from 'events'
 
@@ -186,7 +186,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
   /**
    * A driver adapter that PrismaClient uses to connect to your database,
    * such as the ones provided by `@prisma-lossless/adapter-pg`,
-   * `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
+   * `@prisma-lossless/adapter-libsql`, `@prisma-lossless/adapter-planetscale`, etc.
    *
    * A driver adapter is **required** unless you connect to your database
    * through Prisma Accelerate (in which case use `accelerateUrl` instead).
@@ -931,7 +931,7 @@ Or read our docs at https://www.prisma.io/docs/concepts/components/prisma-client
 
       // iTx - Interactive transaction
       if (typeof input === 'function') {
-        if (this._engineConfig.adapter?.adapterName === '@prisma/adapter-d1') {
+        if (this._engineConfig.adapter?.adapterName === '@prisma-lossless/adapter-d1') {
           callback = () => {
             throw new Error(
               'Cloudflare D1 does not support interactive transactions. We recommend you to refactor your queries with that limitation in mind, and use batch transactions with `prisma.$transactions([])` where applicable.',

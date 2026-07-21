@@ -201,15 +201,15 @@ export type Provider = 'mysql' | 'postgres' | 'sqlite' | 'sqlserver'
 // This list might get outdated over time.
 // It's only used for auto-completion and tests.
 const officialPrismaAdapters = [
-  '@prisma/adapter-planetscale',
-  '@prisma/adapter-neon',
-  '@prisma/adapter-libsql',
-  '@prisma/adapter-better-sqlite3',
-  '@prisma/adapter-d1',
+  '@prisma-lossless/adapter-planetscale',
+  '@prisma-lossless/adapter-neon',
+  '@prisma-lossless/adapter-libsql',
+  '@prisma-lossless/adapter-better-sqlite3',
+  '@prisma-lossless/adapter-d1',
   '@prisma-lossless/adapter-pg',
-  '@prisma/adapter-pg',
-  '@prisma/adapter-mssql',
-  '@prisma/adapter-mariadb',
+  '@prisma-lossless/adapter-pg',
+  '@prisma-lossless/adapter-mssql',
+  '@prisma-lossless/adapter-mariadb',
 ] as const
 
 export type OfficialDriverAdapterName = (typeof officialPrismaAdapters)[number]

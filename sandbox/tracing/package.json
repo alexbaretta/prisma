@@ -14,8 +14,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "../../packages/client",
-    "@prisma/instrumentation": "../../packages/instrumentation"
+    "@prisma-lossless/client": "../../packages/client",
+    "@prisma-lossless/instrumentation": "../../packages/instrumentation"
   },
   "devDependencies": {
     "@opentelemetry/api": "1.9.0",

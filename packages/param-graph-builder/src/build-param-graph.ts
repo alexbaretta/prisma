@@ -5,8 +5,8 @@
  * parameterization schemas from DMMF at generation time.
  */
 
-import type * as DMMF from '@prisma/dmmf'
-import type { ParamGraphData, SerializedParamGraph } from '@prisma/param-graph'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import type { ParamGraphData, SerializedParamGraph } from '@prisma-lossless/param-graph'
 
 import { DMMFTraverser } from './dmmf-traverser'
 import { ParamGraphBuilder } from './param-graph-builder'

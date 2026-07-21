@@ -4,4 +4,4 @@ export const VERSION = packageJson.version
 
 export const NAME = packageJson.name
 
-export const MODULE_NAME = '@prisma/client'
+export const MODULE_NAME = '@prisma-lossless/client'

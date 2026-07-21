@@ -1,9 +1,15 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import type * as DMMF from '@prisma/dmmf'
-import type { ActiveConnectorType, BinaryPaths, DataSource, GeneratorConfig, SqlQueryOutput } from '@prisma/generator'
-import { assertNever, pathToPosix, setClassName } from '@prisma/internals'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import type {
+  ActiveConnectorType,
+  BinaryPaths,
+  DataSource,
+  GeneratorConfig,
+  SqlQueryOutput,
+} from '@prisma-lossless/generator'
+import { assertNever, pathToPosix, setClassName } from '@prisma-lossless/internals'
 import { glob } from 'fast-glob'
 import { ensureDir } from 'fs-extra'
 import { bold, red } from 'kleur/colors'

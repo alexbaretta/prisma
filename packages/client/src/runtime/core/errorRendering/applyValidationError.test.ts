@@ -1,4 +1,4 @@
-import { Writer } from '@prisma/ts-builders'
+import { Writer } from '@prisma-lossless/ts-builders'
 import ansiEscapesSerializer from 'jest-serializer-ansi-escapes'
 import { $ as colors } from 'kleur/colors'
 

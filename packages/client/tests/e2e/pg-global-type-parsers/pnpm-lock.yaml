@@ -8,10 +8,10 @@ importers:
 
   .:
     dependencies:
-      '@prisma/adapter-neon':
+      '@prisma-lossless/adapter-neon':
         specifier: /tmp/prisma-adapter-neon-0.0.0.tgz
         version: file:../../tmp/prisma-adapter-neon-0.0.0.tgz
-      '@prisma/adapter-pg':
+      '@prisma-lossless/adapter-pg':
         specifier: /tmp/prisma-adapter-pg-0.0.0.tgz
         version: file:../../tmp/prisma-adapter-pg-0.0.0.tgz
       pg:
@@ -50,19 +50,19 @@ packages:
   '@neondatabase/serverless@0.9.5':
     resolution: {integrity: sha512-siFas6gItqv6wD/pZnvdu34wEqgG3nSE6zWZdq5j2DEsa+VvX8i/5HXJOo06qrw5axPXn+lGCxeR+NLaSPIXug==}
 
-  '@prisma/adapter-neon@file:../../tmp/prisma-adapter-neon-0.0.0.tgz':
+  '@prisma-lossless/adapter-neon@file:../../tmp/prisma-adapter-neon-0.0.0.tgz':
     resolution: {integrity: sha512-GXQdu1EqvFj26fVoR/R/X2GAYqVU+E5V58FgKkEuevoNx6tpXfA8PGPoKCVwTKb9C+bZNYIwbXqIgt3wlHl3vg==, tarball: file:../../tmp/prisma-adapter-neon-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/adapter-pg@file:../../tmp/prisma-adapter-pg-0.0.0.tgz':
+  '@prisma-lossless/adapter-pg@file:../../tmp/prisma-adapter-pg-0.0.0.tgz':
     resolution: {integrity: sha512-0E/v1SScyGMpTzPmv1Ez3WjQ10JqhN5xOC2hLH8ov+iweQUTL6cTjZKYTyvhD3DeNr0tXpCPVD9s7Luririr5Q==, tarball: file:../../tmp/prisma-adapter-pg-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/debug@file:../../tmp/prisma-debug-0.0.0.tgz':
+  '@prisma-lossless/debug@file:../../tmp/prisma-debug-0.0.0.tgz':
     resolution: {integrity: sha512-zHvroKTHICJzI+ehqo2Dor+oEoUKiDCZzc7J4FinftNJtC27M/FEGHGfjNkd5bRgqSyYsK50uw/IqVzmW3blQw==, tarball: file:../../tmp/prisma-debug-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
+  '@prisma-lossless/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
     resolution: {integrity: sha512-al59mewCvT3B+phdaUYldoaNgGx9r1KAX5H0V4tAz+7b5xIP+wdV2GSWkQSa5ygxBtzxNk1RhX4dPseAtU2T2w==, tarball: file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz}
     version: 0.0.0
 
@@ -329,25 +329,25 @@ snapshots:
     dependencies:
       '@types/pg': 8.11.6
 
-  '@prisma/adapter-neon@file:../../tmp/prisma-adapter-neon-0.0.0.tgz':
+  '@prisma-lossless/adapter-neon@file:../../tmp/prisma-adapter-neon-0.0.0.tgz':
     dependencies:
       '@neondatabase/serverless': 0.9.5
-      '@prisma/driver-adapter-utils': file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz
+      '@prisma-lossless/driver-adapter-utils': file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz
       postgres-array: 3.0.4
 
-  '@prisma/adapter-pg@file:../../tmp/prisma-adapter-pg-0.0.0.tgz':
+  '@prisma-lossless/adapter-pg@file:../../tmp/prisma-adapter-pg-0.0.0.tgz':
     dependencies:
-      '@prisma/driver-adapter-utils': file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz
+      '@prisma-lossless/driver-adapter-utils': file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz
       pg: 8.11.5
       postgres-array: 3.0.4
     transitivePeerDependencies:
       - pg-native
 
-  '@prisma/debug@file:../../tmp/prisma-debug-0.0.0.tgz': {}
+  '@prisma-lossless/debug@file:../../tmp/prisma-debug-0.0.0.tgz': {}
 
-  '@prisma/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
+  '@prisma-lossless/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
     dependencies:
-      '@prisma/debug': file:../../tmp/prisma-debug-0.0.0.tgz
+      '@prisma-lossless/debug': file:../../tmp/prisma-debug-0.0.0.tgz
 
   '@sinclair/typebox@0.27.8': {}
 

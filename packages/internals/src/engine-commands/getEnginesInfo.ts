@@ -1,4 +1,4 @@
-import { BinaryType, getBinaryEnvVarPath } from '@prisma/fetch-engine'
+import { BinaryType, getBinaryEnvVarPath } from '@prisma-lossless/fetch-engine'
 import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/lib/function'
 import * as O from 'fp-ts/Option'

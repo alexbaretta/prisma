@@ -1,4 +1,4 @@
-import { ProcessContextSettings } from '@prisma/get-platform'
+import { ProcessContextSettings } from '@prisma-lossless/get-platform'
 
 export const stdoutNormalizationRules: ProcessContextSettings = {
   normalizationRules: [

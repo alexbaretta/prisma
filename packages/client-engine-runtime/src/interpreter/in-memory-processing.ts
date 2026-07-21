@@ -1,4 +1,4 @@
-import { isLosslessJsonNumber, parseJsonFieldValue } from '@prisma/client-runtime-utils'
+import { isLosslessJsonNumber, parseJsonFieldValue } from '@prisma-lossless/client-runtime-utils'
 
 import { InMemoryOps, Pagination } from '../query-plan'
 import { doKeysMatch } from '../utils'

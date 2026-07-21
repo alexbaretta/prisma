@@ -1,4 +1,4 @@
-import { isValidJsIdentifier } from '@prisma/internals'
+import { isValidJsIdentifier } from '@prisma-lossless/internals'
 
 import { BasicBuilder } from './BasicBuilder'
 import { DocComment } from './DocComment'

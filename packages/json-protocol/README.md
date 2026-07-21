@@ -1,4 +1,4 @@
-# @prisma/json-protocol
+# @prisma-lossless/json-protocol
 
 Type definitions for JSON protocol representations of Prisma queries.
 

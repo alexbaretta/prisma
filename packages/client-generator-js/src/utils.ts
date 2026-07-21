@@ -1,7 +1,7 @@
-import { capitalize } from '@prisma/client-common'
-import * as DMMF from '@prisma/dmmf'
-import { assertNever } from '@prisma/internals'
-import * as ts from '@prisma/ts-builders'
+import { capitalize } from '@prisma-lossless/client-common'
+import * as DMMF from '@prisma-lossless/dmmf'
+import { assertNever } from '@prisma-lossless/internals'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { GenerateContext } from './TSClient/GenerateContext'
 

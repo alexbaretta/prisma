@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {},
   "dependencies": {
-    "@prisma/generator-helper": "/tmp/prisma-generator-helper-0.0.0.tgz"
+    "@prisma-lossless/generator-helper": "/tmp/prisma-generator-helper-0.0.0.tgz"
   },
   "devDependencies": {
     "@types/node": "~20.19.0",

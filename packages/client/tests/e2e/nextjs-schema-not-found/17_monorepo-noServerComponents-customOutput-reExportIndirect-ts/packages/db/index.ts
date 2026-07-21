@@ -1,4 +1,4 @@
-import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
 
 import { PrismaClient } from './prisma/client'
 

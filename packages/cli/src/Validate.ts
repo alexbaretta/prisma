@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import type { PrismaConfigInternal } from '@prisma/config'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
 import {
   arg,
   Command,
@@ -15,7 +15,7 @@ import {
   logger,
   printSchemaLoadedMessage,
   validate,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import { bold, dim, red, underline } from 'kleur/colors'
 
 /**

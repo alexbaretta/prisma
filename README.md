@@ -184,7 +184,7 @@ First, install Prisma CLI as a development dependency and Prisma Client:
 
 ```
 npm install prisma --save-dev
-npm install @prisma/client
+npm install @prisma-lossless/client
 ```
 
 #### Step 2: Set up your Prisma schema
@@ -256,7 +256,7 @@ You can import and instantiate Prisma Client from the output path specified in y
 
 ```ts
 import { PrismaClient } from './generated/client'
-import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
 const prisma = new PrismaClient({ adapter })

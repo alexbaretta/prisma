@@ -1,6 +1,6 @@
-import { Debug } from '@prisma/debug'
-import type * as DMMF from '@prisma/dmmf'
 import prismaSchemaWasm from '@prisma/prisma-schema-wasm'
+import { Debug } from '@prisma-lossless/debug'
+import type * as DMMF from '@prisma-lossless/dmmf'
 import { JSONParser } from '@streamparser/json'
 import pluralize from 'pluralize'
 

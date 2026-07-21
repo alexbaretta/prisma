@@ -1,4 +1,4 @@
-import { Debug } from '@prisma/debug'
+import { Debug } from '@prisma-lossless/debug'
 
 export { Debug }
 export default Debug

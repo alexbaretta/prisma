@@ -1,4 +1,4 @@
-import { credentialsToUri, uriToCredentials } from '@prisma/internals'
+import { credentialsToUri, uriToCredentials } from '@prisma-lossless/internals'
 import fs from 'fs'
 import path from 'path'
 import { Client } from 'pg'

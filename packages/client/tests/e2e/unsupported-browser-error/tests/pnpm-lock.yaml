@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@prisma/client':
+  '@prisma-lossless/client':
     specifier: /tmp/prisma-client-0.0.0.tgz
     version: file:../../tmp/prisma-client-0.0.0.tgz(prisma@0.0.0)
 
@@ -1524,12 +1524,12 @@ packages:
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@prisma/engines': file:../../tmp/prisma-engines-0.0.0.tgz
+      '@prisma-lossless/engines': file:../../tmp/prisma-engines-0.0.0.tgz
 
   file:../../tmp/prisma-client-0.0.0.tgz(prisma@0.0.0):
     resolution: {integrity: sha512-LTOcioYvKWVyDfqADdLPOQ4ONQ3PPud5JvXrNwyj8iAaSF5UP3esfbdkyeb+QpNqLinXd4kfMrKjab+UNRt5Cg==, tarball: file:../../tmp/prisma-client-0.0.0.tgz}
     id: file:../../tmp/prisma-client-0.0.0.tgz
-    name: '@prisma/client'
+    name: '@prisma-lossless/client'
     version: 0.0.0
     engines: {node: '>=16.13'}
     requiresBuild: true
@@ -1545,6 +1545,6 @@ packages:
 
   file:../../tmp/prisma-engines-0.0.0.tgz:
     resolution: {integrity: sha512-XZHbwnYoPT+fVgA4A3+mic2oWtEMJv84PcieH3vQr8zj0b0ombF1grop5PiY0L887LMir9nVgWCwZo+hkP/++w==, tarball: file:../../tmp/prisma-engines-0.0.0.tgz}
-    name: '@prisma/engines'
+    name: '@prisma-lossless/engines'
     version: 0.0.0
     requiresBuild: true

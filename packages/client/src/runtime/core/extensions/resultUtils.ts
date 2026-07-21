@@ -1,5 +1,5 @@
-import { Cache } from '@prisma/client-common'
-import { mapObjectValues } from '@prisma/internals'
+import { Cache } from '@prisma-lossless/client-common'
+import { mapObjectValues } from '@prisma-lossless/internals'
 
 import { dmmfToJSModelName } from '../model/utils/dmmfToJSModelName'
 import { ExtensionArgs, ResultArg, ResultArgsFieldCompute } from '../types/exported/ExtensionArgs'

@@ -17,15 +17,15 @@ The [@prisma/ppg](https://github.com/prisma/ppg-client) driver is a modern, ligh
 To get started, install the Prisma adapter for Prisma Postgres:
 
 ```sh
-npm install @prisma/adapter-ppg
+npm install @prisma-lossless/adapter-ppg
 ```
 
 Update your Prisma Client instance to use the Prisma Postgres adapter:
 
 ```ts
 // Import needed packages
-import { PrismaClient } from '@prisma/client'
-import { PrismaPostgresAdapter } from '@prisma/adapter-ppg'
+import { PrismaClient } from '@prisma-lossless/client'
+import { PrismaPostgresAdapter } from '@prisma-lossless/adapter-ppg'
 
 // Setup
 const connectionString = `${process.env.PRISMA_DIRECT_TCP_URL}`

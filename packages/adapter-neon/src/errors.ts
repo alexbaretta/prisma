@@ -1,5 +1,5 @@
 import type { DatabaseError } from '@neondatabase/serverless'
-import { Error as DriverAdapterErrorObject, MappedError } from '@prisma/driver-adapter-utils'
+import { Error as DriverAdapterErrorObject, MappedError } from '@prisma-lossless/driver-adapter-utils'
 
 export function convertDriverError(error: unknown): DriverAdapterErrorObject {
   if (isDriverError(error)) {

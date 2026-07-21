@@ -1,5 +1,5 @@
-import { capitalize, uncapitalize } from '@prisma/client-common'
-import * as DMMF from '@prisma/dmmf'
+import { capitalize, uncapitalize } from '@prisma-lossless/client-common'
+import * as DMMF from '@prisma-lossless/dmmf'
 import pluralize from 'pluralize'
 
 import type { JSDocMethodBodyCtx } from './jsdoc'

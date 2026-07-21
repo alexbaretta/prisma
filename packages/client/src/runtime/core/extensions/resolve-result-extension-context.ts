@@ -1,4 +1,4 @@
-import { RuntimeDataModel } from '@prisma/client-common'
+import { RuntimeDataModel } from '@prisma-lossless/client-common'
 
 import { JsArgs } from '../types/exported/JsApi'
 

@@ -5,7 +5,7 @@
  * Covers various query patterns typical in web applications.
  */
 import { withCodSpeed } from '@codspeed/benchmark.js-plugin'
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import { PrismaBetterSqlite3 } from '@prisma-lossless/adapter-better-sqlite3'
 import Benchmark from 'benchmark'
 
 import { generateInFolder } from '../../../utils/generateInFolder'

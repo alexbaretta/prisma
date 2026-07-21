@@ -1,6 +1,6 @@
 import { stripVTControlCharacters } from 'node:util'
 
-import { getBinaryTargetForCurrentPlatform } from '@prisma/get-platform'
+import { getBinaryTargetForCurrentPlatform } from '@prisma-lossless/get-platform'
 import isWindows from 'is-windows'
 import isWSL from 'is-wsl'
 import newGitHubIssueUrl from 'new-github-issue-url'

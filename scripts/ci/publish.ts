@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { dependencies as dependenciesPrismaEnginesPkg } from '@prisma/engines/package.json'
+import { dependencies as dependenciesPrismaEnginesPkg } from '@prisma-lossless/engines/package.json'
 import slugify from '@sindresorhus/slugify'
 import { IncomingWebhook } from '@slack/webhook'
 import arg from 'arg'
@@ -243,12 +243,12 @@ async function getNewIntegrationVersion(packages: Packages, branch: string): Pro
 }
 
 // This function gets the current "patchMajorMinor" (major and minor of the patch branch),
-// then retrieves the current versions of @prisma/client from npm,
+// then retrieves the current versions of @prisma-lossless/client from npm,
 // and filters that array down to the major and minor of the patch branch
 // to figure out what the current highest patch number there currently is
 async function getCurrentPatchForPatchVersions(patchMajorMinor: { major: number; minor: number }): Promise<number> {
   // TODO: could we add the name of the branch, as well as the relevant versions => faster
-  //   $ npm view '@prisma/client@3.0.x' version --json
+  //   $ npm view '@prisma-lossless/client@3.0.x' version --json
   // [
   // "3.0.1",
   // "3.0.2"
@@ -258,7 +258,7 @@ async function getCurrentPatchForPatchVersions(patchMajorMinor: { major: number;
   // npm can have some hiccups
   const remoteVersionsString = await pRetry(
     async () => {
-      return await runResult('.', 'npm view @prisma/client@* version --json')
+      return await runResult('.', 'npm view @prisma-lossless/client@* version --json')
     },
     {
       retries: 6,
@@ -373,12 +373,12 @@ function getMaxPatchVersionIncrement(versions: string[]): number {
  * @returns All versions published on npm for a given channel and prefix
  */
 export async function getAllVersionsPublishedFor(pkgs: Packages, channel: string, prefix: string): Promise<string[]> {
-  // We check the versions for the `@prisma/debug` package
+  // We check the versions for the `@prisma-lossless/debug` package
   // Why?
-  // Because `@prisma/debug` is the first package that will be published
+  // Because `@prisma-lossless/debug` is the first package that will be published
   // So if npm fails to publish one of the packages,
   // we cannot republish on the same version on a next run
-  const pkg = pkgs['@prisma/debug']
+  const pkg = pkgs['@prisma-lossless/debug']
 
   const values = async (pkg: Package) => {
     const pkgVersions = [] as string[]
@@ -598,7 +598,7 @@ Check them out at https://github.com/prisma/ecosystem-tests/actions?query=workfl
       }
     }
 
-    const publishOrder = filterPublishOrder(getPublishOrder(packages), ['@prisma/integration-tests'])
+    const publishOrder = filterPublishOrder(getPublishOrder(packages), ['@prisma-lossless/integration-tests'])
 
     if (!dryRun) {
       console.log(`Let's first do a dry run!`)

@@ -1,5 +1,5 @@
 import * as neon from '@neondatabase/serverless'
-import { getLogs } from '@prisma/debug'
+import { getLogs } from '@prisma-lossless/debug'
 import { describe, expect, it, vi } from 'vitest'
 
 import { PrismaNeonAdapterFactory } from '../neon'

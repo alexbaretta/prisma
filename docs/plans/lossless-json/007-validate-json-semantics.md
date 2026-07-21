@@ -45,7 +45,7 @@ Violated contract: DB JSON column numeric tokens must materialize as
 lossless values, while non-JSON scalar fields must keep their existing
 Prisma scalar behavior.
 
-Owning layer: `@prisma/client-engine-runtime` owns local SQL result
+Owning layer: `@prisma-lossless/client-engine-runtime` owns local SQL result
 mapping, raw-result serialization, JSON protocol tagged-value
 deserialization, and in-memory row-envelope processing. Provider
 adapters are not the primary fix because Sprint 0 proved supported
@@ -77,7 +77,7 @@ isolated without starting a database.
 Focused read-path tests:
 
 ```sh
-pnpm --filter @prisma/client-engine-runtime test json-protocol.test.ts serialize-sql.test.ts data-mapper.test.ts in-memory-processing.test.ts
+pnpm --filter @prisma-lossless/client-engine-runtime test json-protocol.test.ts serialize-sql.test.ts data-mapper.test.ts in-memory-processing.test.ts
 ```
 
 Result: passed. The tests cover JSON protocol materialization, raw SQL
@@ -88,7 +88,7 @@ numeric values.
 Focused package build:
 
 ```sh
-pnpm --filter @prisma/client-engine-runtime build
+pnpm --filter @prisma-lossless/client-engine-runtime build
 ```
 
 Result: passed after building required workspace package prerequisites.

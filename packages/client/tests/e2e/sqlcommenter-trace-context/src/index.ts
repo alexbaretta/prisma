@@ -10,9 +10,9 @@ import {
   TraceIdRatioBasedSampler,
 } from '@opentelemetry/sdk-trace-base'
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import { PrismaInstrumentation, registerInstrumentations } from '@prisma/instrumentation'
-import { traceContext } from '@prisma/sqlcommenter-trace-context'
+import { PrismaBetterSqlite3 } from '@prisma-lossless/adapter-better-sqlite3'
+import { PrismaInstrumentation, registerInstrumentations } from '@prisma-lossless/instrumentation'
+import { traceContext } from '@prisma-lossless/sqlcommenter-trace-context'
 
 import { PrismaClient } from './generated/prisma/client.js'
 

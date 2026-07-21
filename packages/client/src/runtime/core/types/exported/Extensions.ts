@@ -1,5 +1,5 @@
-import { FluentOperation, NonModelOperation, Operation } from '@prisma/client-common'
-import { Sql } from '@prisma/client-runtime-utils'
+import { FluentOperation, NonModelOperation, Operation } from '@prisma-lossless/client-common'
+import { Sql } from '@prisma-lossless/client-runtime-utils'
 
 import { RequiredExtensionArgs as UserArgs } from './ExtensionArgs'
 import { ITXClientDenyList } from './itxClientDenyList'

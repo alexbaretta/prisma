@@ -17,7 +17,7 @@ private release `7.8.0-lossless.6`: `prisma-lossless generate`
 prints `Generated Prisma Client (v0.0.0)`, warns that the CLI and
 client versions do not match, and writes
 `node_modules/.prisma/client/package.json` with version `0.0.0` and a
-stock `@prisma/client-runtime-utils` dependency.
+stock `@prisma-lossless/client-runtime-utils` dependency.
 
 Release `7.8.0-lossless.6` is immutable and must not be repacked or
 mutated. This tasklet must mint the next valid immutable private
@@ -52,7 +52,7 @@ generated client builder. The builder writes it into generated
 `node_modules/.prisma/client/package.json`.
 
 The generated package template also hard-codes a dependency on stock
-`@prisma/client-runtime-utils`. The fork owns a corresponding private
+`@prisma-lossless/client-runtime-utils`. The fork owns a corresponding private
 package named `@prisma-lossless/client-runtime-utils`, so generated
 dependency metadata must use the fork namespace.
 
@@ -237,8 +237,8 @@ pnpm exec tsx scripts/lossless-private-registry-run.ts \
 
 ## Validation Evidence
 
-- `pnpm --filter @prisma/client-generator-js build` passed.
-- `pnpm --filter @prisma/client-generator-ts build` passed.
+- `pnpm --filter @prisma-lossless/client-generator-js build` passed.
+- `pnpm --filter @prisma-lossless/client-generator-ts build` passed.
 - `pnpm --filter @prisma-lossless/client build` passed.
 - `pnpm --filter prisma-lossless build` passed.
 - `pnpm exec tsx scripts/lossless-private-release.ts build-pinned
@@ -278,13 +278,13 @@ scripts/lossless-private-registry-run.integration.test.ts
   025 generated-client identity change.
 - `CI=true GITHUB_REF_NAME=target-7.8.0-lossless
 TERM=xterm-256color TEST_SKIP_MSSQL=true TEST_SKIP_COCKROACHDB=true
-TEST_SKIP_MONGODB=true pnpm test` failed in `@prisma/migrate`
+TEST_SKIP_MONGODB=true pnpm test` failed in `@prisma-lossless/migrate`
   because the local PostgreSQL database
   `tests-migrate-prisma-config-extensions` already existed and changed
   one snapshot line.
 - After dropping only that stale local test database,
   `CI=true GITHUB_REF_NAME=target-7.8.0-lossless
 TERM=xterm-256color TEST_SKIP_MSSQL=true TEST_SKIP_COCKROACHDB=true
-TEST_SKIP_MONGODB=true pnpm --filter @prisma/migrate test` passed
+TEST_SKIP_MONGODB=true pnpm --filter @prisma-lossless/migrate test` passed
   (`33` suites, `341` passed tests, `2` skipped tests, `543`
   snapshots).

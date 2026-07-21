@@ -1,5 +1,5 @@
-import { SqlQueryOutput } from '@prisma/generator'
-import * as ts from '@prisma/ts-builders'
+import { SqlQueryOutput } from '@prisma-lossless/generator'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { FileNameMapper } from '../file-extensions'
 import { DbEnumsList } from './buildDbEnums'

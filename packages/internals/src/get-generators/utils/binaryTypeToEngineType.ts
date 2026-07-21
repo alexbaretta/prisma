@@ -1,5 +1,5 @@
-import { BinaryType } from '@prisma/fetch-engine'
-import type { EngineType } from '@prisma/generator'
+import { BinaryType } from '@prisma-lossless/fetch-engine'
+import type { EngineType } from '@prisma-lossless/generator'
 
 export function binaryTypeToEngineType(binaryType: BinaryType): EngineType {
   if (binaryType === BinaryType.SchemaEngineBinary) {

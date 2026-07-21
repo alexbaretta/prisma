@@ -1,4 +1,4 @@
-import { type IsolationLevel } from '@prisma/json-protocol'
+import { type IsolationLevel } from '@prisma-lossless/json-protocol'
 
 export { type IsolationLevel }
 

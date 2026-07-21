@@ -1,4 +1,4 @@
-# @prisma/adapter-mariadb
+# @prisma-lossless/adapter-mariadb
 
 This package contains the driver adapter for Prisma ORM that enables usage of the [`mariadb`](https://github.com/mariadb-corporation/mariadb-connector-nodejs) database driver for MariaDB and MySQL databases.
 
@@ -6,21 +6,21 @@ This package contains the driver adapter for Prisma ORM that enables usage of th
 
 ## Usage
 
-This section explains how you can use it with Prisma ORM and the `@prisma/adapter-mariadb` driver adapter. Be sure that the `DATABASE_URL` environment variable is set to your MariaDB/MySQL connection string (e.g. loaded using `dotenv` from a `.env` file).
+This section explains how you can use it with Prisma ORM and the `@prisma-lossless/adapter-mariadb` driver adapter. Be sure that the `DATABASE_URL` environment variable is set to your MariaDB/MySQL connection string (e.g. loaded using `dotenv` from a `.env` file).
 
 ### 1. Install the dependencies
 
 Install the MariaDB Prisma ORM driver adapter:
 
 ```
-npm install @prisma/adapter-mariadb
+npm install @prisma-lossless/adapter-mariadb
 ```
 
 ### 2. Instantiate Prisma Client using the driver adapter
 
 ```ts
-import { PrismaMariaDb } from '@prisma/adapter-mariadb'
-import { PrismaClient } from '@prisma/client'
+import { PrismaMariaDb } from '@prisma-lossless/adapter-mariadb'
+import { PrismaClient } from '@prisma-lossless/client'
 
 const adapter = new PrismaMariaDb({
   host: 'localhost', // your database host

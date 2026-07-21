@@ -1,4 +1,4 @@
-const { PrismaPg } = require('@prisma/adapter-pg')
+const { PrismaPg } = require('@prisma-lossless/adapter-pg')
 const { PrismaClient } = require('../../../generated/prisma/client')
 
 export async function generateStaticParams() {

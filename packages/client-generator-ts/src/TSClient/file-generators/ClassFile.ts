@@ -1,7 +1,7 @@
-import { GetPrismaClientConfig } from '@prisma/client-common'
-import * as DMMF from '@prisma/dmmf'
-import { buildAndSerializeParamGraph } from '@prisma/param-graph-builder'
-import * as ts from '@prisma/ts-builders'
+import { GetPrismaClientConfig } from '@prisma-lossless/client-common'
+import * as DMMF from '@prisma-lossless/dmmf'
+import { buildAndSerializeParamGraph } from '@prisma-lossless/param-graph-builder'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { buildDebugInitialization } from '../../utils/buildDebugInitialization'
 import { buildRuntimeDataModel } from '../../utils/buildDMMF'

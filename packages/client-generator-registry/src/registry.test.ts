@@ -1,5 +1,5 @@
-import { Generator } from '@prisma/generator'
-import { GeneratorRegistryEntry } from '@prisma/internals'
+import { Generator } from '@prisma-lossless/generator'
+import { GeneratorRegistryEntry } from '@prisma-lossless/internals'
 import { describe, expect, it, vi } from 'vitest'
 
 import { GeneratorRegistry } from './registry'

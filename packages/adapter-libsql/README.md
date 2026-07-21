@@ -9,7 +9,7 @@ Prisma driver adapter for Turso and libSQL. Refer to the [announcement blog post
 To get started, install the libSQL database client and Prisma driver adapter for libSQL packages:
 
 ```sh
-npm install @prisma/adapter-libsql
+npm install @prisma-lossless/adapter-libsql
 npm install @libsql/client
 ```
 
@@ -17,11 +17,11 @@ Update your Prisma Client instance to use the libSQL database Client:
 
 ```ts
 // Import needed packages
-import { PrismaClient } from '@prisma/client'
-import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { PrismaClient } from '@prisma-lossless/client'
+import { PrismaLibSql } from '@prisma-lossless/adapter-libsql'
 // You can alternatively use the web version of the client if you're running in
 // a constrained environment where the standard libsql client doesn't work:
-// import { PrismaLibSql } from '@prisma/adapter-libsql/web'
+// import { PrismaLibSql } from '@prisma-lossless/adapter-libsql/web'
 
 // Setup
 const connectionString = `${process.env.TURSO_DATABASE_URL}`

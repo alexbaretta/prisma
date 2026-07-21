@@ -38,17 +38,17 @@ Packages that must be renamed:
 - `packages/cli/package.json`: `prisma` becomes `prisma-lossless`.
   This is the package users install for the CLI and for
   `prisma/config` imports.
-- `packages/client/package.json`: `@prisma/client` becomes
+- `packages/client/package.json`: `@prisma-lossless/client` becomes
   `@prisma-lossless/client`. This is the package users import from
   application code and the generated client output.
 
 Packages that must not be renamed in this tasklet:
 
-- internal `@prisma/*` packages such as `@prisma/config`,
-  `@prisma/engines`, `@prisma/client-runtime-utils`, adapters,
+- internal `@prisma/*` packages such as `@prisma-lossless/config`,
+  `@prisma-lossless/engines`, `@prisma-lossless/client-runtime-utils`, adapters,
   generators, and runtime support packages;
 - private workspace-only packages such as `bundle-size` and
-  `@prisma/type-benchmark-tests`.
+  `@prisma-lossless/type-benchmark-tests`.
 
 Those packages are not direct user install or import contracts for the
 local fork. Renaming the whole internal graph would broaden this
@@ -59,7 +59,7 @@ dependencies without using stock registry artifacts.
 
 Dependency references that must follow the rename:
 
-- `@prisma/client` workspace dependencies in `packages/cli`,
+- `@prisma-lossless/client` workspace dependencies in `packages/cli`,
   `packages/bundle-size`, and `packages/type-benchmark-tests` must use
   `@prisma-lossless/client`;
 - the `prisma` workspace dependency in `packages/bundle-size` must use
@@ -78,7 +78,7 @@ Generated package metadata that must be updated:
 - generated package overwrite guards and forwarding messages must use
   the renamed client package name;
 - generated client dependency metadata can keep
-  `@prisma/client-runtime-utils` because that remains an internal
+  `@prisma-lossless/client-runtime-utils` because that remains an internal
   runtime support dependency, not the public client package.
 
 CLI and runtime references that must follow the rename:
@@ -109,7 +109,7 @@ falling back to stock Prisma packages from the registry.
 ## Pre-Implementation Review Record
 
 Observed problem: the fork currently publishes and resolves the same
-public package names as stock Prisma: `prisma` and `@prisma/client`.
+public package names as stock Prisma: `prisma` and `@prisma-lossless/client`.
 Installing it into a local project can overwrite or be overwritten by
 stock Prisma packages, and generated code still points at the stock
 client import path.
@@ -135,7 +135,7 @@ Rejected unsafe or wrong-layer solution: do not rename every internal
 `@prisma/*` package. That would unnecessarily broaden this tasklet,
 break internal source imports, and hide the real install contract under
 a fork-wide namespace migration. Also do not leave the package names as
-`prisma` and `@prisma/client`, because that would still conflict with
+`prisma` and `@prisma-lossless/client`, because that would still conflict with
 stock Prisma in the consuming project.
 
 Validation that proves the fix: focused metadata checks must assert the
@@ -175,8 +175,8 @@ renamed package pair, and generates config files importing
 renamed dependency gate and install instructions.
 
 The rejected all-internal-package rename remains rejected. Internal
-support packages such as `@prisma/config`, `@prisma/engines`, and
-`@prisma/client-runtime-utils` remain intentionally unrenamed. Tasklet
+support packages such as `@prisma-lossless/config`, `@prisma-lossless/engines`, and
+`@prisma-lossless/client-runtime-utils` remain intentionally unrenamed. Tasklet
 013 must pack the internal tarballs needed by local installation so
 Tasklet 014 does not resolve stock registry artifacts for those nested
 dependencies.
@@ -189,16 +189,16 @@ dependencies.
   client peer dependency, workspace dependency references, TypeScript
   path aliases, and the renamed generator fixture package metadata.
 - Focused stale-name search returned no public stock package matches
-  for `@prisma/client`, `node_modules/@prisma/client`,
-  `resolvePkg('prisma')`, `resolvePkg('@prisma/client')`,
+  for `@prisma-lossless/client`, `node_modules/@prisma-lossless/client`,
+  `resolvePkg('prisma')`, `resolvePkg('@prisma-lossless/client')`,
   `prisma generate`, `prisma bootstrap`, `prisma@`, `npx prisma`, or
   `.bin/prisma` in the changed generator, CLI, and client script
   surfaces.
 - `pnpm --filter prisma-lossless test
 src/bootstrap/__tests__/Bootstrap.vitest.ts
 src/bootstrap/__tests__/project-state.vitest.ts` passed.
-- `pnpm --filter @prisma/client-generator-js test` passed.
-- `pnpm --filter @prisma/client-generator-js build` passed.
+- `pnpm --filter @prisma-lossless/client-generator-js test` passed.
+- `pnpm --filter @prisma-lossless/client-generator-js build` passed.
 - `pnpm --filter prisma-lossless build` passed.
 - `pnpm --filter @prisma-lossless/client build` passed.
 - `git diff --check` passed.

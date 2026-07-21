@@ -1,4 +1,4 @@
-import { defineConfig, env } from '@prisma/config'
+import { defineConfig, env } from '@prisma-lossless/config'
 
 export default defineConfig({
   schema: './prisma/schema.prisma',

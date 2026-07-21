@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { type BaseContext } from '@prisma/get-platform'
+import { type BaseContext } from '@prisma-lossless/get-platform'
 import { execa, type ExecaError } from 'execa'
 
 import { MigrateDiff } from '../../src'

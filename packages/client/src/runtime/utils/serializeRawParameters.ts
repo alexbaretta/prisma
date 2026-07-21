@@ -1,4 +1,4 @@
-import { Decimal, isLosslessJsonNumber, stringifyJsonFieldValue } from '@prisma/client-runtime-utils'
+import { Decimal, isLosslessJsonNumber, stringifyJsonFieldValue } from '@prisma-lossless/client-runtime-utils'
 
 import { isDate } from './date'
 

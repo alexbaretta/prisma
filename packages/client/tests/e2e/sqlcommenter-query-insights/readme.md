@@ -1,6 +1,6 @@
 # SQL Commenter Query Insights E2E Test
 
-This test verifies that the `@prisma/sqlcommenter-query-insights` plugin correctly adds parameterized query shape information to SQL comments.
+This test verifies that the `@prisma-lossless/sqlcommenter-query-insights` plugin correctly adds parameterized query shape information to SQL comments.
 
 ## What it tests
 

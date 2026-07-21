@@ -1,6 +1,6 @@
-import type * as DMMF from '@prisma/dmmf'
-import { hasOwnProperty } from '@prisma/internals'
-import * as ts from '@prisma/ts-builders'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import { hasOwnProperty } from '@prisma-lossless/internals'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import type { DMMFHelper } from '../dmmf'
 import { getPayloadName } from '../utils'

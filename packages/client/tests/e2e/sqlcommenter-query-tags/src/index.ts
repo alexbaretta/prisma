@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import { queryTags, withMergedQueryTags, withQueryTags } from '@prisma/sqlcommenter-query-tags'
+import { PrismaBetterSqlite3 } from '@prisma-lossless/adapter-better-sqlite3'
+import { queryTags, withMergedQueryTags, withQueryTags } from '@prisma-lossless/sqlcommenter-query-tags'
 
 import { PrismaClient } from './generated/prisma/client.js'
 

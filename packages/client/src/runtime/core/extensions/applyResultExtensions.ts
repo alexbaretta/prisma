@@ -1,4 +1,4 @@
-import { hasOwnProperty } from '@prisma/internals'
+import { hasOwnProperty } from '@prisma-lossless/internals'
 
 import {
   addProperty,

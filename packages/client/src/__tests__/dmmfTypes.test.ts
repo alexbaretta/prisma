@@ -1,4 +1,4 @@
-import { getDMMF } from '@prisma/internals'
+import { getDMMF } from '@prisma-lossless/internals'
 import fs from 'fs'
 import path from 'path'
 import sortKeys from 'sort-keys'
@@ -25,7 +25,7 @@ model User {
 // TODO: Port this test to the new functional test setup
 test.skip('dmmf types', async () => {
   const dmmf = await getDMMF({ datamodel: blog })
-  const file = `import type * as DMMF from '@prisma/dmmf'
+  const file = `import type * as DMMF from '@prisma-lossless/dmmf'
 
 const dmmf: DMMF.Document = ${JSON.stringify(sortKeys(dmmf, { deep: true }), null, 2)}
 `

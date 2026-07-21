@@ -1,6 +1,6 @@
-import { CredentialsStore } from '@prisma/credentials-store'
-import { Debug } from '@prisma/debug'
 import type { Tokens, TokenStorage } from '@prisma/management-api-sdk'
+import { CredentialsStore } from '@prisma-lossless/credentials-store'
+import { Debug } from '@prisma-lossless/debug'
 
 const debug = Debug('prisma:cli:management-api:token-storage')
 

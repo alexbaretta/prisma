@@ -1,5 +1,5 @@
-import { QueryIntrospectionBuiltinType, QueryIntrospectionType } from '@prisma/generator'
-import * as ts from '@prisma/ts-builders'
+import { QueryIntrospectionBuiltinType, QueryIntrospectionType } from '@prisma-lossless/generator'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { DbEnumsList } from './buildDbEnums'
 

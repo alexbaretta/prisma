@@ -1,6 +1,6 @@
 import { stripVTControlCharacters } from 'node:util'
 
-import { getDMMF } from '@prisma/internals'
+import { getDMMF } from '@prisma-lossless/internals'
 
 describe('dmmf', () => {
   test('dmmf enum filter mysql', async () => {

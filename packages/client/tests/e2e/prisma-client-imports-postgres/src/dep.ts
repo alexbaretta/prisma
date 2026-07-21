@@ -1,6 +1,6 @@
 import { neonConfig } from '@neondatabase/serverless'
-import { PrismaNeon, PrismaNeonHttp } from '@prisma/adapter-neon'
-import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaNeon, PrismaNeonHttp } from '@prisma-lossless/adapter-neon'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
 // import { withAccelerate } from '@prisma/extension-accelerate'
 // import { readReplicas } from '@prisma/extension-read-replicas'
 import { PrismaClient } from 'db'

@@ -1,4 +1,4 @@
-import { Debug } from '@prisma/driver-adapter-utils'
+import { Debug } from '@prisma-lossless/driver-adapter-utils'
 import sql from 'mssql'
 
 /**

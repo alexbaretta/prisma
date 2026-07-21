@@ -5,9 +5,9 @@ import {
   type TracingHelper,
   TransactionManager,
   type TransactionOptions,
-} from '@prisma/client-engine-runtime'
-import type { ConnectionInfo, SqlDriverAdapter, SqlDriverAdapterFactory } from '@prisma/driver-adapter-utils'
-import type { SqlCommenterPlugin } from '@prisma/sqlcommenter'
+} from '@prisma-lossless/client-engine-runtime'
+import type { ConnectionInfo, SqlDriverAdapter, SqlDriverAdapterFactory } from '@prisma-lossless/driver-adapter-utils'
+import type { SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 
 import type { InteractiveTransactionInfo } from '../common/types/Transaction'
 import type { ExecutePlanParams, Executor, ProviderAndConnectionInfo } from './Executor'

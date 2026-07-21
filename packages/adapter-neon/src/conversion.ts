@@ -1,5 +1,5 @@
 import { types } from '@neondatabase/serverless'
-import { ArgType, type ColumnType, ColumnTypeEnum } from '@prisma/driver-adapter-utils'
+import { ArgType, type ColumnType, ColumnTypeEnum } from '@prisma-lossless/driver-adapter-utils'
 import { parse as parseArray } from 'postgres-array'
 
 const { builtins: ScalarColumnType, getTypeParser } = types

@@ -6,10 +6,10 @@
  * and caching.
  */
 
-import type * as DMMF from '@prisma/dmmf'
-import { ModelAction } from '@prisma/dmmf'
-import type { InputEdgeData, OutputEdgeData } from '@prisma/param-graph'
-import { EdgeFlag, scalarTypeToMask } from '@prisma/param-graph'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import { ModelAction } from '@prisma-lossless/dmmf'
+import type { InputEdgeData, OutputEdgeData } from '@prisma-lossless/param-graph'
+import { EdgeFlag, scalarTypeToMask } from '@prisma-lossless/param-graph'
 
 import type { NodeId, ParamGraphBuilder } from './param-graph-builder'
 

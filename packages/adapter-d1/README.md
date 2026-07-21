@@ -12,8 +12,8 @@ Refer to the [announcement blog post](https://prisma.io/cloudflare-d1) and our [
 To get started, install Prisma CLI, Prisma Client, the Prisma adapter for Cloudflare D1, the TypeScript types for Cloudflare Workers, and Wrangler CLI packages:
 
 ```sh
-npm install @prisma/client
-npm install @prisma/adapter-d1
+npm install @prisma-lossless/client
+npm install @prisma-lossless/adapter-d1
 npm install --save-dev prisma
 npm install --save-dev @cloudflare/workers-types
 npm install --save-dev wrangler
@@ -29,8 +29,8 @@ Update your Prisma Client instance to use `PrismaD1`:
 
 ```ts
 // Import needed packages
-import { PrismaClient } from '@prisma/client'
-import { PrismaD1 } from '@prisma/adapter-d1'
+import { PrismaClient } from '@prisma-lossless/client'
+import { PrismaD1 } from '@prisma-lossless/adapter-d1'
 
 export interface Env {
   // This must match the binding name defined in your wrangler.toml configuration
@@ -58,8 +58,8 @@ export default {
 <!-- prettier-ignore -->
   ```js
   // Import needed packages
-  import { PrismaClient } from '@prisma/client'
-  import { PrismaD1 } from '@prisma/adapter-d1'
+  import { PrismaClient } from '@prisma-lossless/client'
+  import { PrismaD1 } from '@prisma-lossless/adapter-d1'
 
   export default {
     async fetch(request, env, ctx) {

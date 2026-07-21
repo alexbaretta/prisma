@@ -1,7 +1,11 @@
-import Debug from '@prisma/debug'
-import type * as DMMF from '@prisma/dmmf'
-import type { DataSource, GeneratorConfig } from '@prisma/generator'
-import { getDMMF as getDMMFRaw, getInternalDMMF as getInternalDMMFRaw, type SchemaFileInput } from '@prisma/get-dmmf'
+import Debug from '@prisma-lossless/debug'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import type { DataSource, GeneratorConfig } from '@prisma-lossless/generator'
+import {
+  getDMMF as getDMMFRaw,
+  getInternalDMMF as getInternalDMMFRaw,
+  type SchemaFileInput,
+} from '@prisma-lossless/get-dmmf'
 import { bold, red } from 'kleur/colors'
 import { match } from 'ts-pattern'
 
@@ -10,7 +14,7 @@ import { assertNever } from '../utils/assertNever'
 import { addVersionDetailsToErrorMessage } from './errorHelpers'
 import { createDebugErrorType, parseQueryEngineError, QueryEngineErrorInit } from './queryEngineCommons'
 
-export { externalToInternalDmmf } from '@prisma/get-dmmf'
+export { externalToInternalDmmf } from '@prisma-lossless/get-dmmf'
 
 const debug = Debug('prisma:getDMMF')
 const debugErrorType = createDebugErrorType(debug, 'getDmmfWasm')

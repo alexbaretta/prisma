@@ -654,10 +654,10 @@ jobs:
         working-directory: packages/integration-tests
 
   #
-  # `@prisma/internals`
+  # `@prisma-lossless/internals`
   #
   internals:
-    name: '@prisma/internals [v${{ matrix.node }}]'
+    name: '@prisma-lossless/internals [v${{ matrix.node }}]'
     timeout-minutes: 15
     runs-on: ${{ matrix.os }}
     if: |

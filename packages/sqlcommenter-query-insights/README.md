@@ -1,18 +1,18 @@
-# @prisma/sqlcommenter-query-insights
+# @prisma-lossless/sqlcommenter-query-insights
 
 A SQL commenter plugin for Prisma ORM that adds query shape information to SQL comments. This enables observability tools to analyze and group queries by their structural patterns rather than specific values.
 
 ## Installation
 
 ```bash
-npm install @prisma/sqlcommenter-query-insights
+npm install @prisma-lossless/sqlcommenter-query-insights
 ```
 
 ## Usage
 
 ```typescript
-import { prismaQueryInsights } from '@prisma/sqlcommenter-query-insights'
-import { PrismaClient } from '@prisma/client'
+import { prismaQueryInsights } from '@prisma-lossless/sqlcommenter-query-insights'
+import { PrismaClient } from '@prisma-lossless/client'
 
 const prisma = new PrismaClient({
   adapter: myAdapter, // Driver adapter required (alternatively, Accelerate URL)
@@ -86,9 +86,9 @@ Quickly identify which Prisma operation generated a specific SQL query in your d
 ## Combining with Other Plugins
 
 ```typescript
-import { prismaQueryInsights } from '@prisma/sqlcommenter-query-insights'
-import { traceContext } from '@prisma/sqlcommenter-trace-context'
-import { queryTags, withQueryTags } from '@prisma/sqlcommenter-query-tags'
+import { prismaQueryInsights } from '@prisma-lossless/sqlcommenter-query-insights'
+import { traceContext } from '@prisma-lossless/sqlcommenter-trace-context'
+import { queryTags, withQueryTags } from '@prisma-lossless/sqlcommenter-query-tags'
 
 const prisma = new PrismaClient({
   adapter: myAdapter,

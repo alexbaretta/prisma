@@ -1,5 +1,5 @@
-import { ConnectionInfo, SqlQuery, SqlQueryable, SqlResultSet } from '@prisma/driver-adapter-utils'
-import type { SqlCommenterPlugin, SqlCommenterQueryInfo } from '@prisma/sqlcommenter'
+import { ConnectionInfo, SqlQuery, SqlQueryable, SqlResultSet } from '@prisma-lossless/driver-adapter-utils'
+import type { SqlCommenterPlugin, SqlCommenterQueryInfo } from '@prisma-lossless/sqlcommenter'
 import { klona } from 'klona'
 
 import { QueryEvent } from '../events'

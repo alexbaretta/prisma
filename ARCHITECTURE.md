@@ -35,12 +35,12 @@ Note: the datamodel is contained in the Prisma schema file, along the datasource
 <!-- TODO -->
 
 Oftentimes, the Rust team did a change in DMMF, which you now need to integrate. How to do that?  
-The first step is to identify, which new `@prisma/engines` version you want to use.  
-Either have a look in the **Versions** tab in https://www.npmjs.com/package/@prisma/engines or check out `npm info @prisma/engines` in your terminal.  
-Let's say you determined, that you want to upgrade to `2.20.0-14.f461292a2242db52d9f4c87995f0237aacd300d2`. To upgrade your local workspace, run this command to upgrade both `@prisma/engines` and `@prisma/engines-version`:
+The first step is to identify, which new `@prisma-lossless/engines` version you want to use.
+Either have a look in the **Versions** tab in https://www.npmjs.com/package/@prisma-lossless/engines or check out `npm info @prisma-lossless/engines` in your terminal.
+Let's say you determined, that you want to upgrade to `2.20.0-14.f461292a2242db52d9f4c87995f0237aacd300d2`. To upgrade your local workspace, run this command to upgrade both `@prisma-lossless/engines` and `@prisma/engines-version`:
 
 ```bash
-pnpm update -r @prisma/engines@2.20.0-14.f461292a2242db52d9f4c87995f0237aacd300d2 @prisma/engines-version@2.20.0-14.f461292a2242db52d9f4c87995f0237aacd300d2
+pnpm update -r @prisma-lossless/engines@2.20.0-14.f461292a2242db52d9f4c87995f0237aacd300d2 @prisma/engines-version@2.20.0-14.f461292a2242db52d9f4c87995f0237aacd300d2
 ```
 
 In the `./packages/client` dir, now open [sandbox/dmmf.ts](./packages/client/sandbox/dmmf.ts) in your VSCode editor.
@@ -59,7 +59,7 @@ You can always check out the test of our "not-so-exhaustive-schema", where we te
 pnpm run test exhaustive
 ```
 
-Usually, dmmf changes are also visible in the tests of the `@prisma/internals` package:
+Usually, dmmf changes are also visible in the tests of the `@prisma-lossless/internals` package:
 
 ```bash
 cd ./packages/internal

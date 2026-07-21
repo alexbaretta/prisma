@@ -1,5 +1,5 @@
-import { QueryCompilerConstructor } from '@prisma/client-common'
-import { PrismaClientInitializationError } from '@prisma/client-runtime-utils'
+import { QueryCompilerConstructor } from '@prisma-lossless/client-common'
+import { PrismaClientInitializationError } from '@prisma-lossless/client-runtime-utils'
 
 import { QueryCompilerLoader } from './types/QueryCompiler'
 

@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/param-graph-builder",
+  "name": "@prisma-lossless/param-graph-builder",
   "version": "0.0.0",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
@@ -24,8 +24,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@prisma/dmmf": "workspace:*",
-    "@prisma/param-graph": "workspace:*"
+    "@prisma-lossless/dmmf": "workspace:*",
+    "@prisma-lossless/param-graph": "workspace:*"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

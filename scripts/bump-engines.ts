@@ -26,8 +26,8 @@ async function main() {
   await run(path.join(__dirname, '..'), `pnpm update -r @prisma/query-compiler-wasm@${version}`)
   await run(path.join(__dirname, '..'), `pnpm update -r @prisma/schema-engine-wasm@${version}`)
 
-  await run(path.join(__dirname, '..'), `pnpm run --filter @prisma/engines dev`)
-  await run(path.join(__dirname, '..'), `pnpm run --filter @prisma/engines postinstall`)
+  await run(path.join(__dirname, '..'), `pnpm run --filter @prisma-lossless/engines dev`)
+  await run(path.join(__dirname, '..'), `pnpm run --filter @prisma-lossless/engines postinstall`)
 }
 
 void main()

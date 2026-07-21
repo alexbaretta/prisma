@@ -1,4 +1,4 @@
-import { vitestConsoleContext, vitestContext } from '@prisma/get-platform/src/test-utils/vitestContext'
+import { vitestConsoleContext, vitestContext } from '@prisma-lossless/get-platform/src/test-utils/vitestContext'
 import { describe, expect, test } from 'vitest'
 
 import { lintSchema } from '../../engine-commands'

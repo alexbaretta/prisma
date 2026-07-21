@@ -27,7 +27,7 @@ test('transaction', async () => {
   const {
     PrismaClient,
     Prisma: { prismaVersion },
-  } = require('./node_modules/@prisma/client')
+  } = require('./node_modules/@prisma-lossless/client')
   const db = new PrismaClient()
 
   if (!prismaVersion || !prismaVersion.client) {

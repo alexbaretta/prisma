@@ -11,7 +11,7 @@ import type {
   SqlResultSet,
   Transaction,
   TransactionOptions,
-} from '@prisma/driver-adapter-utils'
+} from '@prisma-lossless/driver-adapter-utils'
 
 import { ExtendedSpanOptions, SpanCallback, TracingHelper } from '../src/tracing'
 

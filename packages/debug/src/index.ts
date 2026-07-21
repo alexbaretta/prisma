@@ -18,7 +18,7 @@ globalThis.DEBUG_COLORS ??= processEnv.DEBUG_COLORS ? processEnv.DEBUG_COLORS ==
  *
  * @example
  * ```ts
- * import Debug from '@prisma/debug'
+ * import Debug from '@prisma-lossless/debug'
  * Debug.enable('prisma:client')
  * const debug = Debug('prisma:client')
  * debug('Hello World')
@@ -75,7 +75,7 @@ const topProps = {
  *
  * @example
  * ```ts
- * import Debug from '@prisma/debug'
+ * import Debug from '@prisma-lossless/debug'
  * const debug = Debug('prisma:client')
  * debug('Hello World')
  * ```

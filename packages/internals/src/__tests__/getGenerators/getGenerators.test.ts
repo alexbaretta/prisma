@@ -1,8 +1,8 @@
 import path from 'node:path'
 import { stripVTControlCharacters } from 'node:util'
 
-import { getBinaryTargetForCurrentPlatform } from '@prisma/get-platform'
-import { vitestConsoleContext, vitestContext } from '@prisma/get-platform/src/test-utils/vitestContext'
+import { getBinaryTargetForCurrentPlatform } from '@prisma-lossless/get-platform'
+import { vitestConsoleContext, vitestContext } from '@prisma-lossless/get-platform/src/test-utils/vitestContext'
 import { afterEach, describe, expect, it, test, vi } from 'vitest'
 
 import { loadSchemaContext } from '../../cli/schemaContext'

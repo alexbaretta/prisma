@@ -1,5 +1,5 @@
-import { objectEnumNames, strictEnumNames } from '@prisma/client-common'
-import type * as DMMF from '@prisma/dmmf'
+import { objectEnumNames, strictEnumNames } from '@prisma-lossless/client-common'
+import type * as DMMF from '@prisma-lossless/dmmf'
 import indent from 'indent-string'
 
 import { TAB_SIZE } from './constants'

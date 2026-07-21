@@ -1,4 +1,4 @@
-import { setClassName } from '@prisma/internals'
+import { setClassName } from '@prisma-lossless/internals'
 
 import type { AccelerateErrorInfo } from './accelerate-error'
 import { AccelerateError } from './accelerate-error'

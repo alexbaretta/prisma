@@ -1,4 +1,4 @@
-import type { LosslessNumber } from '@prisma/client-runtime-utils'
+import type { LosslessNumber } from '@prisma-lossless/client-runtime-utils'
 
 /**
  * From https://github.com/sindresorhus/type-fest/

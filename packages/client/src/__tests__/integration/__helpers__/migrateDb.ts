@@ -1,5 +1,5 @@
-import { defaultTestConfig, PrismaConfigInternal } from '@prisma/config'
-import { DbPush } from '@prisma/migrate'
+import { defaultTestConfig, PrismaConfigInternal } from '@prisma-lossless/config'
+import { DbPush } from '@prisma-lossless/migrate'
 
 /**
  * Creates/Resets the database and apply necessary SQL to be in sync with the provided Prisma schema

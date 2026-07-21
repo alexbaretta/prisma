@@ -1,5 +1,5 @@
-import { Debug } from '@prisma/debug'
-import { SqlDriverAdapter, SqlQuery, SqlQueryable, Transaction } from '@prisma/driver-adapter-utils'
+import { Debug } from '@prisma-lossless/debug'
+import { SqlDriverAdapter, SqlQuery, SqlQueryable, Transaction } from '@prisma-lossless/driver-adapter-utils'
 
 import { randomUUID } from '../crypto'
 import { QueryEvent } from '../events'

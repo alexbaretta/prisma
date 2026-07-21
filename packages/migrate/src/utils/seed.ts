@@ -1,4 +1,4 @@
-import Debug from '@prisma/debug'
+import Debug from '@prisma-lossless/debug'
 import { execaCommand, type ExecaError } from 'execa'
 import { bold, italic, red } from 'kleur/colors'
 

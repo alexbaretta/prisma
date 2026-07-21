@@ -1,4 +1,4 @@
-import { enginesVersion } from '@prisma/engines'
+import { enginesVersion } from '@prisma-lossless/engines'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { createErrorReport } from '../errorReporting'

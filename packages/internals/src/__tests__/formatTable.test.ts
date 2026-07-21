@@ -5,11 +5,11 @@ import { formatTable } from '../utils/formatTable'
 describe('formatTable', () => {
   const rows = [
     ['prisma', '0.0.0'],
-    ['@prisma/client', 'Not found'],
+    ['@prisma-lossless/client', 'Not found'],
     ['Current platform', 'debian-openssl-1.1.x'],
     [
       'Query Engine (Node-API)',
-      'libquery-engine 2b0c12756921c891fec4f68d9444e18c7d5d4a6a (at ../../../.npm/_npx/2778af9cee32ff87/node_modules/@prisma/engines/libquery_engine-debian-openssl-1.1.x.so.node)',
+      'libquery-engine 2b0c12756921c891fec4f68d9444e18c7d5d4a6a (at ../../../.npm/_npx/2778af9cee32ff87/node_modules/@prisma-lossless/engines/libquery_engine-debian-openssl-1.1.x.so.node)',
     ],
   ]
 
@@ -17,9 +17,9 @@ describe('formatTable', () => {
     const result = formatTable(rows)
     expect(result).toMatchInlineSnapshot(`
       "prisma                  : 0.0.0
-      @prisma/client          : Not found
+      @prisma-lossless/client          : Not found
       Current platform        : debian-openssl-1.1.x
-      Query Engine (Node-API) : libquery-engine 2b0c12756921c891fec4f68d9444e18c7d5d4a6a (at ../../../.npm/_npx/2778af9cee32ff87/node_modules/@prisma/engines/libquery_engine-debian-openssl-1.1.x.so.node)"
+      Query Engine (Node-API) : libquery-engine 2b0c12756921c891fec4f68d9444e18c7d5d4a6a (at ../../../.npm/_npx/2778af9cee32ff87/node_modules/@prisma-lossless/engines/libquery_engine-debian-openssl-1.1.x.so.node)"
     `)
   })
 
@@ -28,9 +28,9 @@ describe('formatTable', () => {
     expect(result).toMatchInlineSnapshot(`
       "{
         "prisma": "0.0.0",
-        "@prisma/client": "Not found",
+        "@prisma-lossless/client": "Not found",
         "current-platform": "debian-openssl-1.1.x",
-        "query-engine-(node-api)": "libquery-engine 2b0c12756921c891fec4f68d9444e18c7d5d4a6a (at ../../../.npm/_npx/2778af9cee32ff87/node_modules/@prisma/engines/libquery_engine-debian-openssl-1.1.x.so.node)"
+        "query-engine-(node-api)": "libquery-engine 2b0c12756921c891fec4f68d9444e18c7d5d4a6a (at ../../../.npm/_npx/2778af9cee32ff87/node_modules/@prisma-lossless/engines/libquery_engine-debian-openssl-1.1.x.so.node)"
       }"
     `)
   })

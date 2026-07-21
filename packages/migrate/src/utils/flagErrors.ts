@@ -1,4 +1,4 @@
-import { setClassName } from '@prisma/internals'
+import { setClassName } from '@prisma-lossless/internals'
 import { green } from 'kleur/colors'
 
 export class ExperimentalFlagError extends Error {

@@ -1,4 +1,4 @@
-import { ActiveConnectorType, GeneratorConfig } from '@prisma/generator'
+import { ActiveConnectorType, GeneratorConfig } from '@prisma-lossless/generator'
 
 import { DMMFHelper } from '../dmmf'
 import { FileNameMapper } from '../file-extensions'

@@ -1,4 +1,4 @@
-import { Datasource, PrismaConfig, SchemaEngineConfigInternal } from '@prisma/config'
+import { Datasource, PrismaConfig, SchemaEngineConfigInternal } from '@prisma-lossless/config'
 import { green, red } from 'kleur/colors'
 
 import { type RequireKey } from '../types'

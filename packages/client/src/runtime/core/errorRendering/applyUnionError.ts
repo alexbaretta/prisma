@@ -1,4 +1,4 @@
-import { maxWithComparator } from '@prisma/internals'
+import { maxWithComparator } from '@prisma-lossless/internals'
 
 import { EngineValidationError, InvalidArgumentTypeError, UnionError } from '../engines'
 import { GlobalOmitOptions } from '../jsonProtocol/serializeJsonQuery'

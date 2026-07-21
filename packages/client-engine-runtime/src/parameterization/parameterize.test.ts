@@ -1,6 +1,6 @@
-import type { JsonQuery } from '@prisma/json-protocol'
-import type { EnumLookup, ParamGraphData } from '@prisma/param-graph'
-import { EdgeFlag, ParamGraph, ScalarMask } from '@prisma/param-graph'
+import type { JsonQuery } from '@prisma-lossless/json-protocol'
+import type { EnumLookup, ParamGraphData } from '@prisma-lossless/param-graph'
+import { EdgeFlag, ParamGraph, ScalarMask } from '@prisma-lossless/param-graph'
 import { describe, expect, it } from 'vitest'
 
 import { parameterizeBatch, parameterizeQuery } from './parameterize'

@@ -1,10 +1,10 @@
 import path from 'node:path'
 
 import type { D1Database } from '@cloudflare/workers-types'
-import { PrismaD1 } from '@prisma/adapter-d1'
-import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaPlanetScale } from '@prisma/adapter-planetscale'
-import type { PrismaClientInitializationError } from '@prisma/client-runtime-utils'
+import { PrismaD1 } from '@prisma-lossless/adapter-d1'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
+import { PrismaPlanetScale } from '@prisma-lossless/adapter-planetscale'
+import type { PrismaClientInitializationError } from '@prisma-lossless/client-runtime-utils'
 import { getPlatformProxy } from 'wrangler'
 
 import { Providers } from '../../_utils/providers'
@@ -21,7 +21,7 @@ declare const newPrismaClient: NewPrismaClient<PrismaClient, typeof PrismaClient
 testMatrix.setupTestSuite(
   ({ driverAdapter, provider }) => {
     testIf(driverAdapter === 'js_pg' && provider === Providers.MYSQL)(
-      '@prisma/adapter-pg cannot be used with `provider = "mysql"`',
+      '@prisma-lossless/adapter-pg cannot be used with `provider = "mysql"`',
       () => {
         expect.assertions(2)
 
@@ -35,14 +35,14 @@ testMatrix.setupTestSuite(
           const e = error as PrismaClientInitializationError
           expect(e.constructor.name).toEqual('PrismaClientInitializationError')
           expect(e.message).toMatchInlineSnapshot(
-            `"The Driver Adapter \`@prisma/adapter-pg\`, based on \`postgres\`, is not compatible with the provider \`mysql\` specified in the Prisma schema."`,
+            `"The Driver Adapter \`@prisma-lossless/adapter-pg\`, based on \`postgres\`, is not compatible with the provider \`mysql\` specified in the Prisma schema."`,
           )
         }
       },
     )
 
     testIf(driverAdapter === 'js_planetscale' && provider === Providers.SQLITE)(
-      '@prisma/adapter-planetscale cannot be used with `provider = "sqlite"`',
+      '@prisma-lossless/adapter-planetscale cannot be used with `provider = "sqlite"`',
       () => {
         expect.assertions(2)
 
@@ -56,14 +56,14 @@ testMatrix.setupTestSuite(
           const e = error as PrismaClientInitializationError
           expect(e.constructor.name).toEqual('PrismaClientInitializationError')
           expect(e.message).toMatchInlineSnapshot(
-            `"The Driver Adapter \`@prisma/adapter-planetscale\`, based on \`mysql\`, is not compatible with the provider \`sqlite\` specified in the Prisma schema."`,
+            `"The Driver Adapter \`@prisma-lossless/adapter-planetscale\`, based on \`mysql\`, is not compatible with the provider \`sqlite\` specified in the Prisma schema."`,
           )
         }
       },
     )
 
     testIf(driverAdapter === 'js_d1' && provider === Providers.POSTGRESQL)(
-      '@prisma/adapter-d1 cannot be used with `provider = "postgresql"`',
+      '@prisma-lossless/adapter-d1 cannot be used with `provider = "postgresql"`',
       async () => {
         expect.assertions(2)
 
@@ -81,7 +81,7 @@ testMatrix.setupTestSuite(
           const e = error as PrismaClientInitializationError
           expect(e.constructor.name).toEqual('PrismaClientInitializationError')
           expect(e.message).toMatchInlineSnapshot(
-            `"The Driver Adapter \`@prisma/adapter-d1\`, based on \`sqlite\`, is not compatible with the provider \`postgres\` specified in the Prisma schema."`,
+            `"The Driver Adapter \`@prisma-lossless/adapter-d1\`, based on \`sqlite\`, is not compatible with the provider \`postgres\` specified in the Prisma schema."`,
           )
         } finally {
           await dispose()

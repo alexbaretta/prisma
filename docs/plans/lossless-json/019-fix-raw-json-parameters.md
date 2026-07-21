@@ -188,18 +188,18 @@ Validation evidence:
     --adapter js_pg lossless-json
   ```
 
-- `pnpm --filter @prisma/client-runtime-utils test
+- `pnpm --filter @prisma-lossless/client-runtime-utils test
 src/json-codec.test.ts` passed: `1` file, `6` tests.
 - The focused client-engine-runtime tests passed:
   `3` files, `39` tests.
 
   ```sh
-  pnpm --filter @prisma/client-engine-runtime test \
+  pnpm --filter @prisma-lossless/client-engine-runtime test \
     src/json-protocol.test.ts src/interpreter/data-mapper.test.ts \
     src/parameterization/parameterize.test.ts
   ```
 
-- `pnpm --filter @prisma/adapter-pg test` passed:
+- `pnpm --filter @prisma-lossless/adapter-pg test` passed:
   `3` files, `47` tests.
 - `pnpm build` first failed in the sandbox with `tsx` IPC
   `listen EPERM`, then passed outside the sandbox:

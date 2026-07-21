@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 
-import { generatorHandler } from '@prisma/generator-helper'
+import { generatorHandler } from '@prisma-lossless/generator-helper'
 import { expectTypeOf } from 'expect-type'
 
 generatorHandler({

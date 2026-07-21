@@ -92,7 +92,7 @@ and pass repo-root `pnpm build`.
    where `dist/scripts` is built before parent `dist`.
 2. Change the compile helper to plan cleanup once from all build
    outputs before esbuild writes any file.
-3. Build `@prisma/engines` and verify
+3. Build `@prisma-lossless/engines` and verify
    `dist/scripts/postinstall.js` and `dist/scripts/localinstall.js`
    both exist and execute.
 4. Update the ephemeral-registry integration to install the recorded
@@ -109,7 +109,7 @@ and pass repo-root `pnpm build`.
 
 - The compile helper never deletes a nested generated output after a
   child build has written files into it.
-- `@prisma/engines` build leaves both lifecycle JavaScript outputs in
+- `@prisma-lossless/engines` build leaves both lifecycle JavaScript outputs in
   `dist/scripts`.
 - The external-consumer integration performs a normal frozen install
   with lifecycle scripts enabled.
@@ -224,7 +224,7 @@ Result: passed, `35` tests across `3` files.
 Affected engines build:
 
 ```sh
-pnpm --filter @prisma/engines build
+pnpm --filter @prisma-lossless/engines build
 ```
 
 Result: passed. The build produced

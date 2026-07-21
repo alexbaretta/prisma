@@ -1,4 +1,4 @@
-import { PrismaLibSql } from '@prisma/adapter-libsql/web'
+import { PrismaLibSql } from '@prisma-lossless/adapter-libsql/web'
 
 import { PrismaClient } from './client/edge'
 

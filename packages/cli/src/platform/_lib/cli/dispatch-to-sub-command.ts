@@ -1,6 +1,6 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import type { Commands } from '@prisma/internals'
-import { HelpError } from '@prisma/internals'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import type { Commands } from '@prisma-lossless/internals'
+import { HelpError } from '@prisma-lossless/internals'
 
 export const dispatchToSubCommand = async (
   commands: Commands,

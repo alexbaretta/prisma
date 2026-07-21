@@ -1,6 +1,6 @@
 'use strict'
 
-import Debug from '@prisma/debug'
+import Debug from '@prisma-lossless/debug'
 import { HttpProxyAgent } from 'http-proxy-agent'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 

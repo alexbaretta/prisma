@@ -1,4 +1,4 @@
-import { PrismaClientValidationError } from '@prisma/client-runtime-utils'
+import { PrismaClientValidationError } from '@prisma-lossless/client-runtime-utils'
 
 import { ErrorFormat } from '../../getPrismaClient'
 import { CallSite } from '../../utils/CallSite'

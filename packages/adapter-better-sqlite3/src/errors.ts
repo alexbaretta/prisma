@@ -1,4 +1,4 @@
-import { Error as DriverAdapterErrorObject } from '@prisma/driver-adapter-utils'
+import { Error as DriverAdapterErrorObject } from '@prisma-lossless/driver-adapter-utils'
 
 export function convertDriverError(error: unknown): DriverAdapterErrorObject {
   if (isDriverError(error)) {

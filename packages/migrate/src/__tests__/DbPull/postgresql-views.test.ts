@@ -1,4 +1,4 @@
-import { loadSchemaContext, pathToPosix, toSchemasContainer } from '@prisma/internals'
+import { loadSchemaContext, pathToPosix, toSchemasContainer } from '@prisma-lossless/internals'
 import path from 'path'
 
 import { DbPull } from '../../commands/DbPull'

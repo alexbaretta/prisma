@@ -1,4 +1,4 @@
-import { datamodelEnumToSchemaEnum } from '@prisma/dmmf'
+import { datamodelEnumToSchemaEnum } from '@prisma-lossless/dmmf'
 
 import { Enum } from '../Enum'
 import { GenerateContext } from '../GenerateContext'

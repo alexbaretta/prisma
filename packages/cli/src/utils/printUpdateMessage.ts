@@ -1,4 +1,4 @@
-import { drawBox, isCurrentBinInstalledGlobally } from '@prisma/internals'
+import { drawBox, isCurrentBinInstalledGlobally } from '@prisma-lossless/internals'
 import type { Check } from 'checkpoint-client'
 import { blue, bold } from 'kleur/colors'
 

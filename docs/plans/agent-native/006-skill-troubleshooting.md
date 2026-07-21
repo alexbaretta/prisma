@@ -11,9 +11,9 @@ runbooks; today no runbook exists, so they guess from outdated training data.
 ### 1. CLI / Client version mismatch
 
 - Symptom: subtle type errors, runtime protocol errors, or the mismatch warning `generate`
-  already prints (`packages/cli/src/Generate.ts` warns when `prisma` and `@prisma/client`
+  already prints (`packages/cli/src/Generate.ts` warns when `prisma` and `@prisma-lossless/client`
   versions differ).
-- Runbook: compare `npx prisma -v` with the installed `@prisma/client`; align both to the same
+- Runbook: compare `npx prisma -v` with the installed `@prisma-lossless/client`; align both to the same
   exact version; regenerate; watch for duplicate versions in the lockfile (`pnpm why`, npm
   dedupe) and for a globally installed CLI shadowing the local one.
 
@@ -42,7 +42,7 @@ runbooks; today no runbook exists, so they guess from outdated training data.
 ### 4. Enabling logs and tracing
 
 - Client logging (`log: ['query', 'info', 'warn', 'error']`, event-based vs stdout),
-  `DEBUG="prisma*"` for CLI/internal debug output, `@prisma/instrumentation` + OpenTelemetry,
+  `DEBUG="prisma*"` for CLI/internal debug output, `@prisma-lossless/instrumentation` + OpenTelemetry,
   and the sqlcommenter plugins for query provenance.
 - What each layer can and cannot show (e.g. driver-level errors surface in adapter logs).
 

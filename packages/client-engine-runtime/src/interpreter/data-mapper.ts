@@ -3,7 +3,7 @@ import {
   isLosslessJsonNumber,
   parseJsonFieldValue,
   stringifyJsonFieldValue,
-} from '@prisma/client-runtime-utils'
+} from '@prisma-lossless/client-runtime-utils'
 
 import { FieldScalarType, FieldType, ResultNode } from '../query-plan'
 import { UserFacingError } from '../user-facing-error'

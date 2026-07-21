@@ -1,4 +1,4 @@
-import { getProxyAgent } from '@prisma/fetch-engine'
+import { getProxyAgent } from '@prisma-lossless/fetch-engine'
 import fetch from 'node-fetch'
 
 import { ErrorArea } from './panic'

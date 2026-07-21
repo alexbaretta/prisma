@@ -2,8 +2,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { confirm, input, select } from '@inquirer/prompts'
-import { PrismaConfigInternal } from '@prisma/config'
-import type { ConnectorType } from '@prisma/generator'
+import type { operations } from '@prisma/management-api-sdk'
+import { PrismaConfigInternal } from '@prisma-lossless/config'
+import type { ConnectorType } from '@prisma-lossless/generator'
 import {
   arg,
   canConnectToDatabase,
@@ -17,8 +18,7 @@ import {
   logger,
   PRISMA_POSTGRES_PROVIDER,
   protocolToConnectorType,
-} from '@prisma/internals'
-import type { operations } from '@prisma/management-api-sdk'
+} from '@prisma-lossless/internals'
 import dotenv from 'dotenv'
 import { Schema as Shape } from 'effect'
 import { bold, dim, green, red, yellow } from 'kleur/colors'

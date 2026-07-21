@@ -1,4 +1,4 @@
-import type { ConnectorType } from '@prisma/generator'
+import type { ConnectorType } from '@prisma-lossless/generator'
 
 export interface DatabaseCredentials {
   type: ConnectorType

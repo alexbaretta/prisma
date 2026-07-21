@@ -1,4 +1,4 @@
-import { PrismaMariaDb } from '@prisma/adapter-mariadb'
+import { PrismaMariaDb } from '@prisma-lossless/adapter-mariadb'
 
 import { PrismaClient } from './client/edge'
 

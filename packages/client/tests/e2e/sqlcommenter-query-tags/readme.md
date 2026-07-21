@@ -1,6 +1,6 @@
 # SQL Commenter Query Tags E2E Test
 
-This test verifies that the `@prisma/sqlcommenter-query-tags` package works correctly end-to-end with a real database.
+This test verifies that the `@prisma-lossless/sqlcommenter-query-tags` package works correctly end-to-end with a real database.
 
 ## What it tests
 
@@ -14,11 +14,11 @@ This test verifies that the `@prisma/sqlcommenter-query-tags` package works corr
 ## Setup
 
 - Uses SQLite with the `better-sqlite3` driver adapter
-- Uses the `@prisma/sqlcommenter-query-tags` package for the query tags functionality
+- Uses the `@prisma-lossless/sqlcommenter-query-tags` package for the query tags functionality
 - Captures query events via `$on('query', ...)` to verify comments in SQL
 
 ## Running the test
 
 ```bash
-pnpm --filter @prisma/client test:e2e --verbose sqlcommenter-query-tags
+pnpm --filter @prisma-lossless/client test:e2e --verbose sqlcommenter-query-tags
 ```

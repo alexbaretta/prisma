@@ -1,8 +1,8 @@
 import { Context } from '@opentelemetry/api'
-import { deserializeJsonObject } from '@prisma/client-engine-runtime'
-import { hasBatchIndex } from '@prisma/client-runtime-utils'
-import { Debug } from '@prisma/debug'
-import { assertNever } from '@prisma/internals'
+import { deserializeJsonObject } from '@prisma-lossless/client-engine-runtime'
+import { hasBatchIndex } from '@prisma-lossless/client-runtime-utils'
+import { Debug } from '@prisma-lossless/debug'
+import { assertNever } from '@prisma-lossless/internals'
 import stripAnsi from 'strip-ansi'
 
 import {

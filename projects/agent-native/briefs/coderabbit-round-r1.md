@@ -17,7 +17,7 @@ src/__tests__/skill-install.vitest.ts` from packages/cli.
 ## Fix 2 — S3 branch (`tml-2969-...`, worktree `agent-native-s3`; updates #29691)
 
 `packages/cli/src/__tests__/mcp-safety.vitest.ts`:
-(a) the fixture's `prisma.config.ts` imports `@prisma/config`, whose `main` points at
+(a) the fixture's `prisma.config.ts` imports `@prisma-lossless/config`, whose `main` points at
 `dist/` — if `packages/config/dist/index.js` is missing, the failure is a confusing module
 resolution error instead of your fail-clear message. Extend the existing module-level
 precondition check to also assert that file exists, with the same actionable error style.

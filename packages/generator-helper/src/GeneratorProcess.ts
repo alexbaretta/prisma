@@ -1,8 +1,8 @@
 import { type ChildProcessByStdio, fork } from 'node:child_process'
 import readline from 'node:readline'
 
-import { Debug } from '@prisma/debug'
-import type { GeneratorConfig, GeneratorManifest, GeneratorOptions } from '@prisma/generator'
+import { Debug } from '@prisma-lossless/debug'
+import type { GeneratorConfig, GeneratorManifest, GeneratorOptions } from '@prisma-lossless/generator'
 import { spawn } from 'cross-spawn'
 import { bold } from 'kleur/colors'
 import { Readable, Writable } from 'stream'

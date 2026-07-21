@@ -1,4 +1,4 @@
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient } = require('@prisma-lossless/client')
 
 export async function generateStaticParams() {
   return [{ id: '1' }]

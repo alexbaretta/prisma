@@ -11,4 +11,4 @@ export {
 export * from './common/types/EngineValidationError'
 export type { LogEmitter } from './common/types/Events'
 export type { IsolationLevel, Options, TransactionHeaders } from './common/types/Transaction'
-export type * from '@prisma/json-protocol'
+export type * from '@prisma-lossless/json-protocol'

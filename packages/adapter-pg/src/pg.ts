@@ -11,8 +11,8 @@ import type {
   SqlResultSet,
   Transaction,
   TransactionOptions,
-} from '@prisma/driver-adapter-utils'
-import { Debug, DriverAdapterError } from '@prisma/driver-adapter-utils'
+} from '@prisma-lossless/driver-adapter-utils'
+import { Debug, DriverAdapterError } from '@prisma-lossless/driver-adapter-utils'
 // @ts-ignore: this is used to avoid the `Module '"<path>/node_modules/@types/pg/index"' has no default export.` error.
 import pg from 'pg'
 

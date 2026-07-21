@@ -1,4 +1,4 @@
-import type { ConnectorType } from '@prisma/generator'
+import type { ConnectorType } from '@prisma-lossless/generator'
 import path from 'path'
 import * as NodeURL from 'url'
 

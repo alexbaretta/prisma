@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import zlib from 'node:zlib'
 
-import Debug from '@prisma/debug'
+import Debug from '@prisma-lossless/debug'
 import hasha from 'hasha'
 import fetch from 'node-fetch'
 import retry from 'p-retry'

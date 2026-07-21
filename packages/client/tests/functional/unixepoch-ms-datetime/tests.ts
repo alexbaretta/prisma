@@ -1,5 +1,5 @@
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { PrismaBetterSqlite3 } from '@prisma-lossless/adapter-better-sqlite3'
+import { PrismaLibSql } from '@prisma-lossless/adapter-libsql'
 import { randomUUID } from 'crypto'
 
 import { AdapterProviders } from '../_utils/providers'

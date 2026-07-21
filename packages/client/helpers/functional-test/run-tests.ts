@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { arg } from '@prisma/internals'
+import { arg } from '@prisma-lossless/internals'
 
 import { AdapterProviders, isDriverAdapterProviderLabel, Providers } from '../../tests/functional/_utils/providers'
 import { JestCli } from './JestCli'

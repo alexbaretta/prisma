@@ -1,8 +1,8 @@
-import { enginesVersion } from '@prisma/engines'
-import type { BinaryDownloadConfiguration, DownloadOptions } from '@prisma/fetch-engine'
-import { download } from '@prisma/fetch-engine'
-import type { BinaryPaths, BinaryTargetsEnvValue } from '@prisma/generator'
-import type { BinaryTarget } from '@prisma/get-platform'
+import { enginesVersion } from '@prisma-lossless/engines'
+import type { BinaryDownloadConfiguration, DownloadOptions } from '@prisma-lossless/fetch-engine'
+import { download } from '@prisma-lossless/fetch-engine'
+import type { BinaryPaths, BinaryTargetsEnvValue } from '@prisma-lossless/generator'
+import type { BinaryTarget } from '@prisma-lossless/get-platform'
 import { ensureDir } from 'fs-extra'
 import path from 'path'
 

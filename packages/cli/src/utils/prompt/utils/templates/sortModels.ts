@@ -1,4 +1,4 @@
-import type * as DMMF from '@prisma/dmmf'
+import type * as DMMF from '@prisma-lossless/dmmf'
 
 const modelOrder = ['User', 'Player', 'Customer', 'Product', 'Order', 'Article', 'Post', 'Message']
 

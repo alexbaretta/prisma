@@ -1,6 +1,6 @@
-import { Datasource, defaultTestConfig, defineConfig, PrismaConfigInternal } from '@prisma/config'
-import type { BaseContext } from '@prisma/get-platform'
-import { type PrismaConfigWithDatasource, validatePrismaConfigWithDatasource } from '@prisma/internals'
+import { Datasource, defaultTestConfig, defineConfig, PrismaConfigInternal } from '@prisma-lossless/config'
+import type { BaseContext } from '@prisma-lossless/get-platform'
+import { type PrismaConfigWithDatasource, validatePrismaConfigWithDatasource } from '@prisma-lossless/internals'
 
 type ConfigContext = {
   config: () => Promise<PrismaConfigInternal>

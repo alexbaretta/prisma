@@ -1,6 +1,6 @@
 import path from 'node:path'
-import { defineConfig } from '@prisma/config'
-import { PrismaD1 } from '@prisma/adapter-d1'
+import { defineConfig } from '@prisma-lossless/config'
+import { PrismaD1 } from '@prisma-lossless/adapter-d1'
 
 type Env = {
   CLOUDFLARE_D1_TOKEN: string

@@ -1,5 +1,5 @@
-import { DbNull, Decimal, JsonNull } from '@prisma/client-runtime-utils'
-import { Writer } from '@prisma/ts-builders'
+import { DbNull, Decimal, JsonNull } from '@prisma-lossless/client-runtime-utils'
+import { Writer } from '@prisma-lossless/ts-builders'
 
 import { FieldRefImpl } from '../model/FieldRef'
 import { ArgumentsRenderingTree, buildArgumentsRenderingTree } from './ArgumentsRenderingTree'

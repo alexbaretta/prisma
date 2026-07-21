@@ -7,7 +7,7 @@
 Publish a superseding private release whose consumer-facing package
 names use the lossless nomenclature consistently. First-party
 consumers must depend on `@prisma-lossless/adapter-pg`, not
-`@prisma/adapter-pg`.
+`@prisma-lossless/adapter-pg`.
 
 ## Instructions
 
@@ -31,7 +31,7 @@ the fork.
 
 The isolated consumer must import the PostgreSQL adapter from
 `@prisma-lossless/adapter-pg` and must not mention
-`@prisma/adapter-pg` in its package manifest or source.
+`@prisma-lossless/adapter-pg` in its package manifest or source.
 
 Add or update tests for:
 
@@ -47,14 +47,14 @@ metadata, lockfile evidence, and validation commands here.
 ## Pre-Implementation Review Record
 
 Observed problem: the validated `7.8.0-lossless.3` external consumer
-still had to depend directly on `@prisma/adapter-pg`. That name is a
+still had to depend directly on `@prisma-lossless/adapter-pg`. That name is a
 stock Prisma package name and conflicts with the fork naming contract
 the CLI and client already use.
 
 Violated contract or invariant: first-party consumers must adapt to
 the fork's lossless nomenclature instead of relying on registry
 configuration to make stock package names resolve to fork artifacts.
-Consumer manifests and imports should not use `@prisma/adapter-pg`
+Consumer manifests and imports should not use `@prisma-lossless/adapter-pg`
 for the forked PostgreSQL adapter.
 
 Owning layer: private release graph tooling owns the published package
@@ -67,13 +67,13 @@ Intended solution: publish the PostgreSQL adapter as
 `@prisma-lossless/adapter-pg` and publish scoped internal release
 artifacts as `@prisma-lossless/*`. For built code that still imports
 an upstream internal specifier such as
-`@prisma/driver-adapter-utils`, write an npm alias dependency from the
+`@prisma-lossless/driver-adapter-utils`, write an npm alias dependency from the
 old install path to the matching lossless package and exact immutable
 version. Update consumer-facing examples so they import the adapter
 from `@prisma-lossless/adapter-pg`.
 
 Rejected unsafe or wrong-layer solution: do not keep requiring
-consumer manifests to mention `@prisma/adapter-pg`; do not rely on the
+consumer manifests to mention `@prisma-lossless/adapter-pg`; do not rely on the
 public registry or stock adapter package; do not rewrite broad
 upstream source imports as a distribution-only fix; and do not publish
 new fork artifacts under `@prisma/*` merely to satisfy existing import
@@ -84,7 +84,7 @@ metadata must show `@prisma-lossless/adapter-pg`. The isolated npm
 consumer must install exact lossless package names, import
 `PrismaPg` from `@prisma-lossless/adapter-pg`, generate, typecheck,
 and pass the PostgreSQL lossless JSON smoke suite. Its direct
-dependencies and source must not mention `@prisma/adapter-pg`.
+dependencies and source must not mention `@prisma-lossless/adapter-pg`.
 
 ## Validation Evidence
 
@@ -102,8 +102,8 @@ client comments, and constructor errors now teach
 Rejected after implementation: renaming `packages/adapter-pg` source
 metadata directly would have broken existing workspace links and tests
 without improving the external package contract. Publishing a forked
-artifact as `@prisma/adapter-pg` was also rejected; the private
-registry now returns `E404` for `@prisma/adapter-pg@7.8.0-lossless.4`.
+artifact as `@prisma-lossless/adapter-pg` was also rejected; the private
+registry now returns `E404` for `@prisma-lossless/adapter-pg@7.8.0-lossless.4`.
 
 Published release:
 
@@ -127,21 +127,21 @@ Registry metadata inspection:
 - `npm view prisma-lossless@7.8.0-lossless.4 ...` returned name
   `prisma-lossless`, version `7.8.0-lossless.4`, and a local registry
   tarball URL.
-- `npm view @prisma/adapter-pg@7.8.0-lossless.4 --registry
+- `npm view @prisma-lossless/adapter-pg@7.8.0-lossless.4 --registry
 http://127.0.0.1:4873/` failed with `E404`.
 
 Tarball metadata inspection:
 
 - `@prisma-lossless/adapter-pg` package metadata has dependency
-  `"@prisma/driver-adapter-utils":
+  `"@prisma-lossless/driver-adapter-utils":
 "npm:@prisma-lossless/driver-adapter-utils@7.8.0-lossless.4"`.
 - `@prisma-lossless/client` package metadata has dependency
-  `"@prisma/client-runtime-utils":
+  `"@prisma-lossless/client-runtime-utils":
 "npm:@prisma-lossless/client-runtime-utils@7.8.0-lossless.4"`.
 - `prisma-lossless` package metadata has dependencies
-  `"@prisma/config": "npm:@prisma-lossless/config@7.8.0-lossless.4"`
+  `"@prisma-lossless/config": "npm:@prisma-lossless/config@7.8.0-lossless.4"`
   and
-  `"@prisma/engines": "npm:@prisma-lossless/engines@7.8.0-lossless.4"`.
+  `"@prisma-lossless/engines": "npm:@prisma-lossless/engines@7.8.0-lossless.4"`.
 
 Isolated consumer:
 
@@ -149,11 +149,11 @@ Isolated consumer:
   `tmp/lossless-json-tasklet-018/consumer-7.8.0-lossless.4`.
 - Root dependencies are `@prisma-lossless/adapter-pg`,
   `@prisma-lossless/client`, `prisma-lossless`, and `typescript`.
-- `rg -n "@prisma/adapter-pg" package.json src package-lock.json`
+- `rg -n "@prisma-lossless/adapter-pg" package.json src package-lock.json`
   returned no matches.
 - Lockfile contains `node_modules/@prisma-lossless/adapter-pg`
   resolved from the local registry.
-- Lockfile contains `node_modules/@prisma/driver-adapter-utils` with
+- Lockfile contains `node_modules/@prisma-lossless/driver-adapter-utils` with
   package name `@prisma-lossless/driver-adapter-utils`, proving the
   internal npm alias resolves to the lossless tarball.
 
@@ -185,5 +185,5 @@ scripts/lossless-private-registry.test.ts --reporter=dot` passed:
   `TEST_SKIP_MSSQL=true TEST_SKIP_COCKROACHDB=true`. It failed only in
   `packages/migrate` due four PostgreSQL setup hook timeouts. The
   rerun
-  `pnpm --filter @prisma/migrate test` passed all migrate tests:
+  `pnpm --filter @prisma-lossless/migrate test` passed all migrate tests:
   33 suites, 352 passed, 2 skipped.

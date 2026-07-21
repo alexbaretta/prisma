@@ -1,4 +1,4 @@
-import * as ts from '@prisma/ts-builders'
+import * as ts from '@prisma-lossless/ts-builders'
 
 // @ts-ignore This doesn't currently work at build time when we don't have the `paths` set in `tsconfig.json`.
 // Adding the client package as a dev dependency leads to circular dependency issues.

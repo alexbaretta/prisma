@@ -2,7 +2,7 @@ import type { Dirent } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import type { MigrateTypes } from '@prisma/internals'
+import type { MigrateTypes } from '@prisma-lossless/internals'
 
 /**
  * Lists migrations present in the migrations directory, sorted lexicographically by name.

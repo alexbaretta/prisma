@@ -1,6 +1,6 @@
-import { capitalize } from '@prisma/client-common'
-import * as DMMF from '@prisma/dmmf'
-import * as ts from '@prisma/ts-builders'
+import { capitalize } from '@prisma-lossless/client-common'
+import * as DMMF from '@prisma-lossless/dmmf'
+import * as ts from '@prisma-lossless/ts-builders'
 import indent from 'indent-string'
 import { klona } from 'klona'
 

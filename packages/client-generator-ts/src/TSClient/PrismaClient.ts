@@ -1,6 +1,6 @@
-import { capitalize, uncapitalize } from '@prisma/client-common'
-import type * as DMMF from '@prisma/dmmf'
-import * as ts from '@prisma/ts-builders'
+import { capitalize, uncapitalize } from '@prisma-lossless/client-common'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import * as ts from '@prisma-lossless/ts-builders'
 import indent from 'indent-string'
 
 import { runtimeImportedType } from '../utils/runtimeImport'
@@ -174,7 +174,7 @@ function queryRawTypedDefinition(context: GenerateContext) {
         Executes a typed SQL query and returns a typed result
         @example
         \`\`\`
-        import { myQuery } from '@prisma/client/sql'
+        import { myQuery } from '@prisma-lossless/client/sql'
 
         const result = await prisma.$queryRawTyped(myQuery())
         \`\`\`

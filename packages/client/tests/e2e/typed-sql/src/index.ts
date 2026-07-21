@@ -1,6 +1,6 @@
-import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '@prisma/client'
-import { getEmail } from '@prisma/client/sql'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
+import { PrismaClient } from '@prisma-lossless/client'
+import { getEmail } from '@prisma-lossless/client/sql'
 
 async function main() {
   const adapter = new PrismaPg({

@@ -1,4 +1,4 @@
-# @prisma/adapter-mssql
+# @prisma-lossless/adapter-mssql
 
 This package contains the driver adapter for Prisma ORM that enables usage of the [`mssql`](https://www.npmjs.com/package/mssql) database driver for Microsoft SQL Server.
 
@@ -6,14 +6,14 @@ The `mssql` driver is one of the most popular drivers in the JavaScript ecosyste
 
 ## Usage
 
-This section explains how you can use it with Prisma ORM and the `@prisma/adapter-mssql` driver adapter. Be sure that the `DATABASE_URL` environment variable is set to your SQL Server connection string (e.g. loaded using `dotenv` from a `.env` file).
+This section explains how you can use it with Prisma ORM and the `@prisma-lossless/adapter-mssql` driver adapter. Be sure that the `DATABASE_URL` environment variable is set to your SQL Server connection string (e.g. loaded using `dotenv` from a `.env` file).
 
 ### 1. Install the dependencies
 
 Install the Prisma ORM's driver adapter:
 
 ```
-npm install @prisma/adapter-mssql
+npm install @prisma-lossless/adapter-mssql
 ```
 
 ### 2. Instantiate Prisma Client using the driver adapter
@@ -21,8 +21,8 @@ npm install @prisma/adapter-mssql
 Finally, when you instantiate Prisma Client, you need to pass an instance of Prisma ORM's driver adapter to the `PrismaClient` constructor:
 
 ```ts
-import { PrismaMssql } from '@prisma/adapter-mssql'
-import { PrismaClient } from '@prisma/client'
+import { PrismaMssql } from '@prisma-lossless/adapter-mssql'
+import { PrismaClient } from '@prisma-lossless/client'
 
 const config = {
   server: 'localhost',
@@ -43,8 +43,8 @@ const prisma = new PrismaClient({ adapter })
 You can also instantiate the adapter with a [JDBC](https://learn.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver15) connection string:
 
 ```ts
-import { PrismaMssql } from '@prisma/adapter-mssql'
-import { PrismaClient } from '@prisma/client'
+import { PrismaMssql } from '@prisma-lossless/adapter-mssql'
+import { PrismaClient } from '@prisma-lossless/client'
 
 const adapter = new PrismaMssql('sqlserver://localhost:1433;database=testdb;user=sa;password=mypassword;encrypt=true')
 const prisma = new PrismaClient({ adapter })
@@ -59,8 +59,8 @@ For options using the config object, see the options documentation for the [Tedi
 For example, using the config object to configure [DefaultAzureCredential](https://learn.microsoft.com/en-gb/azure/developer/javascript/sdk/authentication/credential-chains#use-defaultazurecredential-for-flexibility):
 
 ```ts
-import { PrismaMssql } from '@prisma/adapter-mssql'
-import { PrismaClient } from '@prisma/client'
+import { PrismaMssql } from '@prisma-lossless/adapter-mssql'
+import { PrismaClient } from '@prisma-lossless/client'
 
 const config = {
   server: 'localhost',

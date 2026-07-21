@@ -1,4 +1,4 @@
-import { PrismaPostgresAdapter } from '@prisma/adapter-ppg'
+import { PrismaPostgresAdapter } from '@prisma-lossless/adapter-ppg'
 import { smokeTest } from './test'
 
 async function main() {

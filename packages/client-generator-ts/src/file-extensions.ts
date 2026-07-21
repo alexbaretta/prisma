@@ -1,4 +1,4 @@
-import { capitalize } from '@prisma/client-common'
+import { capitalize } from '@prisma-lossless/client-common'
 import { TsConfigJson, TsConfigJsonResolved } from 'get-tsconfig'
 
 import type { RuntimeTargetInternal } from './runtime-targets'

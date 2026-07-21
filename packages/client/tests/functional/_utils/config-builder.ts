@@ -1,4 +1,4 @@
-import { defaultTestConfig, type PrismaConfigInternal } from '@prisma/config'
+import { defaultTestConfig, type PrismaConfigInternal } from '@prisma-lossless/config'
 
 import { getTestSuiteSchemaPath, type NamedTestSuiteConfig, type TestSuiteMeta } from './getTestSuiteInfo'
 import type { DatasourceInfo } from './setupTestSuiteEnv'

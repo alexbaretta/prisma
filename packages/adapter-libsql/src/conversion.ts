@@ -1,5 +1,5 @@
 import { InValue, Row, Value } from '@libsql/client'
-import { ArgType, ColumnType, ColumnTypeEnum, Debug, ResultValue } from '@prisma/driver-adapter-utils'
+import { ArgType, ColumnType, ColumnTypeEnum, Debug, ResultValue } from '@prisma-lossless/driver-adapter-utils'
 
 import { PrismaLibSqlOptions } from './libsql'
 

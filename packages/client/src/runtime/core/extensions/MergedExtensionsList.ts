@@ -1,4 +1,4 @@
-import { Cache, lazyProperty } from '@prisma/client-common'
+import { Cache, lazyProperty } from '@prisma-lossless/client-common'
 
 import { dmmfToJSModelName } from '../model/utils/dmmfToJSModelName'
 import { ClientArg, ExtensionArgs, ModelArg, QueryOptionsCb } from '../types/exported/ExtensionArgs'

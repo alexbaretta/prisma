@@ -1,4 +1,4 @@
-import { type MigrateTypes } from '@prisma/internals'
+import { type MigrateTypes } from '@prisma-lossless/internals'
 
 import type { EngineArgs, EngineResults } from './types'
 

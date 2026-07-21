@@ -1,5 +1,8 @@
-import Debug from '@prisma/debug'
-import type { ErrorCapturingSqlMigrationAwareDriverAdapterFactory, ErrorRegistry } from '@prisma/driver-adapter-utils'
+import Debug from '@prisma-lossless/debug'
+import type {
+  ErrorCapturingSqlMigrationAwareDriverAdapterFactory,
+  ErrorRegistry,
+} from '@prisma-lossless/driver-adapter-utils'
 import {
   assertAlways,
   ErrorArea,
@@ -10,7 +13,7 @@ import {
   SchemaContext,
   wasm,
   wasmSchemaEngineLoader,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import { bold, red } from 'kleur/colors'
 
 import { SchemaEngine } from './SchemaEngine'

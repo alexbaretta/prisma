@@ -1,7 +1,13 @@
-import { dmmfToRuntimeDataModel, GetPrismaClientConfig } from '@prisma/client-common'
-import { getDMMF } from '@prisma/client-generator-js'
-import { BuiltInProvider, getConfig, getSchemaWithPath, parseEnvValue, printConfigWarnings } from '@prisma/internals'
-import { buildAndSerializeParamGraph } from '@prisma/param-graph-builder'
+import { dmmfToRuntimeDataModel, GetPrismaClientConfig } from '@prisma-lossless/client-common'
+import { getDMMF } from '@prisma-lossless/client-generator-js'
+import {
+  BuiltInProvider,
+  getConfig,
+  getSchemaWithPath,
+  parseEnvValue,
+  printConfigWarnings,
+} from '@prisma-lossless/internals'
+import { buildAndSerializeParamGraph } from '@prisma-lossless/param-graph-builder'
 import path from 'path'
 import { parse } from 'stacktrace-parser'
 
@@ -69,7 +75,7 @@ type GenerateTestClientOptions = {
 }
 
 /**
- * Actually generates a test client into ./@prisma/client
+ * Actually generates a test client into ./@prisma-lossless/client
  */
 export async function generateTestClient({ projectDir }: GenerateTestClientOptions = {}): Promise<any> {
   if (!projectDir) {

@@ -19,5 +19,5 @@ describeMatrix(sqliteOnly, 'SQLite', () => {
 })
 //
 // Would need logic to be reproducible for testing other databases
-// createDatabase is already tested in the `@prisma/internals` tests
+// createDatabase is already tested in the `@prisma-lossless/internals` tests
 //

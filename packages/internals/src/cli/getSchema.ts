@@ -1,12 +1,12 @@
-import { Debug } from '@prisma/debug'
-import { MultipleSchemaTuple } from '@prisma/get-dmmf'
+import { Debug } from '@prisma-lossless/debug'
+import { MultipleSchemaTuple } from '@prisma-lossless/get-dmmf'
 import type {
   GetSchemaResult,
   LookupResult,
   NonFatalLookupError,
   SuccessfulLookupResult,
-} from '@prisma/schema-files-loader'
-import { ensureType, loadSchemaFiles } from '@prisma/schema-files-loader'
+} from '@prisma-lossless/schema-files-loader'
+import { ensureType, loadSchemaFiles } from '@prisma-lossless/schema-files-loader'
 import fs from 'fs'
 import { dim, green } from 'kleur/colors'
 import path from 'path'

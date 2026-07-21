@@ -1,4 +1,4 @@
-import type { PrismaConfigInternal } from '@prisma/config'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
 import {
   arg,
   canPrompt,
@@ -13,7 +13,7 @@ import {
   loadSchemaContext,
   MigrateTypes,
   validatePrismaConfigWithDatasource,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import { bold, dim, green, italic, red } from 'kleur/colors'
 import prompt from 'prompts'
 

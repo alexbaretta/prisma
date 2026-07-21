@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {},
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "/tmp/prisma-adapter-better-sqlite3-0.0.0.tgz",
-    "@prisma/client": "/tmp/prisma-client-0.0.0.tgz",
-    "@prisma/sqlcommenter": "/tmp/prisma-sqlcommenter-0.0.0.tgz",
-    "@prisma/sqlcommenter-query-insights": "/tmp/prisma-sqlcommenter-query-insights-0.0.0.tgz"
+    "@prisma-lossless/adapter-better-sqlite3": "/tmp/prisma-adapter-better-sqlite3-0.0.0.tgz",
+    "@prisma-lossless/client": "/tmp/prisma-client-0.0.0.tgz",
+    "@prisma-lossless/sqlcommenter": "/tmp/prisma-sqlcommenter-0.0.0.tgz",
+    "@prisma-lossless/sqlcommenter-query-insights": "/tmp/prisma-sqlcommenter-query-insights-0.0.0.tgz"
   },
   "devDependencies": {
     "@types/node": "~20.19.0",

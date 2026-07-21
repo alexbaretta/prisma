@@ -10,8 +10,8 @@ import {
   TransactionInfo,
   TransactionManager,
   TransactionOptions,
-} from '@prisma/client-engine-runtime'
-import { ConnectionInfo, Provider, SqlDriverAdapter } from '@prisma/driver-adapter-utils'
+} from '@prisma-lossless/client-engine-runtime'
+import { ConnectionInfo, Provider, SqlDriverAdapter } from '@prisma-lossless/driver-adapter-utils'
 
 import * as log from '../log/facade'
 import { Options } from '../options'

@@ -1,7 +1,7 @@
 import util from 'node:util'
 
 import { zValidator } from '@hono/zod-validator'
-import { QueryPlanNode, TransactionManagerError, UserFacingError } from '@prisma/client-engine-runtime'
+import { QueryPlanNode, TransactionManagerError, UserFacingError } from '@prisma-lossless/client-engine-runtime'
 import { Context, Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 

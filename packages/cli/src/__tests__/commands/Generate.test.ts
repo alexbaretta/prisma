@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { BaseContext, jestConsoleContext, jestContext } from '@prisma/get-platform'
+import { BaseContext, jestConsoleContext, jestContext } from '@prisma-lossless/get-platform'
 
 import { Generate } from '../../Generate'
 import { configContextContributor } from '../_utils/config-context'
@@ -331,7 +331,7 @@ describe('--schema from project directory', () => {
 
     expect(result).toMatchInlineSnapshot(`
       "
-      ✔ Generated Prisma Client (v0.0.0) to ./@prisma/client in XXXms
+      ✔ Generated Prisma Client (v0.0.0) to ./@prisma-lossless/client in XXXms
 
       Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 
@@ -354,7 +354,7 @@ describe('--schema from project directory', () => {
 
     expect(output).toMatchInlineSnapshot(`
       "
-      ✔ Generated Prisma Client (v0.0.0) to ./@prisma/client in XXXms
+      ✔ Generated Prisma Client (v0.0.0) to ./@prisma-lossless/client in XXXms
 
       Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 
@@ -406,7 +406,7 @@ describe('--schema from parent directory', () => {
 
     expect(result).toMatchInlineSnapshot(`
       "
-      ✔ Generated Prisma Client (v0.0.0) to ./subdirectory/@prisma/client in XXXms
+      ✔ Generated Prisma Client (v0.0.0) to ./subdirectory/@prisma-lossless/client in XXXms
 
       Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 
@@ -431,7 +431,7 @@ describe('--schema from parent directory', () => {
 
     expect(result).toMatchInlineSnapshot(`
       "
-      ✔ Generated Prisma Client (v0.0.0) to ./subdirectory/@prisma/client in XXXms
+      ✔ Generated Prisma Client (v0.0.0) to ./subdirectory/@prisma-lossless/client in XXXms
 
       Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 

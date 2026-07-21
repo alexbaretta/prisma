@@ -15,7 +15,7 @@ import type {
   ExtendedSpanOptions,
   SpanCallback,
   TracingHelper,
-} from '@prisma/instrumentation-contract'
+} from '@prisma-lossless/instrumentation-contract'
 
 // If true, will publish internal spans as well
 const showAllTraces = process.env.PRISMA_SHOW_ALL_TRACES === 'true'

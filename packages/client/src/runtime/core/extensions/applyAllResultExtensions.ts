@@ -1,4 +1,4 @@
-import { RuntimeDataModel } from '@prisma/client-common'
+import { RuntimeDataModel } from '@prisma-lossless/client-common'
 
 import { GlobalOmitOptions } from '../jsonProtocol/serializeJsonQuery'
 import { dmmfToJSModelName } from '../model/utils/dmmfToJSModelName'

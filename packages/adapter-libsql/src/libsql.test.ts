@@ -1,5 +1,9 @@
 import type { Client } from '@libsql/client'
-import { ColumnTypeEnum, IsolationLevel, SqlMigrationAwareDriverAdapterFactory } from '@prisma/driver-adapter-utils'
+import {
+  ColumnTypeEnum,
+  IsolationLevel,
+  SqlMigrationAwareDriverAdapterFactory,
+} from '@prisma-lossless/driver-adapter-utils'
 import { describe, expect, test, vi } from 'vitest'
 
 import { PrismaLibSqlAdapterFactoryBase } from './libsql'

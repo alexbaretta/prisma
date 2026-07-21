@@ -1,4 +1,4 @@
-import { clearGlobalTracingHelper, getGlobalTracingHelper } from '@prisma/instrumentation-contract'
+import { clearGlobalTracingHelper, getGlobalTracingHelper } from '@prisma-lossless/instrumentation-contract'
 import { beforeEach, describe, expect, test } from 'vitest'
 
 import { PrismaInstrumentation } from './PrismaInstrumentation'

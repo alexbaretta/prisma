@@ -14,7 +14,7 @@ module.exports = () => {
     transformIgnorePatterns: [],
     reporters: ['default'],
     globalSetup: './_utils/globalSetup.js',
-    snapshotSerializers: ['@prisma/get-platform/src/test-utils/jestSnapshotSerializer'],
+    snapshotSerializers: ['@prisma-lossless/get-platform/src/test-utils/jestSnapshotSerializer'],
     setupFilesAfterEnv: ['./_utils/setupFilesAfterEnv.ts'],
     testTimeout,
     collectCoverage: process.env.CI ? true : false,

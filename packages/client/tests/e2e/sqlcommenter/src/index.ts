@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import type { SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import { PrismaBetterSqlite3 } from '@prisma-lossless/adapter-better-sqlite3'
+import type { SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 
 import { Prisma, PrismaClient } from './generated/prisma/client.js'
 

@@ -38,7 +38,7 @@ importers:
       '@octokit/rest':
         specifier: 21.1.1
         version: 21.1.1
-      '@prisma/engines':
+      '@prisma-lossless/engines':
         specifier: workspace:*
         version: link:packages/engines
       '@sindresorhus/slugify':
@@ -224,7 +224,7 @@ importers:
 
   packages/adapter-better-sqlite3:
     dependencies:
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
       better-sqlite3:
@@ -243,7 +243,7 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20251014.0
         version: 4.20251117.0
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
       ky:
@@ -255,7 +255,7 @@ importers:
       '@libsql/client':
         specifier: ^0.17.0
         version: 0.17.0(encoding@0.1.13)
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
       async-mutex:
@@ -264,7 +264,7 @@ importers:
 
   packages/adapter-mariadb:
     dependencies:
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
       mariadb:
@@ -273,7 +273,7 @@ importers:
 
   packages/adapter-mssql:
     dependencies:
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
       async-mutex:
@@ -292,20 +292,20 @@ importers:
       '@neondatabase/serverless':
         specifier: '>0.6.0 <2'
         version: 0.10.2
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
       postgres-array:
         specifier: 3.0.4
         version: 3.0.4
     devDependencies:
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
 
   packages/adapter-pg:
     dependencies:
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
       '@types/pg':
@@ -318,7 +318,7 @@ importers:
         specifier: 3.0.4
         version: 3.0.4
     devDependencies:
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
 
@@ -327,7 +327,7 @@ importers:
       '@planetscale/database':
         specifier: ^1.19.0
         version: 1.19.0
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
       async-mutex:
@@ -340,7 +340,7 @@ importers:
 
   packages/adapter-ppg:
     dependencies:
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
       '@prisma/ppg':
@@ -353,7 +353,7 @@ importers:
         specifier: 3.0.4
         version: 3.0.4
     devDependencies:
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
 
@@ -368,31 +368,31 @@ importers:
       '@planetscale/database':
         specifier: 1.19.0
         version: 1.19.0
+      '@prisma-lossless/adapter-d1':
+        specifier: workspace:*
+        version: link:../adapter-d1
+      '@prisma-lossless/adapter-libsql':
+        specifier: workspace:*
+        version: link:../adapter-libsql
+      '@prisma-lossless/adapter-mariadb':
+        specifier: workspace:*
+        version: link:../adapter-mariadb
+      '@prisma-lossless/adapter-mssql':
+        specifier: workspace:*
+        version: link:../adapter-mssql
+      '@prisma-lossless/adapter-neon':
+        specifier: workspace:*
+        version: link:../adapter-neon
+      '@prisma-lossless/adapter-pg':
+        specifier: workspace:*
+        version: link:../adapter-pg
+      '@prisma-lossless/adapter-planetscale':
+        specifier: workspace:*
+        version: link:../adapter-planetscale
       '@prisma-lossless/client':
         specifier: workspace:*
         version: link:../client
-      '@prisma/adapter-d1':
-        specifier: workspace:*
-        version: link:../adapter-d1
-      '@prisma/adapter-libsql':
-        specifier: workspace:*
-        version: link:../adapter-libsql
-      '@prisma/adapter-mariadb':
-        specifier: workspace:*
-        version: link:../adapter-mariadb
-      '@prisma/adapter-mssql':
-        specifier: workspace:*
-        version: link:../adapter-mssql
-      '@prisma/adapter-neon':
-        specifier: workspace:*
-        version: link:../adapter-neon
-      '@prisma/adapter-pg':
-        specifier: workspace:*
-        version: link:../adapter-pg
-      '@prisma/adapter-planetscale':
-        specifier: workspace:*
-        version: link:../adapter-planetscale
-      '@prisma/client-runtime-utils':
+      '@prisma-lossless/client-runtime-utils':
         specifier: workspace:*
         version: link:../client-runtime-utils
       pg:
@@ -426,15 +426,15 @@ importers:
 
   packages/cli:
     dependencies:
-      '@prisma/config':
+      '@prisma-lossless/config':
         specifier: workspace:*
         version: link:../config
+      '@prisma-lossless/engines':
+        specifier: workspace:*
+        version: link:../engines
       '@prisma/dev':
         specifier: 0.24.14
         version: 0.24.14(typescript@5.4.5)
-      '@prisma/engines':
-        specifier: workspace:*
-        version: link:../engines
       '@prisma/studio-core':
         specifier: 0.27.3
         version: 0.27.3(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -463,45 +463,45 @@ importers:
       '@opentelemetry/sdk-trace-base':
         specifier: 2.1.0
         version: 2.1.0(@opentelemetry/api@1.9.0)
+      '@prisma-lossless/adapter-libsql':
+        specifier: workspace:*
+        version: link:../adapter-libsql
       '@prisma-lossless/client':
         specifier: workspace:*
         version: link:../client
-      '@prisma/adapter-libsql':
-        specifier: workspace:*
-        version: link:../adapter-libsql
-      '@prisma/client-generator-registry':
+      '@prisma-lossless/client-generator-registry':
         specifier: workspace:*
         version: link:../client-generator-registry
-      '@prisma/credentials-store':
+      '@prisma-lossless/credentials-store':
         specifier: workspace:*
         version: link:../credentials-store
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
-      '@prisma/dmmf':
+      '@prisma-lossless/dmmf':
         specifier: workspace:*
         version: link:../dmmf
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
-      '@prisma/fetch-engine':
+      '@prisma-lossless/fetch-engine':
         specifier: workspace:*
         version: link:../fetch-engine
-      '@prisma/generator':
+      '@prisma-lossless/generator':
         specifier: workspace:*
         version: link:../generator
-      '@prisma/get-platform':
+      '@prisma-lossless/get-platform':
         specifier: workspace:*
         version: link:../get-platform
-      '@prisma/internals':
+      '@prisma-lossless/internals':
         specifier: workspace:*
         version: link:../internals
+      '@prisma-lossless/migrate':
+        specifier: workspace:*
+        version: link:../migrate
       '@prisma/management-api-sdk':
         specifier: 1.12.0
         version: 1.12.0
-      '@prisma/migrate':
-        specifier: workspace:*
-        version: link:../migrate
       '@swc/core':
         specifier: 1.11.5
         version: 1.11.5
@@ -631,7 +631,7 @@ importers:
 
   packages/client:
     dependencies:
-      '@prisma/client-runtime-utils':
+      '@prisma-lossless/client-runtime-utils':
         specifier: workspace:*
         version: link:../client-runtime-utils
     devDependencies:
@@ -689,108 +689,108 @@ importers:
       '@planetscale/database':
         specifier: 1.19.0
         version: 1.19.0
-      '@prisma/adapter-better-sqlite3':
+      '@prisma-lossless/adapter-better-sqlite3':
         specifier: workspace:*
         version: link:../adapter-better-sqlite3
-      '@prisma/adapter-d1':
+      '@prisma-lossless/adapter-d1':
         specifier: workspace:*
         version: link:../adapter-d1
-      '@prisma/adapter-libsql':
+      '@prisma-lossless/adapter-libsql':
         specifier: workspace:*
         version: link:../adapter-libsql
-      '@prisma/adapter-mariadb':
+      '@prisma-lossless/adapter-mariadb':
         specifier: workspace:*
         version: link:../adapter-mariadb
-      '@prisma/adapter-mssql':
+      '@prisma-lossless/adapter-mssql':
         specifier: workspace:*
         version: link:../adapter-mssql
-      '@prisma/adapter-neon':
+      '@prisma-lossless/adapter-neon':
         specifier: workspace:*
         version: link:../adapter-neon
-      '@prisma/adapter-pg':
+      '@prisma-lossless/adapter-pg':
         specifier: workspace:*
         version: link:../adapter-pg
-      '@prisma/adapter-planetscale':
+      '@prisma-lossless/adapter-planetscale':
         specifier: workspace:*
         version: link:../adapter-planetscale
-      '@prisma/client-common':
+      '@prisma-lossless/client-common':
         specifier: workspace:*
         version: link:../client-common
-      '@prisma/client-engine-runtime':
+      '@prisma-lossless/client-engine-runtime':
         specifier: workspace:*
         version: link:../client-engine-runtime
-      '@prisma/client-generator-js':
+      '@prisma-lossless/client-generator-js':
         specifier: workspace:*
         version: link:../client-generator-js
-      '@prisma/client-generator-ts':
+      '@prisma-lossless/client-generator-ts':
         specifier: workspace:*
         version: link:../client-generator-ts
-      '@prisma/config':
+      '@prisma-lossless/config':
         specifier: workspace:*
         version: link:../config
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
-      '@prisma/dmmf':
+      '@prisma-lossless/dmmf':
         specifier: workspace:*
         version: link:../dmmf
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
-      '@prisma/engines':
+      '@prisma-lossless/engines':
         specifier: workspace:*
         version: link:../engines
+      '@prisma-lossless/fetch-engine':
+        specifier: workspace:*
+        version: link:../fetch-engine
+      '@prisma-lossless/generator':
+        specifier: workspace:*
+        version: link:../generator
+      '@prisma-lossless/generator-helper':
+        specifier: workspace:*
+        version: link:../generator-helper
+      '@prisma-lossless/get-platform':
+        specifier: workspace:*
+        version: link:../get-platform
+      '@prisma-lossless/instrumentation':
+        specifier: workspace:*
+        version: link:../instrumentation
+      '@prisma-lossless/instrumentation-contract':
+        specifier: workspace:*
+        version: link:../instrumentation-contract
+      '@prisma-lossless/internals':
+        specifier: workspace:*
+        version: link:../internals
+      '@prisma-lossless/json-protocol':
+        specifier: workspace:*
+        version: link:../json-protocol
+      '@prisma-lossless/migrate':
+        specifier: workspace:*
+        version: link:../migrate
+      '@prisma-lossless/param-graph':
+        specifier: workspace:*
+        version: link:../param-graph
+      '@prisma-lossless/param-graph-builder':
+        specifier: workspace:*
+        version: link:../param-graph-builder
+      '@prisma-lossless/query-plan-executor':
+        specifier: workspace:*
+        version: link:../query-plan-executor
+      '@prisma-lossless/sqlcommenter':
+        specifier: workspace:*
+        version: link:../sqlcommenter
+      '@prisma-lossless/sqlcommenter-trace-context':
+        specifier: workspace:*
+        version: link:../sqlcommenter-trace-context
+      '@prisma-lossless/ts-builders':
+        specifier: workspace:*
+        version: link:../ts-builders
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
         version: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
-      '@prisma/fetch-engine':
-        specifier: workspace:*
-        version: link:../fetch-engine
-      '@prisma/generator':
-        specifier: workspace:*
-        version: link:../generator
-      '@prisma/generator-helper':
-        specifier: workspace:*
-        version: link:../generator-helper
-      '@prisma/get-platform':
-        specifier: workspace:*
-        version: link:../get-platform
-      '@prisma/instrumentation':
-        specifier: workspace:*
-        version: link:../instrumentation
-      '@prisma/instrumentation-contract':
-        specifier: workspace:*
-        version: link:../instrumentation-contract
-      '@prisma/internals':
-        specifier: workspace:*
-        version: link:../internals
-      '@prisma/json-protocol':
-        specifier: workspace:*
-        version: link:../json-protocol
-      '@prisma/migrate':
-        specifier: workspace:*
-        version: link:../migrate
-      '@prisma/param-graph':
-        specifier: workspace:*
-        version: link:../param-graph
-      '@prisma/param-graph-builder':
-        specifier: workspace:*
-        version: link:../param-graph-builder
       '@prisma/query-compiler-wasm':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
         version: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
-      '@prisma/query-plan-executor':
-        specifier: workspace:*
-        version: link:../query-plan-executor
-      '@prisma/sqlcommenter':
-        specifier: workspace:*
-        version: link:../sqlcommenter
-      '@prisma/sqlcommenter-trace-context':
-        specifier: workspace:*
-        version: link:../sqlcommenter-trace-context
-      '@prisma/ts-builders':
-        specifier: workspace:*
-        version: link:../ts-builders
       '@snaplet/copycat':
         specifier: 6.0.0
         version: 6.0.0
@@ -938,22 +938,22 @@ importers:
 
   packages/client-common:
     dependencies:
-      '@prisma/client-engine-runtime':
+      '@prisma-lossless/client-engine-runtime':
         specifier: workspace:*
         version: link:../client-engine-runtime
-      '@prisma/dmmf':
+      '@prisma-lossless/dmmf':
         specifier: workspace:*
         version: link:../dmmf
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
-      '@prisma/generator':
+      '@prisma-lossless/generator':
         specifier: workspace:*
         version: link:../generator
-      '@prisma/internals':
+      '@prisma-lossless/internals':
         specifier: workspace:*
         version: link:../internals
-      '@prisma/param-graph':
+      '@prisma-lossless/param-graph':
         specifier: workspace:*
         version: link:../param-graph
 
@@ -968,22 +968,22 @@ importers:
       '@paralleldrive/cuid2':
         specifier: 2.2.2
         version: 2.2.2
-      '@prisma/client-runtime-utils':
+      '@prisma-lossless/client-runtime-utils':
         specifier: workspace:*
         version: link:../client-runtime-utils
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
-      '@prisma/json-protocol':
+      '@prisma-lossless/json-protocol':
         specifier: workspace:*
         version: link:../json-protocol
-      '@prisma/param-graph':
+      '@prisma-lossless/param-graph':
         specifier: workspace:*
         version: link:../param-graph
-      '@prisma/sqlcommenter':
+      '@prisma-lossless/sqlcommenter':
         specifier: workspace:*
         version: link:../sqlcommenter
       klona:
@@ -1002,10 +1002,10 @@ importers:
       '@codspeed/benchmark.js-plugin':
         specifier: 4.0.0
         version: 4.0.0(benchmark@2.1.4)
-      '@prisma/get-dmmf':
+      '@prisma-lossless/get-dmmf':
         specifier: workspace:*
         version: link:../get-dmmf
-      '@prisma/param-graph-builder':
+      '@prisma-lossless/param-graph-builder':
         specifier: workspace:*
         version: link:../param-graph-builder
       '@types/benchmark':
@@ -1023,36 +1023,36 @@ importers:
       '@antfu/ni':
         specifier: 0.21.12
         version: 0.21.12
-      '@prisma/client-common':
+      '@prisma-lossless/client-common':
         specifier: workspace:*
         version: link:../client-common
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
-      '@prisma/dmmf':
+      '@prisma-lossless/dmmf':
         specifier: workspace:*
         version: link:../dmmf
+      '@prisma-lossless/fetch-engine':
+        specifier: workspace:*
+        version: link:../fetch-engine
+      '@prisma-lossless/generator':
+        specifier: workspace:*
+        version: link:../generator
+      '@prisma-lossless/get-platform':
+        specifier: workspace:*
+        version: link:../get-platform
+      '@prisma-lossless/internals':
+        specifier: workspace:*
+        version: link:../internals
+      '@prisma-lossless/param-graph-builder':
+        specifier: workspace:*
+        version: link:../param-graph-builder
+      '@prisma-lossless/ts-builders':
+        specifier: workspace:*
+        version: link:../ts-builders
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
         version: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
-      '@prisma/fetch-engine':
-        specifier: workspace:*
-        version: link:../fetch-engine
-      '@prisma/generator':
-        specifier: workspace:*
-        version: link:../generator
-      '@prisma/get-platform':
-        specifier: workspace:*
-        version: link:../get-platform
-      '@prisma/internals':
-        specifier: workspace:*
-        version: link:../internals
-      '@prisma/param-graph-builder':
-        specifier: workspace:*
-        version: link:../param-graph-builder
-      '@prisma/ts-builders':
-        specifier: workspace:*
-        version: link:../ts-builders
       env-paths:
         specifier: 2.2.1
         version: 2.2.1
@@ -1078,16 +1078,16 @@ importers:
 
   packages/client-generator-registry:
     dependencies:
-      '@prisma/client-generator-js':
+      '@prisma-lossless/client-generator-js':
         specifier: workspace:*
         version: link:../client-generator-js
-      '@prisma/client-generator-ts':
+      '@prisma-lossless/client-generator-ts':
         specifier: workspace:*
         version: link:../client-generator-ts
-      '@prisma/generator':
+      '@prisma-lossless/generator':
         specifier: workspace:*
         version: link:../generator
-      '@prisma/internals':
+      '@prisma-lossless/internals':
         specifier: workspace:*
         version: link:../internals
 
@@ -1096,36 +1096,36 @@ importers:
       '@antfu/ni':
         specifier: 0.21.12
         version: 0.21.12
-      '@prisma/client-common':
+      '@prisma-lossless/client-common':
         specifier: workspace:*
         version: link:../client-common
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
-      '@prisma/dmmf':
+      '@prisma-lossless/dmmf':
         specifier: workspace:*
         version: link:../dmmf
+      '@prisma-lossless/fetch-engine':
+        specifier: workspace:*
+        version: link:../fetch-engine
+      '@prisma-lossless/generator':
+        specifier: workspace:*
+        version: link:../generator
+      '@prisma-lossless/get-platform':
+        specifier: workspace:*
+        version: link:../get-platform
+      '@prisma-lossless/internals':
+        specifier: workspace:*
+        version: link:../internals
+      '@prisma-lossless/param-graph-builder':
+        specifier: workspace:*
+        version: link:../param-graph-builder
+      '@prisma-lossless/ts-builders':
+        specifier: workspace:*
+        version: link:../ts-builders
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
         version: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
-      '@prisma/fetch-engine':
-        specifier: workspace:*
-        version: link:../fetch-engine
-      '@prisma/generator':
-        specifier: workspace:*
-        version: link:../generator
-      '@prisma/get-platform':
-        specifier: workspace:*
-        version: link:../get-platform
-      '@prisma/internals':
-        specifier: workspace:*
-        version: link:../internals
-      '@prisma/param-graph-builder':
-        specifier: workspace:*
-        version: link:../param-graph-builder
-      '@prisma/ts-builders':
-        specifier: workspace:*
-        version: link:../ts-builders
       fast-glob:
         specifier: 3.3.3
         version: 3.3.3
@@ -1180,10 +1180,10 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
     devDependencies:
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
-      '@prisma/get-platform':
+      '@prisma-lossless/get-platform':
         specifier: workspace:*
         version: link:../get-platform
       dotenv:
@@ -1216,24 +1216,24 @@ importers:
 
   packages/driver-adapter-utils:
     dependencies:
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
 
   packages/engines:
     dependencies:
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
+      '@prisma-lossless/fetch-engine':
+        specifier: workspace:*
+        version: link:../fetch-engine
+      '@prisma-lossless/get-platform':
+        specifier: workspace:*
+        version: link:../get-platform
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
         version: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
-      '@prisma/fetch-engine':
-        specifier: workspace:*
-        version: link:../fetch-engine
-      '@prisma/get-platform':
-        specifier: workspace:*
-        version: link:../get-platform
     devDependencies:
       '@swc/core':
         specifier: 1.11.5
@@ -1256,15 +1256,15 @@ importers:
 
   packages/fetch-engine:
     dependencies:
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
+      '@prisma-lossless/get-platform':
+        specifier: workspace:*
+        version: link:../get-platform
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
         version: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
-      '@prisma/get-platform':
-        specifier: workspace:*
-        version: link:../get-platform
     devDependencies:
       '@types/node':
         specifier: ~20.19.24
@@ -1326,19 +1326,19 @@ importers:
 
   packages/generator:
     devDependencies:
-      '@prisma/dmmf':
+      '@prisma-lossless/dmmf':
         specifier: workspace:*
         version: link:../dmmf
 
   packages/generator-helper:
     dependencies:
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
-      '@prisma/dmmf':
+      '@prisma-lossless/dmmf':
         specifier: workspace:*
         version: link:../dmmf
-      '@prisma/generator':
+      '@prisma-lossless/generator':
         specifier: workspace:*
         version: link:../generator
     devDependencies:
@@ -1363,10 +1363,10 @@ importers:
 
   packages/get-dmmf:
     dependencies:
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
-      '@prisma/dmmf':
+      '@prisma-lossless/dmmf':
         specifier: workspace:*
         version: link:../dmmf
       '@prisma/prisma-schema-wasm':
@@ -1385,7 +1385,7 @@ importers:
 
   packages/get-platform:
     dependencies:
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
     devDependencies:
@@ -1432,7 +1432,7 @@ importers:
       '@opentelemetry/api':
         specifier: 1.9.0
         version: 1.9.0
-      '@prisma/instrumentation-contract':
+      '@prisma-lossless/instrumentation-contract':
         specifier: workspace:*
         version: link:../instrumentation-contract
       '@types/node':
@@ -1450,16 +1450,16 @@ importers:
 
   packages/integration-tests:
     devDependencies:
-      '@prisma/client-runtime-utils':
+      '@prisma-lossless/client-runtime-utils':
         specifier: workspace:*
         version: link:../client-runtime-utils
-      '@prisma/get-platform':
+      '@prisma-lossless/get-platform':
         specifier: workspace:*
         version: link:../get-platform
-      '@prisma/internals':
+      '@prisma-lossless/internals':
         specifier: workspace:*
         version: link:../internals
-      '@prisma/migrate':
+      '@prisma-lossless/migrate':
         specifier: workspace:*
         version: link:../migrate
       '@sindresorhus/slugify':
@@ -1522,45 +1522,45 @@ importers:
 
   packages/internals:
     dependencies:
-      '@prisma/config':
+      '@prisma-lossless/config':
         specifier: workspace:*
         version: link:../config
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
-      '@prisma/dmmf':
+      '@prisma-lossless/dmmf':
         specifier: workspace:*
         version: link:../dmmf
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
-      '@prisma/engines':
+      '@prisma-lossless/engines':
         specifier: workspace:*
         version: link:../engines
-      '@prisma/fetch-engine':
+      '@prisma-lossless/fetch-engine':
         specifier: workspace:*
         version: link:../fetch-engine
-      '@prisma/generator':
+      '@prisma-lossless/generator':
         specifier: workspace:*
         version: link:../generator
-      '@prisma/generator-helper':
+      '@prisma-lossless/generator-helper':
         specifier: workspace:*
         version: link:../generator-helper
-      '@prisma/get-dmmf':
+      '@prisma-lossless/get-dmmf':
         specifier: workspace:*
         version: link:../get-dmmf
-      '@prisma/get-platform':
+      '@prisma-lossless/get-platform':
         specifier: workspace:*
         version: link:../get-platform
+      '@prisma-lossless/schema-files-loader':
+        specifier: workspace:*
+        version: link:../schema-files-loader
       '@prisma/prisma-schema-wasm':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
         version: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
       '@prisma/schema-engine-wasm':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
         version: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
-      '@prisma/schema-files-loader':
-        specifier: workspace:*
-        version: link:../schema-files-loader
       '@streamparser/json':
         specifier: 0.0.22
         version: 0.0.22
@@ -1687,35 +1687,35 @@ importers:
 
   packages/migrate:
     dependencies:
-      '@prisma/client-generator-registry':
+      '@prisma-lossless/client-generator-registry':
         specifier: workspace:*
         version: link:../client-generator-registry
-      '@prisma/config':
+      '@prisma-lossless/config':
         specifier: workspace:*
         version: link:../config
-      '@prisma/debug':
+      '@prisma-lossless/debug':
         specifier: workspace:*
         version: link:../debug
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
+      '@prisma-lossless/generator':
+        specifier: workspace:*
+        version: link:../generator
+      '@prisma-lossless/get-platform':
+        specifier: workspace:*
+        version: link:../get-platform
+      '@prisma-lossless/internals':
+        specifier: workspace:*
+        version: link:../internals
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
         version: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
-      '@prisma/generator':
-        specifier: workspace:*
-        version: link:../generator
-      '@prisma/get-platform':
-        specifier: workspace:*
-        version: link:../get-platform
-      '@prisma/internals':
-        specifier: workspace:*
-        version: link:../internals
       prompts:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
-      '@prisma/adapter-libsql':
+      '@prisma-lossless/adapter-libsql':
         specifier: workspace:*
         version: link:../adapter-libsql
       '@sindresorhus/slugify':
@@ -1810,10 +1810,10 @@ importers:
 
   packages/param-graph-builder:
     dependencies:
-      '@prisma/dmmf':
+      '@prisma-lossless/dmmf':
         specifier: workspace:*
         version: link:../dmmf
-      '@prisma/param-graph':
+      '@prisma-lossless/param-graph':
         specifier: workspace:*
         version: link:../param-graph
 
@@ -1834,19 +1834,19 @@ importers:
       '@opentelemetry/sdk-trace-base':
         specifier: 2.1.0
         version: 2.1.0(@opentelemetry/api@1.9.0)
-      '@prisma/adapter-mariadb':
+      '@prisma-lossless/adapter-mariadb':
         specifier: workspace:*
         version: link:../adapter-mariadb
-      '@prisma/adapter-mssql':
+      '@prisma-lossless/adapter-mssql':
         specifier: workspace:*
         version: link:../adapter-mssql
-      '@prisma/adapter-pg':
+      '@prisma-lossless/adapter-pg':
         specifier: workspace:*
         version: link:../adapter-pg
-      '@prisma/client-engine-runtime':
+      '@prisma-lossless/client-engine-runtime':
         specifier: workspace:*
         version: link:../client-engine-runtime
-      '@prisma/driver-adapter-utils':
+      '@prisma-lossless/driver-adapter-utils':
         specifier: workspace:*
         version: link:../driver-adapter-utils
       hono:
@@ -1870,13 +1870,13 @@ importers:
 
   packages/sqlcommenter:
     devDependencies:
-      '@prisma/json-protocol':
+      '@prisma-lossless/json-protocol':
         specifier: workspace:*
         version: link:../json-protocol
 
   packages/sqlcommenter-query-insights:
     devDependencies:
-      '@prisma/sqlcommenter':
+      '@prisma-lossless/sqlcommenter':
         specifier: workspace:*
         version: link:../sqlcommenter
       fast-check:
@@ -1885,22 +1885,22 @@ importers:
 
   packages/sqlcommenter-query-tags:
     devDependencies:
-      '@prisma/sqlcommenter':
+      '@prisma-lossless/sqlcommenter':
         specifier: workspace:*
         version: link:../sqlcommenter
 
   packages/sqlcommenter-trace-context:
     devDependencies:
-      '@prisma/instrumentation-contract':
+      '@prisma-lossless/instrumentation-contract':
         specifier: workspace:*
         version: link:../instrumentation-contract
-      '@prisma/sqlcommenter':
+      '@prisma-lossless/sqlcommenter':
         specifier: workspace:*
         version: link:../sqlcommenter
 
   packages/ts-builders:
     dependencies:
-      '@prisma/internals':
+      '@prisma-lossless/internals':
         specifier: workspace:*
         version: link:../internals
 

@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { QueryCompilerConstructor } from '@prisma/client-common'
+import { QueryCompilerConstructor } from '@prisma-lossless/client-common'
 
 import { wasmQueryCompilerLoader } from '../../../runtime/core/engines/client/WasmQueryCompilerLoader'
 

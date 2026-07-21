@@ -1,6 +1,6 @@
-import type { PrismaValue } from '@prisma/client-engine-runtime'
-import { parseJsonFieldValue } from '@prisma/client-runtime-utils'
-import type { ArgScalarType, ArgType } from '@prisma/driver-adapter-utils'
+import type { PrismaValue } from '@prisma-lossless/client-engine-runtime'
+import { parseJsonFieldValue } from '@prisma-lossless/client-runtime-utils'
+import type { ArgScalarType, ArgType } from '@prisma-lossless/driver-adapter-utils'
 
 type RawParameters = {
   args: PrismaValue[]

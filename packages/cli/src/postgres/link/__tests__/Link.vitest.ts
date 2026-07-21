@@ -2,8 +2,8 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 
-import { defaultTestConfig } from '@prisma/config'
-import { HelpError } from '@prisma/internals'
+import { defaultTestConfig } from '@prisma-lossless/config'
+import { HelpError } from '@prisma-lossless/internals'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { Link } from '../Link'

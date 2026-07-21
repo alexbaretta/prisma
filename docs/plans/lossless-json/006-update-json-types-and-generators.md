@@ -47,12 +47,12 @@ Violated contract: DB JSON numeric tokens must be parsed and
 stringified by a single lossless Prisma-owned codec so call sites do
 not drift or use native JSON behavior directly.
 
-Owning layer: `@prisma/client-runtime-utils` owns the shared codec and
-the public `LosslessNumber` re-export because both `@prisma/client` and
-`@prisma/client-engine-runtime` already depend on it.
+Owning layer: `@prisma-lossless/client-runtime-utils` owns the shared codec and
+the public `LosslessNumber` re-export because both `@prisma-lossless/client` and
+`@prisma-lossless/client-engine-runtime` already depend on it.
 
 Intended solution: add `lossless-json` as a runtime dependency of
-`@prisma/client-runtime-utils`, then expose `LosslessNumber`,
+`@prisma-lossless/client-runtime-utils`, then expose `LosslessNumber`,
 `isLosslessJsonNumber`, `parseJsonFieldValue`,
 `stringifyJsonFieldValue`, and `normalizeJsonFieldText` from a new
 `json-codec.ts` module.
@@ -77,7 +77,7 @@ large integer token from the rounded JavaScript `number` equivalent.
 Focused codec tests:
 
 ```sh
-pnpm --filter @prisma/client-runtime-utils test json-codec.test.ts
+pnpm --filter @prisma-lossless/client-runtime-utils test json-codec.test.ts
 ```
 
 Result: passed. The test suite covers lossless parsing of large integer
@@ -90,7 +90,7 @@ rejects unsupported top-level values.
 Focused package build:
 
 ```sh
-pnpm --filter @prisma/client-runtime-utils build
+pnpm --filter @prisma-lossless/client-runtime-utils build
 ```
 
 Result: passed.

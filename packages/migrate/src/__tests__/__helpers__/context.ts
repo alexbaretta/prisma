@@ -1,4 +1,4 @@
-import { jestConsoleContext, jestContext, jestStdoutContext, processExitContext } from '@prisma/get-platform'
+import { jestConsoleContext, jestContext, jestStdoutContext, processExitContext } from '@prisma-lossless/get-platform'
 
 import { configContextContributor } from './prismaConfig'
 import { stdoutNormalizationRules } from './stdoutNormalizationRules'

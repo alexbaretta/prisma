@@ -8,11 +8,11 @@ Update `@codspeed/benchmark.js-plugin` from version `4.0.0` to `5.0.1` across al
 
 The following packages use `@codspeed/benchmark.js-plugin` at version `4.0.0`:
 
-| Package                         | File                                          |
-| ------------------------------- | --------------------------------------------- |
-| `@prisma/client`                | `packages/client/package.json`                |
-| `@prisma/client-engine-runtime` | `packages/client-engine-runtime/package.json` |
-| `@prisma/get-platform`          | `packages/get-platform/package.json`          |
+| Package                                  | File                                          |
+| ---------------------------------------- | --------------------------------------------- |
+| `@prisma-lossless/client`                | `packages/client/package.json`                |
+| `@prisma-lossless/client-engine-runtime` | `packages/client-engine-runtime/package.json` |
+| `@prisma-lossless/get-platform`          | `packages/get-platform/package.json`          |
 
 ## Target Version
 

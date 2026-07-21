@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/client-runtime-utils",
+  "name": "@prisma-lossless/client-runtime-utils",
   "version": "0.0.0",
   "description": "Utility types and singletons used by the Prisma Client.",
   "main": "dist/index.js",

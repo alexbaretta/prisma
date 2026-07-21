@@ -1,7 +1,7 @@
 import path from 'node:path'
 import process from 'node:process'
 
-import { Debug } from '@prisma/debug'
+import { Debug } from '@prisma-lossless/debug'
 
 import { defaultConfig } from './defaultConfig'
 import type { PrismaConfigInternal } from './defineConfig'

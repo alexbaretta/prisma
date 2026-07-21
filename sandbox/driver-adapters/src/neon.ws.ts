@@ -1,5 +1,5 @@
 import { neonConfig } from '@neondatabase/serverless'
-import { PrismaNeon } from '@prisma/adapter-neon'
+import { PrismaNeon } from '@prisma-lossless/adapter-neon'
 import { WebSocket } from 'undici'
 import { smokeTest } from './test'
 

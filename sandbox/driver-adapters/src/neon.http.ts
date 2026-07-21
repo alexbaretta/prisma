@@ -1,4 +1,4 @@
-import { PrismaNeonHttp } from '@prisma/adapter-neon'
+import { PrismaNeonHttp } from '@prisma-lossless/adapter-neon'
 import { smokeTest } from './test'
 
 async function main() {

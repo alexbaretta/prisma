@@ -3,8 +3,8 @@
 //
 // https://www.jsonrpc.org/specification
 
-import type { ActiveConnectorType, SqlQueryOutput } from '@prisma/generator'
-import type { MigrateTypes } from '@prisma/internals'
+import type { ActiveConnectorType, SqlQueryOutput } from '@prisma-lossless/generator'
+import type { MigrateTypes } from '@prisma-lossless/internals'
 
 import type { IntrospectionViewDefinition } from './views/handleViewsIO'
 

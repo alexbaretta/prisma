@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { generatorHandler } = require('@prisma/generator-helper')
+const { generatorHandler } = require('@prisma-lossless/generator-helper')
 
 generatorHandler({
   async onGenerate() {

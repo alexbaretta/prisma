@@ -1,18 +1,18 @@
-# @prisma/sqlcommenter-query-tags
+# @prisma-lossless/sqlcommenter-query-tags
 
 An `AsyncLocalStorage`-based query tagging plugin for Prisma ORM's SQL commenter feature. This package allows you to add ad-hoc tags to your SQL queries that will be appended as comments, useful for tracing, debugging, and observability.
 
 ## Installation
 
 ```bash
-npm install @prisma/sqlcommenter-query-tags
+npm install @prisma-lossless/sqlcommenter-query-tags
 ```
 
 ## Usage
 
 ```typescript
-import { queryTags, withQueryTags } from '@prisma/sqlcommenter-query-tags'
-import { PrismaClient } from '@prisma/client'
+import { queryTags, withQueryTags } from '@prisma-lossless/sqlcommenter-query-tags'
+import { PrismaClient } from '@prisma-lossless/client'
 
 const prisma = new PrismaClient({
   adapter: myAdapter, // Driver adapter required (alternatively, Accelerate URL)
@@ -123,7 +123,7 @@ await withQueryTags({ requestId: 'req-123', debug: 'true' }, async () => {
 ### Combining with Other Plugins
 
 ```typescript
-import type { SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import type { SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 
 const appPlugin: SqlCommenterPlugin = () => ({
   application: 'my-app',

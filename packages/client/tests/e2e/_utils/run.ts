@@ -1,7 +1,7 @@
 import os from 'node:os'
 import { finished } from 'node:stream/promises'
 
-import { arg } from '@prisma/internals'
+import { arg } from '@prisma-lossless/internals'
 import { createReadStream, existsSync } from 'fs'
 import fs from 'fs/promises'
 import glob from 'globby'

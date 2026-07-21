@@ -1,5 +1,5 @@
-import { Sql } from '@prisma/client-runtime-utils'
-import { Debug } from '@prisma/debug'
+import { Sql } from '@prisma-lossless/client-runtime-utils'
+import { Debug } from '@prisma-lossless/debug'
 
 import { MiddlewareArgsMapper } from '../../getPrismaClient'
 import { mssqlPreparedStatement } from '../../utils/mssqlPreparedStatement'

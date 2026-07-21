@@ -1,4 +1,4 @@
-import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { PrismaLibSql } from '@prisma-lossless/adapter-libsql'
 
 import { Prisma, PrismaClient, User } from '../src/generated/prisma/client'
 

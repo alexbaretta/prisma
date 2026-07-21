@@ -1,4 +1,4 @@
-import { Debug } from '@prisma/debug'
+import { Debug } from '@prisma-lossless/debug'
 import { Either } from 'effect'
 import type { DeepMutable } from 'effect/Types'
 

@@ -1,7 +1,7 @@
 import path from 'node:path'
 
-import { ActiveConnectorType, DataSource, GeneratorConfig } from '@prisma/generator'
-import { GetSchemaResult, LoadedFile } from '@prisma/schema-files-loader'
+import { ActiveConnectorType, DataSource, GeneratorConfig } from '@prisma-lossless/generator'
+import { GetSchemaResult, LoadedFile } from '@prisma-lossless/schema-files-loader'
 
 import { getConfig } from '../engine-commands'
 import { getSchemaWithPath, getSchemaWithPathOptional, printSchemaLoadedMessage, SchemaPathInput } from './getSchema'

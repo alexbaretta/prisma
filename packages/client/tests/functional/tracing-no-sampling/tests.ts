@@ -9,8 +9,8 @@ import {
   TraceIdRatioBasedSampler,
 } from '@opentelemetry/sdk-trace-base'
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
-import { PrismaInstrumentation } from '@prisma/instrumentation'
-import { traceContext } from '@prisma/sqlcommenter-trace-context'
+import { PrismaInstrumentation } from '@prisma-lossless/instrumentation'
+import { traceContext } from '@prisma-lossless/sqlcommenter-trace-context'
 
 import { NewPrismaClient } from '../_utils/types'
 import testMatrix from './_matrix'

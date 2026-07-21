@@ -1,4 +1,4 @@
-import { AnyNull, DbNull, Decimal, JsonNull, LosslessNumber } from '@prisma/client-runtime-utils'
+import { AnyNull, DbNull, Decimal, JsonNull, LosslessNumber } from '@prisma-lossless/client-runtime-utils'
 
 import { field, model, runtimeDataModel } from '../../../testUtils/dataModelBuilder'
 import { MergedExtensionsList } from '../extensions/MergedExtensionsList'

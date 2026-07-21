@@ -1,5 +1,5 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import type { Command } from '@prisma/internals'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import type { Command } from '@prisma-lossless/internals'
 import {
   arg,
   createSchemaPathInput,
@@ -10,7 +10,7 @@ import {
   isError,
   isInteractive,
   link,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import { bold, dim, red, underline } from 'kleur/colors'
 
 import { getRootCacheDir } from '../../fetch-engine/src/utils'

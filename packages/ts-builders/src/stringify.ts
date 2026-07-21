@@ -1,4 +1,4 @@
-import { assertNever } from '@prisma/internals'
+import { assertNever } from '@prisma-lossless/internals'
 
 import { BasicBuilder } from './BasicBuilder'
 import { Writer } from './Writer'

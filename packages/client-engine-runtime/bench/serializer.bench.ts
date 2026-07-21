@@ -1,5 +1,5 @@
 import { withCodSpeed } from '@codspeed/benchmark.js-plugin'
-import type { SqlResultSet } from '@prisma/driver-adapter-utils'
+import type { SqlResultSet } from '@prisma-lossless/driver-adapter-utils'
 import Benchmark from 'benchmark'
 
 import { serializeSql } from '../src/interpreter/serialize-sql'

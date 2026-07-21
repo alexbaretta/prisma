@@ -1,5 +1,5 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import Debug from '@prisma/debug'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import Debug from '@prisma-lossless/debug'
 import {
   arg,
   Command,
@@ -13,7 +13,7 @@ import {
   MigrateTypes,
   toSchemasContainer,
   toSchemasWithConfigDir,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import fs from 'fs-jetpack'
 import { bold, dim, green, italic } from 'kleur/colors'
 import path from 'path'
@@ -341,7 +341,7 @@ export function getRemovedTargetParameterHint(parameter: string): string | undef
       return (
         `\`${parameter}\` was removed. Please use \`--[from/to]-config-datasource\` in ` +
         `combination with a Prisma config file that contains the appropriate datasource instead. ` +
-        `The \`@prisma/adapter-d1\` package exposes a \`listLocalDatabases()\` helper function ` +
+        `The \`@prisma-lossless/adapter-d1\` package exposes a \`listLocalDatabases()\` helper function ` +
         `to help you locate your local D1 databases. You can use the paths returned from that ` +
         `function to construct your datasource URL(s).`
       )

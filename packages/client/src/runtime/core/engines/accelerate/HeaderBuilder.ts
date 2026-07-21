@@ -1,6 +1,6 @@
-import type { QueryEngineLogLevel } from '@prisma/client-common'
 import { enginesVersion } from '@prisma/engines-version'
-import type { TracingHelper } from '@prisma/instrumentation-contract'
+import type { QueryEngineLogLevel } from '@prisma-lossless/client-common'
+import type { TracingHelper } from '@prisma-lossless/instrumentation-contract'
 
 export type AccelerateHeaders = {
   'Content-Type': string

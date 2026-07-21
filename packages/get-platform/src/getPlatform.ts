@@ -1,4 +1,4 @@
-import Debug from '@prisma/debug'
+import Debug from '@prisma-lossless/debug'
 import cp from 'child_process'
 import fs from 'fs/promises'
 import os from 'os'

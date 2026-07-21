@@ -11,7 +11,7 @@ export {
   isObjectEnumValue,
   JsonNull,
   NullTypes,
-} from '@prisma/client-runtime-utils'
-export { Decimal, LosslessNumber } from '@prisma/client-runtime-utils'
+} from '@prisma-lossless/client-runtime-utils'
+export { Decimal, LosslessNumber } from '@prisma-lossless/client-runtime-utils'
 
 export { Public }

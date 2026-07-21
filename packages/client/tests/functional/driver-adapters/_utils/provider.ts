@@ -1,4 +1,4 @@
-import { SqlDriverAdapter } from '@prisma/driver-adapter-utils'
+import { SqlDriverAdapter } from '@prisma-lossless/driver-adapter-utils'
 
 import { Providers as Provider } from '../../_utils/providers'
 

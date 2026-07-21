@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { defineConfig, loadConfigFromFile, type PrismaConfigInternal } from '@prisma/config'
+import { defineConfig, loadConfigFromFile, type PrismaConfigInternal } from '@prisma-lossless/config'
 import { describe, expect, it } from 'vitest'
 
 import { inferDirectoryConfig } from '../cli/directoryConfig'

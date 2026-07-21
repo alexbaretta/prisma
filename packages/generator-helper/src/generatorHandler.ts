@@ -1,6 +1,6 @@
 import readline from 'node:readline'
 
-import type { GeneratorConfig, GeneratorManifest, GeneratorOptions } from '@prisma/generator'
+import type { GeneratorConfig, GeneratorManifest, GeneratorOptions } from '@prisma-lossless/generator'
 
 import * as JsonRpc from './json-rpc'
 

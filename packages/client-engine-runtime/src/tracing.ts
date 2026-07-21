@@ -1,5 +1,5 @@
 import { type Context, type Span, SpanKind, type SpanOptions } from '@opentelemetry/api'
-import type { SqlQuery } from '@prisma/driver-adapter-utils'
+import type { SqlQuery } from '@prisma-lossless/driver-adapter-utils'
 
 import { QueryEvent } from './events'
 import type { SchemaProvider } from './schema'
@@ -11,7 +11,7 @@ export type ExtendedSpanOptions = SpanOptions & {
   name: string
 }
 
-// A smaller version of the equivalent interface from `@prisma/internals`
+// A smaller version of the equivalent interface from `@prisma-lossless/internals`
 export interface TracingHelper {
   isEnabled(): boolean
   runInChildSpan<R>(nameOrOptions: string | ExtendedSpanOptions, callback: SpanCallback<R>): R

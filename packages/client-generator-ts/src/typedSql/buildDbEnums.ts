@@ -1,7 +1,7 @@
-import type * as DMMF from '@prisma/dmmf'
-import { SqlQueryOutput } from '@prisma/generator'
-import { isValidJsIdentifier } from '@prisma/internals'
-import * as ts from '@prisma/ts-builders'
+import type * as DMMF from '@prisma-lossless/dmmf'
+import { SqlQueryOutput } from '@prisma-lossless/generator'
+import { isValidJsIdentifier } from '@prisma-lossless/internals'
+import * as ts from '@prisma-lossless/ts-builders'
 
 type DbEnum = {
   name: string

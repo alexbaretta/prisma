@@ -1,4 +1,4 @@
-import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { PrismaLibSql } from '@prisma-lossless/adapter-libsql'
 import { Controller, Get, Route } from 'tsoa'
 
 import { PrismaClient, QuoteKind } from '../generated/prisma/client'

@@ -1,4 +1,8 @@
-import { clearGlobalTracingHelper, setGlobalTracingHelper, type TracingHelper } from '@prisma/instrumentation-contract'
+import {
+  clearGlobalTracingHelper,
+  setGlobalTracingHelper,
+  type TracingHelper,
+} from '@prisma-lossless/instrumentation-contract'
 
 import { getTracingHelper } from './TracingHelper'
 

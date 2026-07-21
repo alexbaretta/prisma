@@ -1,4 +1,4 @@
-import { PrismaNeon } from '@prisma/adapter-neon'
+import { PrismaNeon } from '@prisma-lossless/adapter-neon'
 
 import { PrismaClient } from './client/edge'
 

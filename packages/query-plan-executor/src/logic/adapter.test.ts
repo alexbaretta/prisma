@@ -1,4 +1,4 @@
-import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
 import {
   ColumnTypeEnum,
   type SqlDriverAdapter,
@@ -6,15 +6,15 @@ import {
   type SqlQuery,
   type SqlResultSet,
   type Transaction,
-} from '@prisma/driver-adapter-utils'
+} from '@prisma-lossless/driver-adapter-utils'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { createAdapter } from './adapter'
 
-vi.mock('@prisma/adapter-pg', () => {
+vi.mock('@prisma-lossless/adapter-pg', () => {
   return {
     PrismaPg: vi.fn().mockImplementation(function () {
-      return { adapterName: '@prisma/adapter-pg' }
+      return { adapterName: '@prisma-lossless/adapter-pg' }
     }),
   }
 })
@@ -25,7 +25,7 @@ describe('createAdapter', () => {
 
     for (const url of postgresUrls) {
       const adapter = createAdapter(url)
-      expect(adapter.adapterName).toBe('@prisma/adapter-pg')
+      expect(adapter.adapterName).toBe('@prisma-lossless/adapter-pg')
     }
   })
 
@@ -34,7 +34,7 @@ describe('createAdapter', () => {
 
     for (const url of mysqlUrls) {
       const adapter = createAdapter(url)
-      expect(adapter.adapterName).toBe('@prisma/adapter-mariadb')
+      expect(adapter.adapterName).toBe('@prisma-lossless/adapter-mariadb')
     }
   })
 
@@ -42,7 +42,7 @@ describe('createAdapter', () => {
     const sqlserverUrl =
       'sqlserver://localhost:1433;database=master;user=SA;password=YourStrong@Passw0rd;trustServerCertificate=true;'
     const adapter = createAdapter(sqlserverUrl)
-    expect(adapter.adapterName).toBe('@prisma/adapter-mssql')
+    expect(adapter.adapterName).toBe('@prisma-lossless/adapter-mssql')
   })
 
   test('unsupported protocol', () => {

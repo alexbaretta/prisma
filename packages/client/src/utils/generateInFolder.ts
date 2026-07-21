@@ -1,10 +1,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { generateClient } from '@prisma/client-generator-js'
-import Debug from '@prisma/debug'
-import { type GetSchemaResult, getSchemaWithPath, mergeSchemas } from '@prisma/internals'
-import { getConfig, getDMMF, getPackedPackage } from '@prisma/internals'
+import { generateClient } from '@prisma-lossless/client-generator-js'
+import Debug from '@prisma-lossless/debug'
+import { type GetSchemaResult, getSchemaWithPath, mergeSchemas } from '@prisma-lossless/internals'
+import { getConfig, getDMMF, getPackedPackage } from '@prisma-lossless/internals'
 import copy from '@timsuchanek/copy'
 import { performance } from 'perf_hooks'
 
@@ -41,7 +41,7 @@ export async function generateInFolder({ projectDir, packageSource }: GenerateIn
 
   const config = await getConfig({ datamodel: schemas })
 
-  const outputDir = path.join(projectDir, 'node_modules/@prisma/client')
+  const outputDir = path.join(projectDir, 'node_modules/@prisma-lossless/client')
 
   await fs.promises.rm(outputDir, { force: true, recursive: true })
 
@@ -54,7 +54,7 @@ export async function generateInFolder({ projectDir, packageSource }: GenerateIn
       overwrite: true,
     })
   } else {
-    await getPackedPackage('@prisma/client', outputDir)
+    await getPackedPackage('@prisma-lossless/client', outputDir)
   }
 
   // TODO: use engine.getDmmf()

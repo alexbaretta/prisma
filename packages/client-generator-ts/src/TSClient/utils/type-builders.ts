@@ -1,4 +1,4 @@
-import { NamedType, namedType, TypeBuilder } from '@prisma/ts-builders'
+import { NamedType, namedType, TypeBuilder } from '@prisma-lossless/ts-builders'
 
 export function omit(type: TypeBuilder, keyType: TypeBuilder): NamedType {
   return namedType('Omit').addGenericArgument(type).addGenericArgument(keyType)

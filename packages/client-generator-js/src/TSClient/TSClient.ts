@@ -1,7 +1,7 @@
-import type { GetPrismaClientConfig } from '@prisma/client-common'
-import { datamodelEnumToSchemaEnum } from '@prisma/dmmf'
-import { buildAndSerializeParamGraph } from '@prisma/param-graph-builder'
-import * as ts from '@prisma/ts-builders'
+import type { GetPrismaClientConfig } from '@prisma-lossless/client-common'
+import { datamodelEnumToSchemaEnum } from '@prisma-lossless/dmmf'
+import { buildAndSerializeParamGraph } from '@prisma-lossless/param-graph-builder'
+import * as ts from '@prisma-lossless/ts-builders'
 import indent from 'indent-string'
 import type { O } from 'ts-toolbelt'
 

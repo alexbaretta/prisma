@@ -1,5 +1,5 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import Debug from '@prisma/debug'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import Debug from '@prisma-lossless/debug'
 import {
   arg,
   checkUnsupportedDataProxy,
@@ -13,7 +13,7 @@ import {
   loadSchemaContext,
   MigrateTypes,
   validatePrismaConfigWithDatasource,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import { bold, dim, green, italic, red } from 'kleur/colors'
 
 import { Migrate } from '../Migrate'

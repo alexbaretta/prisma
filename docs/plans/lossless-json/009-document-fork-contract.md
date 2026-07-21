@@ -101,7 +101,7 @@ as `bigint`.
 Focused serializer test:
 
 ```sh
-pnpm --filter @prisma/client test serializeJsonQuery.test.ts
+pnpm --filter @prisma-lossless/client test serializeJsonQuery.test.ts
 ```
 
 Result: passed. This confirms `LosslessNumber` is accepted as a client
@@ -111,7 +111,7 @@ path.
 Generated client type fixtures:
 
 ```sh
-pnpm --filter @prisma/client test types.test.ts -t "types/json|types/native-types"
+pnpm --filter @prisma-lossless/client test types.test.ts -t "types/json|types/native-types"
 ```
 
 Result: passed. The JSON fixture proves `Prisma.LosslessNumber`,
@@ -123,9 +123,9 @@ remain `number` and `bigint`.
 Generator package builds:
 
 ```sh
-pnpm --filter @prisma/client-generator-js build
-pnpm --filter @prisma/client-generator-ts build
-pnpm --filter @prisma/client build
+pnpm --filter @prisma-lossless/client-generator-js build
+pnpm --filter @prisma-lossless/client-generator-ts build
+pnpm --filter @prisma-lossless/client build
 ```
 
 Result: passed.
@@ -133,8 +133,8 @@ Result: passed.
 Generator test suites:
 
 ```sh
-pnpm --filter @prisma/client-generator-js test
-pnpm --filter @prisma/client-generator-ts test
+pnpm --filter @prisma-lossless/client-generator-js test
+pnpm --filter @prisma-lossless/client-generator-ts test
 ```
 
 Result: passed. The TS generator suite initially failed in the existing

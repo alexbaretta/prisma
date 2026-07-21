@@ -1,4 +1,4 @@
-import { NamedType, TypeBuilder } from '@prisma/ts-builders'
+import { NamedType, TypeBuilder } from '@prisma-lossless/ts-builders'
 
 export function promise(resultType: TypeBuilder): NamedType {
   return new NamedType('$Utils.JsPromise').addGenericArgument(resultType)

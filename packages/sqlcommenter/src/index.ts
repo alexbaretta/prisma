@@ -1,4 +1,4 @@
-import type { JsonQueryAction } from '@prisma/json-protocol'
+import type { JsonQueryAction } from '@prisma-lossless/json-protocol'
 
 /**
  * Information about a single Prisma query.

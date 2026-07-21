@@ -1,4 +1,4 @@
-import { inferDirectoryConfig, loadSchemaContext, toSchemasContainer } from '@prisma/internals'
+import { inferDirectoryConfig, loadSchemaContext, toSchemasContainer } from '@prisma-lossless/internals'
 import fs from 'fs'
 import path from 'path'
 

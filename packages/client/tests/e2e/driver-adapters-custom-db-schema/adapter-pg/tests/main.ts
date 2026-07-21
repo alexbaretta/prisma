@@ -1,5 +1,5 @@
-import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
+import { PrismaClient } from '@prisma-lossless/client'
 
 test('pg supports custom database schema (default is: "public".<TABLE>)', async () => {
   const adapter = new PrismaPg({ connectionString: process.env.POSTGRES_URL, schema: 'base' })

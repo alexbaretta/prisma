@@ -1,5 +1,5 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import { arg, Command, format, HelpError, isError } from '@prisma/internals'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import { arg, Command, format, HelpError, isError } from '@prisma-lossless/internals'
 import { ArgError } from 'arg'
 import { bold, dim, red } from 'kleur/colors'
 

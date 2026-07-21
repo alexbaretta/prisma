@@ -1,6 +1,6 @@
-import { PrismaConfigInternal } from '@prisma/config'
-import Debug from '@prisma/debug'
-import { MigrateTypes } from '@prisma/internals'
+import { PrismaConfigInternal } from '@prisma-lossless/config'
+import Debug from '@prisma-lossless/debug'
+import { MigrateTypes } from '@prisma-lossless/internals'
 
 import { Migrate } from '../Migrate'
 
@@ -8,7 +8,7 @@ const debug = Debug('prisma:cli')
 
 /**
  * Retrieve the database version from the given schema or url.
- * This function never throws, and was introduced to prevent circular dependencies in `@prisma/internals`.
+ * This function never throws, and was introduced to prevent circular dependencies in `@prisma-lossless/internals`.
  */
 export async function getDatabaseVersionSafe(
   args: MigrateTypes.GetDatabaseVersionParams | undefined,

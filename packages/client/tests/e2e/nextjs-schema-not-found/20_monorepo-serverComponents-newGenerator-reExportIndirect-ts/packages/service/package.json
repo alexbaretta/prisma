@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@prisma/nextjs-monorepo-workaround-plugin": "/tmp/prisma-nextjs-monorepo-workaround-plugin-0.0.0.tgz",
+    "@prisma-lossless/nextjs-monorepo-workaround-plugin": "/tmp/prisma-nextjs-monorepo-workaround-plugin-0.0.0.tgz",
     "@types/node": "~20.19.0",
     "@types/react": "19.1.0",
     "webpack": "5.99.5",

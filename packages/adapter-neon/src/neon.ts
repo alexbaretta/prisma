@@ -12,8 +12,8 @@ import type {
   SqlResultSet,
   Transaction,
   TransactionOptions,
-} from '@prisma/driver-adapter-utils'
-import { Debug, DriverAdapterError } from '@prisma/driver-adapter-utils'
+} from '@prisma-lossless/driver-adapter-utils'
+import { Debug, DriverAdapterError } from '@prisma-lossless/driver-adapter-utils'
 
 import { name as packageName } from '../package.json'
 import { customParsers, fieldToColumnType, mapArg, UnsupportedNativeDataType } from './conversion'

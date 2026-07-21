@@ -1,4 +1,4 @@
-import { ArgType, ColumnType, ColumnTypeEnum, Debug, ResultValue } from '@prisma/driver-adapter-utils'
+import { ArgType, ColumnType, ColumnTypeEnum, Debug, ResultValue } from '@prisma-lossless/driver-adapter-utils'
 
 import { PrismaBetterSqlite3Options } from './better-sqlite3'
 

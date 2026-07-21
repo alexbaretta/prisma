@@ -1,5 +1,5 @@
-import { BinaryTargetsEnvValue, GeneratorConfig } from '@prisma/generator'
-import { BinaryTarget } from '@prisma/get-platform'
+import { BinaryTargetsEnvValue, GeneratorConfig } from '@prisma-lossless/generator'
+import { BinaryTarget } from '@prisma-lossless/get-platform'
 
 export type EngineNotFoundErrorInput = {
   queryEngineName: string

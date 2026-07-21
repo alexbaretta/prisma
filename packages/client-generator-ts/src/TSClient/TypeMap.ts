@@ -1,6 +1,6 @@
-import { NonModelOperation, Operation, uncapitalize } from '@prisma/client-common'
-import { assertNever } from '@prisma/internals'
-import * as ts from '@prisma/ts-builders'
+import { NonModelOperation, Operation, uncapitalize } from '@prisma-lossless/client-common'
+import { assertNever } from '@prisma-lossless/internals'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import {
   extArgsParam,

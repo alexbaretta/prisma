@@ -1,4 +1,4 @@
-import { Operation } from '@prisma/client-common'
+import { Operation } from '@prisma-lossless/client-common'
 
 import { JsonObject } from './Json'
 import { OperationPayload } from './Payload'

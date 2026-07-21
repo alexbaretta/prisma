@@ -1,6 +1,6 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import type { Command, Commands } from '@prisma/internals'
-import { arg, format, HelpError, isError, unknownCommand } from '@prisma/internals'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import type { Command, Commands } from '@prisma-lossless/internals'
+import { arg, format, HelpError, isError, unknownCommand } from '@prisma-lossless/internals'
 import { bold, red } from 'kleur/colors'
 
 /**
@@ -63,5 +63,5 @@ export class CLI implements Command {
     return CLI.help
   }
 
-  private static help = format(`This is the internal CLI for @prisma/migrate`)
+  private static help = format(`This is the internal CLI for @prisma-lossless/migrate`)
 }

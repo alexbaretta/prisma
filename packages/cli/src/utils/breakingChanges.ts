@@ -1,4 +1,4 @@
-import { link } from '@prisma/internals'
+import { link } from '@prisma-lossless/internals'
 import { bold, yellow } from 'kleur/colors'
 
 export const breakingChangesMessage = `${yellow(bold('warn'))} Prisma 2.12.0 has breaking changes.

@@ -10,8 +10,8 @@ void executeSteps({
   test: async () => {
     const { stdout } = await $`tsx src/index.ts`
 
-    if (!stdout.includes('loaded @prisma/client')) {
-      throw new Error('Expected to load @prisma/client')
+    if (!stdout.includes('loaded @prisma-lossless/client')) {
+      throw new Error('Expected to load @prisma-lossless/client')
     } else {
       console.log('Success!')
     }

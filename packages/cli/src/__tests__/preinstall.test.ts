@@ -1,4 +1,4 @@
-import { jestConsoleContext, jestContext } from '@prisma/get-platform'
+import { jestConsoleContext, jestContext } from '@prisma-lossless/get-platform'
 
 import { printMessageAndExitIfUnsupportedNodeVersion } from '../../scripts/preinstall'
 

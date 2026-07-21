@@ -1,5 +1,5 @@
-import { PrismaPg } from '@prisma/adapter-pg'
 import { withAccelerate } from '@prisma/extension-accelerate'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
 import { expectTypeOf } from 'expect-type'
 
 import { PrismaClient } from './generated/prisma/client'

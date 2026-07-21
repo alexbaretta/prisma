@@ -1,4 +1,4 @@
-import type { BatchResponse, QueryPlanNode } from '@prisma/client-engine-runtime'
+import type { BatchResponse, QueryPlanNode } from '@prisma-lossless/client-engine-runtime'
 
 // todo: store the query plan for the individual queries in a non-compacted batch
 // in the `#singleCache` so that it's possible to reuse them for compatible queries

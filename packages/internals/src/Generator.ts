@@ -4,8 +4,8 @@ import type {
   GeneratorConfig,
   GeneratorManifest,
   GeneratorOptions,
-} from '@prisma/generator'
-import { GeneratorProcess } from '@prisma/generator-helper'
+} from '@prisma-lossless/generator'
+import { GeneratorProcess } from '@prisma-lossless/generator-helper'
 
 import { parseEnvValue } from './utils/parseEnvValue'
 

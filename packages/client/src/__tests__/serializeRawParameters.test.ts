@@ -1,4 +1,4 @@
-import { Decimal, LosslessNumber } from '@prisma/client-runtime-utils'
+import { Decimal, LosslessNumber } from '@prisma-lossless/client-runtime-utils'
 
 import { serializeRawParameters } from '../runtime/utils/serializeRawParameters'
 

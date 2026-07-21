@@ -1,4 +1,4 @@
-import { getLogs } from '@prisma/debug'
+import { getLogs } from '@prisma-lossless/debug'
 import { underline } from 'kleur/colors'
 import stripAnsi from 'strip-ansi'
 

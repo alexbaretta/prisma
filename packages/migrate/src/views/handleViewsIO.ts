@@ -1,4 +1,4 @@
-import { fsFunctional, pathToPosix } from '@prisma/internals'
+import { fsFunctional, pathToPosix } from '@prisma-lossless/internals'
 import * as E from 'fp-ts/lib/Either'
 import { pipe } from 'fp-ts/lib/function'
 import * as T from 'fp-ts/lib/Task'

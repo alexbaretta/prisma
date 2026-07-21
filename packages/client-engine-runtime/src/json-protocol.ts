@@ -1,4 +1,9 @@
-import { Decimal, LosslessNumber, normalizeJsonFieldText, parseJsonFieldValue } from '@prisma/client-runtime-utils'
+import {
+  Decimal,
+  LosslessNumber,
+  normalizeJsonFieldText,
+  parseJsonFieldValue,
+} from '@prisma-lossless/client-runtime-utils'
 
 import { assertNever } from './utils'
 

@@ -1,4 +1,4 @@
-import { PrismaMssql } from '@prisma/adapter-mssql'
+import { PrismaMssql } from '@prisma-lossless/adapter-mssql'
 
 import { PrismaClient } from './client/edge'
 

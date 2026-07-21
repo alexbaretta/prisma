@@ -1,5 +1,5 @@
-import { GeneratorConfig, SqlQueryOutput } from '@prisma/generator'
-import type { PrismaConfigWithDatasource, SchemaContext } from '@prisma/internals'
+import { GeneratorConfig, SqlQueryOutput } from '@prisma-lossless/generator'
+import type { PrismaConfigWithDatasource, SchemaContext } from '@prisma-lossless/internals'
 
 import { Migrate } from '../Migrate'
 import { SchemaEngine } from '../SchemaEngine'

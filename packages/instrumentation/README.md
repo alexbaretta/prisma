@@ -1,20 +1,20 @@
-# @prisma/instrumentation
+# @prisma-lossless/instrumentation
 
-[![npm version](https://img.shields.io/npm/v/@prisma/instrumentation.svg?style=flat)](https://www.npmjs.com/package/@prisma/instrumentation) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/prisma/prisma/blob/main/CONTRIBUTING.md) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/prisma/prisma/blob/main/LICENSE) [![Discord](https://img.shields.io/discord/937751382725886062?label=Discord)](https://pris.ly/discord)
+[![npm version](https://img.shields.io/npm/v/@prisma-lossless/instrumentation.svg?style=flat)](https://www.npmjs.com/package/@prisma-lossless/instrumentation) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/prisma/prisma/blob/main/CONTRIBUTING.md) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/prisma/prisma/blob/main/LICENSE) [![Discord](https://img.shields.io/discord/937751382725886062?label=Discord)](https://pris.ly/discord)
 
 [OTEL - OpenTelemetry](https://opentelemetry.io/) compliant instrumentation for Prisma Client.
 
 ## Installing
 
 ```
-$ npm install @prisma/instrumentation
+$ npm install @prisma-lossless/instrumentation
 ```
 
 ## Usage
 
 ```ts
 import { registerInstrumentations } from '@opentelemetry/instrumentation'
-import { PrismaInstrumentation } from '@prisma/instrumentation'
+import { PrismaInstrumentation } from '@prisma-lossless/instrumentation'
 
 registerInstrumentations({
   instrumentations: [new PrismaInstrumentation()],
@@ -33,7 +33,7 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation'
 import { resourceFromAttributes } from '@opentelemetry/resources'
 import { BasicTracerProvider, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
-import { PrismaInstrumentation } from '@prisma/instrumentation'
+import { PrismaInstrumentation } from '@prisma-lossless/instrumentation'
 
 import { PrismaClient } from '.prisma/client'
 

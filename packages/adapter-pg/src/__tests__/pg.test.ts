@@ -1,5 +1,5 @@
-import { getLogs } from '@prisma/debug'
-import type { SqlQuery } from '@prisma/driver-adapter-utils'
+import { getLogs } from '@prisma-lossless/debug'
+import type { SqlQuery } from '@prisma-lossless/driver-adapter-utils'
 import pg, { DatabaseError } from 'pg'
 import { describe, expect, it, vi } from 'vitest'
 

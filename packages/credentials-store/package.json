@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/credentials-store",
+  "name": "@prisma-lossless/credentials-store",
   "version": "0.0.0",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",

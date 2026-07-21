@@ -328,7 +328,7 @@ expression.
 
 ## How to use custom engines
 
-By default, you get the engines that are downloaded on postinstall in `@prisma/engines` thanks to `@prisma/engines-version`.
+By default, you get the engines that are downloaded on postinstall in `@prisma-lossless/engines` thanks to `@prisma/engines-version`.
 
 However, you may want to use a custom engine via from a branch in [`prisma/prisma-engines`](https://github.com/prisma/prisma-engines), or one that you've built locally.
 

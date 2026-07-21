@@ -1,4 +1,4 @@
-import { PrismaClient } from '../node_modules/@prisma/client'
+import { PrismaClient } from '../node_modules/@prisma-lossless/client'
 import { EXIT_MESSAGE, READY_MESSAGE } from './constants'
 
 const prisma = new PrismaClient()

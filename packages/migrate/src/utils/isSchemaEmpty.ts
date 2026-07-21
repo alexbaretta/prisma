@@ -1,4 +1,4 @@
-import { MigrateTypes } from '@prisma/internals'
+import { MigrateTypes } from '@prisma-lossless/internals'
 
 export function isSchemaEmpty(schemas: MigrateTypes.SchemasContainer | undefined): boolean {
   if (!schemas) {

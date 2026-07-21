@@ -1,4 +1,4 @@
-import { DriverAdapterError, isDriverAdapterError } from '@prisma/driver-adapter-utils'
+import { DriverAdapterError, isDriverAdapterError } from '@prisma-lossless/driver-adapter-utils'
 
 import { assertNever, safeJsonStringify } from './utils'
 

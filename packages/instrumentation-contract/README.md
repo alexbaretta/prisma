@@ -1,4 +1,4 @@
-# @prisma/instrumentation-contract
+# @prisma-lossless/instrumentation-contract
 
 This package provides the contract types and utilities for Prisma's instrumentation system. It defines the `TracingHelper` interface and provides functions to access the global tracing helper.
 
@@ -7,7 +7,7 @@ This package provides the contract types and utilities for Prisma's instrumentat
 ## Installation
 
 ```sh
-npm install @prisma/instrumentation-contract
+npm install @prisma-lossless/instrumentation-contract
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ npm install @prisma/instrumentation-contract
 If you're building an observability integration that needs to read tracing information from Prisma:
 
 ```ts
-import { getGlobalTracingHelper } from '@prisma/instrumentation-contract'
+import { getGlobalTracingHelper } from '@prisma-lossless/instrumentation-contract'
 
 const helper = getGlobalTracingHelper()
 
@@ -32,7 +32,11 @@ if (helper && helper.isEnabled()) {
 If you're building a custom instrumentation solution (not based on OpenTelemetry), you can implement the `TracingHelper` interface and register it globally:
 
 ```ts
-import { setGlobalTracingHelper, clearGlobalTracingHelper, type TracingHelper } from '@prisma/instrumentation-contract'
+import {
+  setGlobalTracingHelper,
+  clearGlobalTracingHelper,
+  type TracingHelper,
+} from '@prisma-lossless/instrumentation-contract'
 
 const myTracingHelper: TracingHelper = {
   isEnabled() {
@@ -102,10 +106,10 @@ See the TypeScript definitions for additional types like `EngineSpan`, `Extended
 
 ## For OpenTelemetry Users
 
-If you're using OpenTelemetry, you should use [`@prisma/instrumentation`](https://www.npmjs.com/package/@prisma/instrumentation) instead. It provides a complete OpenTelemetry-based instrumentation that automatically registers the appropriate tracing helper.
+If you're using OpenTelemetry, you should use [`@prisma-lossless/instrumentation`](https://www.npmjs.com/package/@prisma-lossless/instrumentation) instead. It provides a complete OpenTelemetry-based instrumentation that automatically registers the appropriate tracing helper.
 
 ```ts
-import { PrismaInstrumentation, registerInstrumentations } from '@prisma/instrumentation'
+import { PrismaInstrumentation, registerInstrumentations } from '@prisma-lossless/instrumentation'
 
 registerInstrumentations({
   instrumentations: [new PrismaInstrumentation()],

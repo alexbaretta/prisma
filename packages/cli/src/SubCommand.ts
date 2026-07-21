@@ -4,9 +4,9 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-import type { PrismaConfigInternal } from '@prisma/config'
-import Debug from '@prisma/debug'
-import type { Command } from '@prisma/internals'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import Debug from '@prisma-lossless/debug'
+import type { Command } from '@prisma-lossless/internals'
 import * as execa from 'execa'
 import { dim, underline } from 'kleur/colors'
 

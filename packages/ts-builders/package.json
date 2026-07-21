@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/ts-builders",
+  "name": "@prisma-lossless/ts-builders",
   "version": "0.0.0",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
@@ -24,7 +24,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@prisma/internals": "workspace:*"
+    "@prisma-lossless/internals": "workspace:*"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

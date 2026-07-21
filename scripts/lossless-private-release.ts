@@ -21,7 +21,6 @@ export const DEFAULT_RELEASE_OUTPUT_ROOT = path.join(os.tmpdir(), 'prisma-lossle
 
 export type ReleasePackage = {
   name: string
-  sourceName: string
   sourceDir: string
 }
 
@@ -54,24 +53,22 @@ const DEPENDENCY_SECTIONS: readonly DependencySection[] = [
 ]
 
 export const RELEASE_PACKAGES: readonly ReleasePackage[] = [
-  { name: '@prisma-lossless/debug', sourceName: '@prisma/debug', sourceDir: 'packages/debug' },
+  { name: '@prisma-lossless/debug', sourceDir: 'packages/debug' },
   {
     name: '@prisma-lossless/driver-adapter-utils',
-    sourceName: '@prisma/driver-adapter-utils',
     sourceDir: 'packages/driver-adapter-utils',
   },
-  { name: '@prisma-lossless/get-platform', sourceName: '@prisma/get-platform', sourceDir: 'packages/get-platform' },
-  { name: '@prisma-lossless/fetch-engine', sourceName: '@prisma/fetch-engine', sourceDir: 'packages/fetch-engine' },
-  { name: '@prisma-lossless/engines', sourceName: '@prisma/engines', sourceDir: 'packages/engines' },
-  { name: '@prisma-lossless/config', sourceName: '@prisma/config', sourceDir: 'packages/config' },
+  { name: '@prisma-lossless/get-platform', sourceDir: 'packages/get-platform' },
+  { name: '@prisma-lossless/fetch-engine', sourceDir: 'packages/fetch-engine' },
+  { name: '@prisma-lossless/engines', sourceDir: 'packages/engines' },
+  { name: '@prisma-lossless/config', sourceDir: 'packages/config' },
   {
     name: '@prisma-lossless/client-runtime-utils',
-    sourceName: '@prisma/client-runtime-utils',
     sourceDir: 'packages/client-runtime-utils',
   },
-  { name: '@prisma-lossless/adapter-pg', sourceName: '@prisma/adapter-pg', sourceDir: 'packages/adapter-pg' },
-  { name: '@prisma-lossless/client', sourceName: '@prisma-lossless/client', sourceDir: 'packages/client' },
-  { name: 'prisma-lossless', sourceName: 'prisma-lossless', sourceDir: 'packages/cli' },
+  { name: '@prisma-lossless/adapter-pg', sourceDir: 'packages/adapter-pg' },
+  { name: '@prisma-lossless/client', sourceDir: 'packages/client' },
+  { name: 'prisma-lossless', sourceDir: 'packages/cli' },
 ]
 
 export const PRIVATE_RELEASE_SOURCE_DIRS: readonly string[] = [
@@ -81,15 +78,10 @@ export const PRIVATE_RELEASE_SOURCE_DIRS: readonly string[] = [
   'packages/client-generator-ts',
 ]
 
-const RELEASE_PACKAGES_BY_SOURCE_NAME = new Map(
-  RELEASE_PACKAGES.map((releasePackage) => [releasePackage.sourceName, releasePackage]),
-)
 const RELEASE_PACKAGE_NAMES = new Set(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name))
 const RELEASE_PACKAGE_MTIME = new Date('1985-10-26T08:15:00.000Z')
 const ROOT_LICENSE_FILE = path.join(process.cwd(), 'LICENSE')
 const DEVELOPMENT_VERSION_PLACEHOLDER = '0.0.0'
-const GENERATED_RUNTIME_UTILS_DEPENDENCY = '@prisma/client-runtime-utils'
-const LOSSLESS_RUNTIME_UTILS_DEPENDENCY = '@prisma-lossless/client-runtime-utils'
 
 const CLIENT_RELEASE_VERSION_ARTIFACTS = [
   'runtime/client.js',
@@ -102,8 +94,6 @@ const CLIENT_RELEASE_VERSION_ARTIFACTS = [
   'runtime/wasm-compiler-edge.mjs.map',
   'scripts/default-index.js',
 ] as const
-
-const CLI_GENERATOR_ARTIFACTS = ['build/index.js'] as const
 
 export function selectNextReleaseVersion(publishedVersions: readonly string[]): string {
   const releaseVersion = new RegExp(`^${escapeRegExp(PRIVATE_RELEASE_VERSION_PREFIX)}\\.(\\d+)$`)
@@ -166,15 +156,12 @@ export function rewritePackageJsonForPrivateRelease(
   sourceCommit: string,
 ): JsonObject {
   const rewritten = cloneJsonObject(packageJson)
-  const sourceName = readPackageName(rewritten)
-  const releasePackage = RELEASE_PACKAGES_BY_SOURCE_NAME.get(sourceName)
+  const name = readPackageName(rewritten)
 
-  if (!releasePackage) {
-    throw new Error(`Package is not in the private release graph: ${sourceName}`)
+  if (!RELEASE_PACKAGE_NAMES.has(name)) {
+    throw new Error(`Package is not in the private release graph: ${name}`)
   }
 
-  const name = releasePackage.name
-  rewritten.name = name
   rewritten.version = version
   rewritten.prismaLosslessRelease = {
     version,
@@ -223,14 +210,21 @@ export function validateReleasePackageMetadata(packageJson: JsonObject, version:
 }
 
 export function assertReleaseGraphDependencyOrder(packages = RELEASE_PACKAGES): void {
-  const packageIndexes = new Map(packages.map((releasePackage, index) => [releasePackage.sourceName, index]))
+  const packageIndexes = new Map(packages.map((releasePackage, index) => [releasePackage.name, index]))
 
   for (const releasePackage of packages) {
     const packageJson = readPackageJson(path.join(process.cwd(), releasePackage.sourceDir, 'package.json'))
-    const packageIndex = packageIndexes.get(releasePackage.sourceName)
+    const packageName = readPackageName(packageJson)
+    const packageIndex = packageIndexes.get(releasePackage.name)
 
     if (packageIndex === undefined) {
       throw new Error(`Release package is missing from the graph: ${releasePackage.name}`)
+    }
+
+    if (packageName !== releasePackage.name) {
+      throw new Error(
+        `Release package ${releasePackage.sourceDir} is named ${packageName}; expected ${releasePackage.name}`,
+      )
     }
 
     const dependencies = readOptionalStringMap(packageJson.dependencies)
@@ -535,15 +529,6 @@ export function rewriteStagedPrivateReleaseArtifacts(stagingDir: string, package
     for (const relativePath of CLIENT_RELEASE_VERSION_ARTIFACTS) {
       replaceTextInExistingFile(path.join(stagingDir, relativePath), [[DEVELOPMENT_VERSION_PLACEHOLDER, version]])
     }
-    return
-  }
-
-  if (packageName === 'prisma-lossless') {
-    for (const relativePath of CLI_GENERATOR_ARTIFACTS) {
-      replaceTextInExistingFile(path.join(stagingDir, relativePath), [
-        [GENERATED_RUNTIME_UTILS_DEPENDENCY, LOSSLESS_RUNTIME_UTILS_DEPENDENCY],
-      ])
-    }
   }
 }
 
@@ -595,21 +580,19 @@ function rewriteDependencySection(packageJson: JsonObject, section: DependencySe
   const rewrittenDependencies: Record<string, string> = {}
 
   for (const [dependencyName, specifier] of Object.entries(dependencies)) {
-    const releaseDependency = RELEASE_PACKAGES_BY_SOURCE_NAME.get(dependencyName)
+    const isReleaseDependency = RELEASE_PACKAGE_NAMES.has(dependencyName)
 
     if (specifier.startsWith('workspace:')) {
-      if (!releaseDependency) {
+      if (!isReleaseDependency) {
         throw new Error(`Dependency ${dependencyName} is not in the private release graph`)
       }
 
-      rewrittenDependencies[dependencyName] =
-        releaseDependency.name === dependencyName ? version : npmAlias(releaseDependency.name, version)
+      rewrittenDependencies[dependencyName] = version
       continue
     }
 
-    if (releaseDependency && (specifier === '*' || specifier === '0.0.0')) {
-      rewrittenDependencies[dependencyName] =
-        releaseDependency.name === dependencyName ? version : npmAlias(releaseDependency.name, version)
+    if (isReleaseDependency && (specifier === '*' || specifier === '0.0.0')) {
+      rewrittenDependencies[dependencyName] = version
       continue
     }
 
@@ -666,26 +649,8 @@ function assertAllowedNpmAliasSpecifier(
   specifier: string,
   version: string,
 ): void {
-  const releaseDependency = RELEASE_PACKAGES_BY_SOURCE_NAME.get(dependencyName)
-  const expectedSpecifier = releaseDependency ? npmAlias(releaseDependency.name, version) : null
-
-  if (!releaseDependency || specifier !== expectedSpecifier || readAliasVersion(specifier) !== version) {
-    throw new Error(`${packageName} depends on ${dependencyName} with forbidden npm alias specifier`)
-  }
-}
-
-function readAliasVersion(specifier: string): string {
-  const match = /^npm:@prisma-lossless\/[a-z0-9-]+@(.+)$/.exec(specifier)
-
-  if (!match) {
-    throw new Error('Malformed npm alias specifier')
-  }
-
-  return match[1]
-}
-
-function npmAlias(packageName: string, version: string): string {
-  return `npm:${packageName}@${version}`
+  void version
+  throw new Error(`${packageName} depends on ${dependencyName} with forbidden npm alias specifier ${specifier}`)
 }
 
 function packStagedPackage(stagingDir: string, artifactsDir: string, packageName: string, version: string): string {

@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
 
-import type { SqlCommenterPlugin, SqlCommenterTags } from '@prisma/sqlcommenter'
+import type { SqlCommenterPlugin, SqlCommenterTags } from '@prisma-lossless/sqlcommenter'
 
 const asyncLocalStorage = new AsyncLocalStorage<SqlCommenterTags>()
 
@@ -10,7 +10,7 @@ const asyncLocalStorage = new AsyncLocalStorage<SqlCommenterTags>()
  *
  * @example
  * ```ts
- * import { queryTags, withQueryTags } from '@prisma/sqlcommenter-query-tags'
+ * import { queryTags, withQueryTags } from '@prisma-lossless/sqlcommenter-query-tags'
  *
  * const prisma = new PrismaClient({
  *   adapter: myAdapter,

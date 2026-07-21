@@ -34,12 +34,12 @@ that would otherwise resolve to registry packages by name and version.
 
 Build and pack these workspace packages:
 
-- `@prisma/debug` from `packages/debug`;
-- `@prisma/get-platform` from `packages/get-platform`;
-- `@prisma/fetch-engine` from `packages/fetch-engine`;
-- `@prisma/engines` from `packages/engines`;
-- `@prisma/config` from `packages/config`;
-- `@prisma/client-runtime-utils` from
+- `@prisma-lossless/debug` from `packages/debug`;
+- `@prisma-lossless/get-platform` from `packages/get-platform`;
+- `@prisma-lossless/fetch-engine` from `packages/fetch-engine`;
+- `@prisma-lossless/engines` from `packages/engines`;
+- `@prisma-lossless/config` from `packages/config`;
+- `@prisma-lossless/client-runtime-utils` from
   `packages/client-runtime-utils`;
 - `@prisma-lossless/client` from `packages/client`;
 - `prisma-lossless` from `packages/cli`.
@@ -95,18 +95,18 @@ project build required by `AGENTS.md`.
 Build command:
 
 ```sh
-pnpm --filter @prisma/debug --filter @prisma/get-platform \
-  --filter @prisma/fetch-engine --filter @prisma/engines \
-  --filter @prisma/config --filter @prisma/client-runtime-utils \
+pnpm --filter @prisma-lossless/debug --filter @prisma-lossless/get-platform \
+  --filter @prisma-lossless/fetch-engine --filter @prisma-lossless/engines \
+  --filter @prisma-lossless/config --filter @prisma-lossless/client-runtime-utils \
   --filter @prisma-lossless/client --filter prisma-lossless build
 ```
 
 Pack command:
 
 ```sh
-pnpm --filter @prisma/debug --filter @prisma/get-platform \
-  --filter @prisma/fetch-engine --filter @prisma/engines \
-  --filter @prisma/config --filter @prisma/client-runtime-utils \
+pnpm --filter @prisma-lossless/debug --filter @prisma-lossless/get-platform \
+  --filter @prisma-lossless/fetch-engine --filter @prisma-lossless/engines \
+  --filter @prisma-lossless/config --filter @prisma-lossless/client-runtime-utils \
   --filter @prisma-lossless/client --filter prisma-lossless pack \
   --pack-destination \
   /Users/alex/git/github/prisma/tmp/lossless-json-tasklet-013
@@ -123,17 +123,17 @@ All artifacts are local ignored files under:
 
 `tmp/lossless-json-tasklet-013/`
 
-- `@prisma/debug@0.0.0`:
+- `@prisma-lossless/debug@0.0.0`:
   `prisma-debug-0.0.0.tgz`;
-- `@prisma/get-platform@0.0.0`:
+- `@prisma-lossless/get-platform@0.0.0`:
   `prisma-get-platform-0.0.0.tgz`;
-- `@prisma/fetch-engine@0.0.0`:
+- `@prisma-lossless/fetch-engine@0.0.0`:
   `prisma-fetch-engine-0.0.0.tgz`;
-- `@prisma/engines@0.0.0`:
+- `@prisma-lossless/engines@0.0.0`:
   `prisma-engines-0.0.0.tgz`;
-- `@prisma/config@0.0.0`:
+- `@prisma-lossless/config@0.0.0`:
   `prisma-config-0.0.0.tgz`;
-- `@prisma/client-runtime-utils@0.0.0`:
+- `@prisma-lossless/client-runtime-utils@0.0.0`:
   `prisma-client-runtime-utils-0.0.0.tgz`;
 - `@prisma-lossless/client@0.0.0`:
   `prisma-lossless-client-0.0.0.tgz`;
@@ -144,10 +144,10 @@ The public tarballs contain the renamed package metadata:
 
 - `prisma-lossless-0.0.0.tgz` embeds package name
   `prisma-lossless`, bin `prisma-lossless`, and dependencies on
-  `@prisma/engines@0.0.0` and `@prisma/config@0.0.0`;
+  `@prisma-lossless/engines@0.0.0` and `@prisma-lossless/config@0.0.0`;
 - `prisma-lossless-client-0.0.0.tgz` embeds package name
   `@prisma-lossless/client`, dependency
-  `@prisma/client-runtime-utils@0.0.0`, and peer dependency
+  `@prisma-lossless/client-runtime-utils@0.0.0`, and peer dependency
   `prisma-lossless`.
 
 ## Post-Implementation Review

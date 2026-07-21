@@ -1,4 +1,4 @@
-import { jestConsoleContext, jestContext } from '@prisma/get-platform'
+import { jestConsoleContext, jestContext } from '@prisma-lossless/get-platform'
 import {
   createSchemaPathInput,
   getSchemaWithPath,
@@ -6,7 +6,7 @@ import {
   loadSchemaContext,
   MultipleSchemas,
   toSchemasContainer,
-} from '@prisma/internals'
+} from '@prisma-lossless/internals'
 import fs from 'fs-jetpack'
 import path from 'path'
 

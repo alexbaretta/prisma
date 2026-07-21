@@ -17,7 +17,7 @@ describe('referentialActions-onDelete-default-foreign-key-error(postgresql)', ()
       schemaPath: path.join(__dirname, 'schema.prisma'),
     })
     await generateTestClient()
-    const { PrismaClient } = require('./node_modules/@prisma/client')
+    const { PrismaClient } = require('./node_modules/@prisma-lossless/client')
     prisma = new PrismaClient()
   })
 

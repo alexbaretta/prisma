@@ -1,5 +1,5 @@
-import { Cache } from '@prisma/client-common'
-import * as DMMF from '@prisma/dmmf'
+import { Cache } from '@prisma-lossless/client-common'
+import * as DMMF from '@prisma-lossless/dmmf'
 
 import { DMMFHelper } from './dmmf'
 

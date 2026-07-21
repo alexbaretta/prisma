@@ -111,28 +111,28 @@ Prisma sees them.
 
 Passing checks:
 
-- `pnpm --filter @prisma/client-engine-runtime test
+- `pnpm --filter @prisma-lossless/client-engine-runtime test
 json-protocol.test.ts serialize-sql.test.ts data-mapper.test.ts
 in-memory-processing.test.ts parameterize.test.ts` passed
   (`5` files, `44` tests).
-- `pnpm --filter @prisma/client test serializeJsonQuery.test.ts`
+- `pnpm --filter @prisma-lossless/client test serializeJsonQuery.test.ts`
   passed (`62` tests).
-- `pnpm --filter @prisma/client test types.test.ts -t
+- `pnpm --filter @prisma-lossless/client test types.test.ts -t
 "types/json|types/native-types"` passed (`4` tests, `25`
   skipped).
-- `pnpm --filter @prisma/client test:functional:code --adapter
+- `pnpm --filter @prisma-lossless/client test:functional:code --adapter
 js_better_sqlite3 --generate-only lossless-json` passed and
   generated the focused functional client.
 - `git diff --check -- docs/plans/lossless-json/010-validate-
 lossless-json-qa.md packages/client/tests/functional/lossless-json/
 _matrix.ts packages/client/tests/functional/lossless-json/tests.ts`
   passed.
-- `pnpm --filter @prisma/client build` passed.
+- `pnpm --filter @prisma-lossless/client build` passed.
 
 Functional provider execution was attempted but could not complete in
 the current local environment:
 
-- `pnpm --filter @prisma/client test:functional:code --adapter js_pg
+- `pnpm --filter @prisma-lossless/client test:functional:code --adapter js_pg
 lossless-json` reached setup for PostgreSQL `js_pg` but failed before
   test execution. Direct `psql
 postgres://prisma:prisma@localhost:5432/postgres -c '\l'` failed
@@ -141,7 +141,7 @@ postgres://prisma:prisma@localhost:5432/postgres -c '\l'` failed
   `P1001` for `localhost:5432`. The existing `json-fields` functional
   suite fails the same way for `js_pg`, so this is a local database
   setup blocker rather than a lossless-json assertion failure.
-- `pnpm --filter @prisma/client test:functional:code --adapter
+- `pnpm --filter @prisma-lossless/client test:functional:code --adapter
 js_better_sqlite3 lossless-json` reached setup for the Better SQLite3
   adapter but the functional helper forces `TEST_REUSE_DATABASE=true`
   for driver adapters. That makes `DbPush` operate on the reused
@@ -162,7 +162,7 @@ consent where driver-adapter reuse is required.
 ## Validation Bug Review: Schema Engine Log Parsing
 
 Observed problem: root `pnpm test` and fresh functional-test database
-setup fail in `@prisma/internals` because `canConnectToDatabase`
+setup fail in `@prisma-lossless/internals` because `canConnectToDatabase`
 throws `Schema engine error:` with an empty message when the schema
 engine writes a single JSON error line to stderr.
 
@@ -184,14 +184,14 @@ functional tests, bypass Prisma's AI safety checkpoint, or special-case
 functional test setup around a parser bug.
 
 Validation that proves the fix: rerun
-`pnpm --filter @prisma/internals test schemaEngineCommands.test.ts`,
+`pnpm --filter @prisma-lossless/internals test schemaEngineCommands.test.ts`,
 then rerun root `pnpm test` with `TERM=xterm` so the existing
 interactive TTY test is not invalidated by Codex's default
 `TERM=dumb` environment.
 
 Validation performed:
 
-- `TERM=xterm pnpm --filter @prisma/internals exec dotenv -e
+- `TERM=xterm pnpm --filter @prisma-lossless/internals exec dotenv -e
 ../../.db.env -- vitest run --silent=true
 schemaEngineCommands.test.ts -t "sqlite - cannot|postgresql - server
 does not exist|invalid database type|empty connection string"`
@@ -210,7 +210,7 @@ does not exist|invalid database type|empty connection string"`
 
 ## Validation Bug Review: Migrate AI Marker Inheritance
 
-Observed problem: root `pnpm test` reaches `@prisma/migrate` and then
+Observed problem: root `pnpm test` reaches `@prisma-lossless/migrate` and then
 fails many reset, force-reset, and accept-data-loss tests because the
 Jest process inherits Codex agent marker environment variables. The
 tests intentionally exercise destructive-command behavior against
@@ -241,10 +241,10 @@ root `pnpm test` without granting dangerous-action consent.
 
 Validation performed:
 
-- `pnpm --filter @prisma/migrate exec dotenv -e ../../.db.env -- jest
+- `pnpm --filter @prisma-lossless/migrate exec dotenv -e ../../.db.env -- jest
 --runInBand src/__tests__/utils/ai-safety.test.ts` passed (`30`
   tests), confirming explicit marker detection still works.
-- `pnpm --filter @prisma/migrate exec dotenv -e ../../.db.env -- jest
+- `pnpm --filter @prisma-lossless/migrate exec dotenv -e ../../.db.env -- jest
 --runInBand src/__tests__/MigrateReset.test.ts -t "should work
 \\(--force\\)|triggers the AI safety checkpoint|reset should error
 in unattended environment"` passed (`2` tests, `11` skipped),
@@ -274,16 +274,16 @@ teach individual CLI command tests to compensate for helper-level
 success detection.
 
 Validation that proves the fix: rerun focused `DbDrop` success tests
-and the affected `@prisma/migrate` package tests.
+and the affected `@prisma-lossless/migrate` package tests.
 
 Validation performed:
 
-- `pnpm --filter @prisma/migrate exec dotenv -e ../../.db.env -- jest
+- `pnpm --filter @prisma-lossless/migrate exec dotenv -e ../../.db.env -- jest
 --runInBand src/__tests__/DbDrop.test.ts -t "should work"` passed
   (`4` tests, `7` skipped).
-- `pnpm --filter @prisma/internals build` passed after the helper
+- `pnpm --filter @prisma-lossless/internals build` passed after the helper
   change.
-- `pnpm --filter @prisma/migrate test` passed with local environment
+- `pnpm --filter @prisma-lossless/migrate test` passed with local environment
   skips for unavailable SQL Server, the locally timing-out CockroachDB
   suite, and Docker-only extension coverage (`33` suites, `352` tests,
   `2` skipped).
@@ -331,13 +331,13 @@ environment variables.
 Validation performed:
 
 - `TEST_POSTGRES_URI=postgres://alex@localhost:5432/tests pnpm
---filter @prisma/integration-tests exec dotenv -e ../../.db.env --
+--filter @prisma-lossless/integration-tests exec dotenv -e ../../.db.env --
 jest --maxWorkers=1 --silent
 src/__tests__/integration/postgresql/runtime.test.ts` passed (`70`
   tests).
 - `TEST_SKIP_MSSQL=1
 TEST_POSTGRES_URI=postgres://alex@localhost:5432/tests pnpm --filter
-@prisma/integration-tests test` passed (`8` suites, `514` tests,
+@prisma-lossless/integration-tests test` passed (`8` suites, `514` tests,
   `514` snapshots).
 - `TERM=xterm GITHUB_REF_NAME=target-7.8.0-lossless
 TEST_SKIP_MSSQL=1 TEST_SKIP_COCKROACHDB=1 TEST_NO_DOCKER=1
@@ -345,8 +345,8 @@ TEST_POSTGRES_URI=postgres://alex@localhost:5432/tests
 TEST_POSTGRES_URI_MIGRATE=postgres://alex@localhost:5432/tests-migrate
 TEST_POSTGRES_SHADOWDB_URI_MIGRATE=postgres://alex@localhost:5432/tests-migrate-shadowdb
 TEST_FUNCTIONAL_POSTGRES_URI=postgres://alex@localhost:5432/PRISMA_DB_NAME
-pnpm test` exited successfully. The run passed `@prisma/migrate`
-  (`33` suites, `352` tests, `2` skipped), `@prisma/client` (`40`
+pnpm test` exited successfully. The run passed `@prisma-lossless/migrate`
+  (`33` suites, `352` tests, `2` skipped), `@prisma-lossless/client` (`40`
   suites passed, `1` skipped, `671` tests passed), and
-  `@prisma/integration-tests` (`8` suites, `514` tests, `514`
+  `@prisma-lossless/integration-tests` (`8` suites, `514` tests, `514`
   snapshots), then completed the remaining root packages.

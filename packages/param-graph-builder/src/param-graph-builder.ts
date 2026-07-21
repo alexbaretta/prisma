@@ -13,8 +13,8 @@ import type {
   ParamGraphData,
   RootEntryData,
   SerializedParamGraph,
-} from '@prisma/param-graph'
-import { serializeParamGraph } from '@prisma/param-graph'
+} from '@prisma-lossless/param-graph'
+import { serializeParamGraph } from '@prisma-lossless/param-graph'
 
 export type NodeId = number
 

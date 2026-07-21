@@ -1,4 +1,4 @@
-import { ErrorArea, handlePanic, RustPanic } from '@prisma/internals'
+import { ErrorArea, handlePanic, RustPanic } from '@prisma-lossless/internals'
 
 async function main() {
   const error = new RustPanic('Some error message!\n'.repeat(23), '', undefined, ErrorArea.LIFT_CLI)

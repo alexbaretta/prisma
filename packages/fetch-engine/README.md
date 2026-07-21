@@ -1,4 +1,4 @@
-# @prisma/fetch-engine
+# @prisma-lossless/fetch-engine
 
 Responsible for downloading and caching the latest Rust binary
 

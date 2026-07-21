@@ -1,4 +1,4 @@
-import type { SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import type { SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 
 import { formatQueryInsight } from './format/format'
 
@@ -12,7 +12,7 @@ import { formatQueryInsight } from './format/format'
  *
  * @example
  * ```ts
- * import { prismaQueryInsights } from '@prisma/sqlcommenter-query-insights'
+ * import { prismaQueryInsights } from '@prisma-lossless/sqlcommenter-query-insights'
  *
  * const prisma = new PrismaClient({
  *   adapter: myAdapter,

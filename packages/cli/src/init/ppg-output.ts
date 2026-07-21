@@ -1,4 +1,4 @@
-import { link } from '@prisma/internals'
+import { link } from '@prisma-lossless/internals'
 import { bold, green } from 'kleur/colors'
 
 export function successMessage(message: string): string {

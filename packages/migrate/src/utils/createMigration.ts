@@ -1,8 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import type { ActiveConnectorType } from '@prisma/generator'
-import type { MigrateTypes } from '@prisma/internals'
+import type { ActiveConnectorType } from '@prisma-lossless/generator'
+import type { MigrateTypes } from '@prisma-lossless/internals'
 
 type CreateMigrationInput = {
   baseDir: string

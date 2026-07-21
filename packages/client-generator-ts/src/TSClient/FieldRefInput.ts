@@ -1,4 +1,4 @@
-import type * as DMMF from '@prisma/dmmf'
+import type * as DMMF from '@prisma-lossless/dmmf'
 
 import { getRefAllowedTypeName } from '../utils'
 

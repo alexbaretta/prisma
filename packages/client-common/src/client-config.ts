@@ -1,5 +1,5 @@
-import { ActiveConnectorType } from '@prisma/generator'
-import type { SerializedParamGraph } from '@prisma/param-graph'
+import { ActiveConnectorType } from '@prisma-lossless/generator'
+import type { SerializedParamGraph } from '@prisma-lossless/param-graph'
 
 import { CompilerWasmLoadingConfig } from './QueryCompiler'
 import { RuntimeDataModel } from './runtimeDataModel'

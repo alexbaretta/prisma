@@ -1,4 +1,4 @@
-import type { RuntimeDataModel } from '@prisma/client-common'
+import type { RuntimeDataModel } from '@prisma-lossless/client-common'
 
 import { PrismaClientOptions } from '../runtime'
 import { ClientConfig, validatePrismaClientOptions } from '../runtime/utils/validatePrismaClientOptions'

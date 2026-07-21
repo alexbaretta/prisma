@@ -3,9 +3,9 @@ import {
   loadConfigFromFile,
   PrismaConfigEnvError,
   type PrismaConfigInternal,
-} from '@prisma/config'
-import { Debug } from '@prisma/debug'
-import { assertNever, HelpError } from '@prisma/internals'
+} from '@prisma-lossless/config'
+import { Debug } from '@prisma-lossless/debug'
+import { assertNever, HelpError } from '@prisma-lossless/internals'
 
 const debug = Debug('prisma:cli:loadConfig')
 

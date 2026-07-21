@@ -1,4 +1,4 @@
-import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { PrismaLibSql } from '@prisma-lossless/adapter-libsql'
 
 import { PrismaClient } from './generated/prisma/client'
 import { conversionByVariant, filterTrackingEvents, getTrackingEvents } from './generated/prisma/sql'

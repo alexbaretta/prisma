@@ -1,1 +1,1 @@
-export { PrismaClient, User } from '@prisma/client'
+export { PrismaClient, User } from '@prisma-lossless/client'

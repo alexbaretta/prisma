@@ -1,5 +1,5 @@
 import { cast as defaultCast, type Field } from '@planetscale/database'
-import { ArgType, type ColumnType, ColumnTypeEnum } from '@prisma/driver-adapter-utils'
+import { ArgType, type ColumnType, ColumnTypeEnum } from '@prisma-lossless/driver-adapter-utils'
 
 import { decodeUtf8 } from './text'
 

@@ -1,4 +1,4 @@
-import { Debug } from '@prisma/debug'
+import { Debug } from '@prisma-lossless/debug'
 import { Either, Schema as Shape } from 'effect'
 import { pipe } from 'effect/Function'
 

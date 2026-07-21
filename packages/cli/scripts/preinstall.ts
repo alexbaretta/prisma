@@ -1,6 +1,6 @@
 import process from 'node:process'
 
-import { drawBox } from '@prisma/internals'
+import { drawBox } from '@prisma-lossless/internals'
 
 type MajorMinor = `${number}.${number}`
 type MajorMinorPatch = `${MajorMinor}.${number}`

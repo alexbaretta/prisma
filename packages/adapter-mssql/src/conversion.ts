@@ -5,7 +5,7 @@ import {
   DriverAdapterError,
   IsolationLevel,
   ResultValue,
-} from '@prisma/driver-adapter-utils'
+} from '@prisma-lossless/driver-adapter-utils'
 import sql from 'mssql'
 
 export function mapColumnType(col: sql.IColumn): ColumnType {

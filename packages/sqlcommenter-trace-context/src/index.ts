@@ -1,5 +1,5 @@
-import { getGlobalTracingHelper } from '@prisma/instrumentation-contract'
-import type { SqlCommenterPlugin } from '@prisma/sqlcommenter'
+import { getGlobalTracingHelper } from '@prisma-lossless/instrumentation-contract'
+import type { SqlCommenterPlugin } from '@prisma-lossless/sqlcommenter'
 
 /**
  * Parses the trace flags from a W3C Trace Context traceparent header.
@@ -38,12 +38,12 @@ function isSampled(traceparent: string): boolean {
  * SQL queries with distributed traces.
  *
  * The traceparent is only included when:
- * 1. Tracing is enabled via `@prisma/instrumentation`
+ * 1. Tracing is enabled via `@prisma-lossless/instrumentation`
  * 2. The current trace context has the sampled flag set
  *
  * @example
  * ```ts
- * import { traceContext } from '@prisma/sqlcommenter-trace-context'
+ * import { traceContext } from '@prisma-lossless/sqlcommenter-trace-context'
  *
  * const prisma = new PrismaClient({
  *   adapter: myAdapter,

@@ -1,4 +1,4 @@
-import type { PrismaClientInitializationError } from '@prisma/client-runtime-utils'
+import type { PrismaClientInitializationError } from '@prisma-lossless/client-runtime-utils'
 
 import testMatrix from './_matrix'
 // @ts-ignore

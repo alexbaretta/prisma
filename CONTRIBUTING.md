@@ -235,7 +235,7 @@ This is a list of the top level commands:
 Some top level commands are namespaces, they do not execute an action without a subcommand (e.g. `db`, `migrate`).
 Each command, namespaces included, and subcommand provides help output via `-h`/`--help` flags.
 
-Note that the Prisma CLI bundles all its dependencies. If you happen to make changes to dependencies in the monorepo (e.g. `@prisma/internals`), you must run at the root level, `pnpm -r run dev` or `pnpm run watch` to make the changes available to the CLI.
+Note that the Prisma CLI bundles all its dependencies. If you happen to make changes to dependencies in the monorepo (e.g. `@prisma-lossless/internals`), you must run at the root level, `pnpm -r run dev` or `pnpm run watch` to make the changes available to the CLI.
 
 ### First contribution
 
@@ -271,7 +271,7 @@ pnpm install
 pnpm prisma -v
 # 💡 In any successful setup `pnpm prisma -v` should return
 # prisma                  : 0.0.0
-# @prisma/client          : 0.0.0
+# @prisma-lossless/client          : 0.0.0
 # ...
 
 pnpm prisma generate

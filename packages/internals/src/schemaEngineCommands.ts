@@ -1,4 +1,4 @@
-import { BinaryType } from '@prisma/fetch-engine'
+import { BinaryType } from '@prisma-lossless/fetch-engine'
 import { execa, type ExecaError } from 'execa'
 
 import { resolveBinary } from './resolveBinary'

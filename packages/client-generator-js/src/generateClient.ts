@@ -1,4 +1,4 @@
-import type * as DMMF from '@prisma/dmmf'
+import type * as DMMF from '@prisma-lossless/dmmf'
 import type {
   ActiveConnectorType,
   BinaryPaths,
@@ -6,8 +6,8 @@ import type {
   DataSource,
   GeneratorConfig,
   SqlQueryOutput,
-} from '@prisma/generator'
-import { pathToPosix, setClassName } from '@prisma/internals'
+} from '@prisma-lossless/generator'
+import { pathToPosix, setClassName } from '@prisma-lossless/internals'
 import { createHash } from 'crypto'
 import paths from 'env-paths'
 import fs from 'fs/promises'

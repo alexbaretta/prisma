@@ -1,4 +1,4 @@
-# `@prisma/engines`
+# `@prisma-lossless/engines`
 
 ⚠️ **Warning**: This package is intended for Prisma's internal use.
 Its release cycle does not follow SemVer, which means we might release breaking changes (change APIs, remove functionality) without any prior warning.
@@ -10,4 +10,4 @@ The engines version to be downloaded is directly determined by the version of it
 You should probably not use this package directly, but instead use one of these:
 
 - [`prisma` CLI](https://www.npmjs.com/package/prisma)
-- [`@prisma/client`](https://www.npmjs.com/package/@prisma/client)
+- [`@prisma-lossless/client`](https://www.npmjs.com/package/@prisma-lossless/client)

@@ -11,11 +11,11 @@ This test verifies that the SQL commenter plugin feature works correctly end-to-
 ## Setup
 
 - Uses SQLite with the `better-sqlite3` driver adapter
-- Uses the `@prisma/sqlcommenter` package for plugin type definitions
+- Uses the `@prisma-lossless/sqlcommenter` package for plugin type definitions
 - Captures query events via `$on('query', ...)` to verify comments in SQL
 
 ## Running the test
 
 ```bash
-pnpm --filter @prisma/client test:e2e --verbose sqlcommenter
+pnpm --filter @prisma-lossless/client test:e2e --verbose sqlcommenter
 ```

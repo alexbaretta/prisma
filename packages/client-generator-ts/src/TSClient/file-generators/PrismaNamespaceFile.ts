@@ -1,4 +1,4 @@
-import * as ts from '@prisma/ts-builders'
+import * as ts from '@prisma-lossless/ts-builders'
 
 import { commonCodeTS } from '../common'
 import { Enum } from '../Enum'
@@ -313,7 +313,7 @@ function buildClientOptions(context: GenerateContext) {
     .extends(ts.namedType('PrismaClientBaseOptions'))
     .add(
       ts.property('adapter', ts.namedType('runtime.SqlDriverAdapterFactory')).setDocComment(ts.docComment`
-            A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by \`@prisma-lossless/adapter-pg\`, \`@prisma/adapter-libsql\`, \`@prisma/adapter-planetscale\`, etc.
+            A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by \`@prisma-lossless/adapter-pg\`, \`@prisma-lossless/adapter-libsql\`, \`@prisma-lossless/adapter-planetscale\`, etc.
 
             A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use \`accelerateUrl\` instead).
 

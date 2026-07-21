@@ -42,7 +42,7 @@ testIf(process.platform !== 'win32')('reintrospection - no changes', async () =>
 
     generator client {
       provider = "prisma-client-js"
-      output   = "@prisma/client"
+      output   = "@prisma-lossless/client"
     }
 
     datasource my_db {
@@ -79,7 +79,7 @@ testIf(process.platform !== 'win32')('reintrospection - with --print', async () 
     // prisma/schema/config.prisma
     generator client {
       provider = "prisma-client-js"
-      output   = "@prisma/client"
+      output   = "@prisma-lossless/client"
     }
 
     datasource my_db {
@@ -107,7 +107,7 @@ test('reintrospection - new model', async () => {
 
     generator client {
       provider = "prisma-client-js"
-      output   = "@prisma/client"
+      output   = "@prisma-lossless/client"
     }
 
     datasource my_db {
@@ -146,7 +146,7 @@ test('reintrospection - new model - existing introspected.prisma', async () => {
 
     generator client {
       provider = "prisma-client-js"
-      output   = "@prisma/client"
+      output   = "@prisma-lossless/client"
     }
 
     datasource my_db {
@@ -192,7 +192,7 @@ test('reintrospection - new field', async () => {
 
     generator client {
       provider = "prisma-client-js"
-      output   = "@prisma/client"
+      output   = "@prisma-lossless/client"
     }
 
     datasource my_db {
@@ -226,7 +226,7 @@ test('reintrospection - remove model', async () => {
 
     generator client {
       provider = "prisma-client-js"
-      output   = "@prisma/client"
+      output   = "@prisma-lossless/client"
     }
 
     datasource my_db {
@@ -254,7 +254,7 @@ test('reintrospection - invalid schema with --force', async () => {
 
     generator client {
       provider = "prisma-client-js"
-      output   = "@prisma/client"
+      output   = "@prisma-lossless/client"
     }
 
     datasource my_db {

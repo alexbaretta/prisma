@@ -4,7 +4,7 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation'
 import { resourceFromAttributes } from '@opentelemetry/resources'
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
-import { PrismaInstrumentation } from '@prisma/instrumentation'
+import { PrismaInstrumentation } from '@prisma-lossless/instrumentation'
 
 import { NewPrismaClient } from '../_utils/types'
 import testMatrix from './_matrix'

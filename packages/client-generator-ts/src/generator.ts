@@ -2,8 +2,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { enginesVersion } from '@prisma/engines-version'
-import { Generator, GeneratorConfig, GeneratorManifest, GeneratorOptions } from '@prisma/generator'
-import { parseEnvValue } from '@prisma/internals'
+import { Generator, GeneratorConfig, GeneratorManifest, GeneratorOptions } from '@prisma-lossless/generator'
+import { parseEnvValue } from '@prisma-lossless/internals'
 import { getTsconfig } from 'get-tsconfig'
 import { bold, dim, green } from 'kleur/colors'
 

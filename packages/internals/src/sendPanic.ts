@@ -1,6 +1,6 @@
 import { stripVTControlCharacters } from 'node:util'
 
-import { getBinaryTargetForCurrentPlatform } from '@prisma/get-platform'
+import { getBinaryTargetForCurrentPlatform } from '@prisma-lossless/get-platform'
 import * as checkpoint from 'checkpoint-client'
 import os from 'os'
 import tmp from 'tmp'

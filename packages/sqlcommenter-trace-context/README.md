@@ -1,4 +1,4 @@
-# @prisma/sqlcommenter-trace-context
+# @prisma-lossless/sqlcommenter-trace-context
 
 W3C Trace Context (`traceparent`) plugin for Prisma SQL commenter.
 
@@ -7,13 +7,13 @@ This plugin adds the `traceparent` header from the current trace context to SQL 
 ## Installation
 
 ```bash
-npm install @prisma/sqlcommenter-trace-context
+npm install @prisma-lossless/sqlcommenter-trace-context
 ```
 
 ## Usage
 
 ```ts
-import { traceContext } from '@prisma/sqlcommenter-trace-context'
+import { traceContext } from '@prisma-lossless/sqlcommenter-trace-context'
 
 import { PrismaClient } from './generated/prisma/client'
 
@@ -33,7 +33,7 @@ SELECT * FROM users /*traceparent='00-0af7651916cd43dd8448eb211c80319c-b9c7c989f
 
 The `traceContext()` plugin:
 
-1. Checks if tracing is enabled via `@prisma/instrumentation`
+1. Checks if tracing is enabled via `@prisma-lossless/instrumentation`
 2. Retrieves the current trace context's `traceparent` header
 3. Only includes the `traceparent` in the SQL comment if the sampled flag is set (the trace flags end with `01`)
 
@@ -45,7 +45,7 @@ This means:
 
 ## Requirements
 
-- Requires `@prisma/instrumentation` to be configured and enabled for tracing
+- Requires `@prisma-lossless/instrumentation` to be configured and enabled for tracing
 - Works with Prisma Client using driver adapters
 
 ## W3C Trace Context

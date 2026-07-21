@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { stripVTControlCharacters } from 'node:util'
 
-import { vitestConsoleContext, vitestContext } from '@prisma/get-platform/src/test-utils/vitestContext'
+import { vitestConsoleContext, vitestContext } from '@prisma-lossless/get-platform/src/test-utils/vitestContext'
 import { describe, expect, test, vi } from 'vitest'
 
 import { getCliProvidedSchemaFile } from '../../cli/getSchema'

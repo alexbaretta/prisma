@@ -10,7 +10,7 @@ import {
   SqlResultSet,
   Transaction,
   TransactionOptions,
-} from '@prisma/driver-adapter-utils'
+} from '@prisma-lossless/driver-adapter-utils'
 import { Mutex } from 'async-mutex'
 import sql from 'mssql'
 

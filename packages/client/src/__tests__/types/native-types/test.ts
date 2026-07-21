@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma-lossless/client'
 
 async function main() {
   const prisma = new PrismaClient()

@@ -1,5 +1,5 @@
-import { SchemaEngineConfigInternal } from '@prisma/config'
-import { MigrateTypes, SchemaContext, toSchemasContainer } from '@prisma/internals'
+import { SchemaEngineConfigInternal } from '@prisma-lossless/config'
+import { MigrateTypes, SchemaContext, toSchemasContainer } from '@prisma-lossless/internals'
 
 import { Extension } from './extensions'
 import type { SchemaEngine } from './SchemaEngine'

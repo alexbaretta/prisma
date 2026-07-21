@@ -1,5 +1,5 @@
 {
-  "name": "@prisma/sqlcommenter",
+  "name": "@prisma-lossless/sqlcommenter",
   "version": "0.0.0",
   "description": "SQL commenter types for Prisma",
   "main": "dist/index.js",
@@ -35,6 +35,6 @@
   ],
   "sideEffects": false,
   "devDependencies": {
-    "@prisma/json-protocol": "workspace:*"
+    "@prisma-lossless/json-protocol": "workspace:*"
   }
 }

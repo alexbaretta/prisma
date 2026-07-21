@@ -1,4 +1,4 @@
-import { PrismaClientKnownRequestError } from '@prisma/client-runtime-utils'
+import { PrismaClientKnownRequestError } from '@prisma-lossless/client-runtime-utils'
 
 import { waitForBatch } from './waitForBatch'
 

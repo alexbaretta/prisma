@@ -34,7 +34,7 @@ export function getGlobalTracingHelper(): TracingHelper | undefined {
 }
 
 /**
- * Sets the global tracing helper. This is called by @prisma/instrumentation
+ * Sets the global tracing helper. This is called by @prisma-lossless/instrumentation
  * when instrumentation is enabled.
  */
 export function setGlobalTracingHelper(helper: TracingHelper): void {
@@ -47,7 +47,7 @@ export function setGlobalTracingHelper(helper: TracingHelper): void {
 }
 
 /**
- * Clears the global tracing helper. This is called by @prisma/instrumentation
+ * Clears the global tracing helper. This is called by @prisma-lossless/instrumentation
  * when instrumentation is disabled.
  */
 export function clearGlobalTracingHelper(): void {

@@ -2,7 +2,7 @@ import { generateTestClient } from '../../../../utils/getTestClient'
 
 test('float-node-api', async () => {
   await generateTestClient()
-  const { PrismaClient, Prisma } = require('./node_modules/@prisma/client')
+  const { PrismaClient, Prisma } = require('./node_modules/@prisma-lossless/client')
 
   const db = new PrismaClient()
   await db.user.deleteMany()

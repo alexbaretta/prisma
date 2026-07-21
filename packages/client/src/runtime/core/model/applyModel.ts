@@ -1,4 +1,4 @@
-import * as DMMF from '@prisma/dmmf'
+import * as DMMF from '@prisma-lossless/dmmf'
 import type { O } from 'ts-toolbelt'
 
 import { type Client, type InternalRequestParams } from '../../getPrismaClient'

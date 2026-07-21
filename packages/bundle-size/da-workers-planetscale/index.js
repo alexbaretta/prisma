@@ -1,4 +1,4 @@
-import { PrismaPlanetScale } from '@prisma/adapter-planetscale'
+import { PrismaPlanetScale } from '@prisma-lossless/adapter-planetscale'
 
 import { PrismaClient } from './client/edge'
 

@@ -1,4 +1,4 @@
-import type { SqlCommenterQueryInfo } from '@prisma/sqlcommenter'
+import type { SqlCommenterQueryInfo } from '@prisma-lossless/sqlcommenter'
 import { describe, expect, it } from 'vitest'
 
 import { formatQueryInsight, toBase64Url } from './format'

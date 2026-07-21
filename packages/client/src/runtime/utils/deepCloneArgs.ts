@@ -1,5 +1,5 @@
-import { Decimal, isObjectEnumValue, Sql } from '@prisma/client-runtime-utils'
-import { assertNever } from '@prisma/internals'
+import { Decimal, isObjectEnumValue, Sql } from '@prisma-lossless/client-runtime-utils'
+import { assertNever } from '@prisma-lossless/internals'
 
 import { isFieldRef } from '../core/model/FieldRef'
 import { isSkip } from '../core/types'

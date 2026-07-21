@@ -1,7 +1,7 @@
 import path from 'node:path'
 
-import { jestContext } from '@prisma/get-platform'
-import { HelpError } from '@prisma/internals'
+import { jestContext } from '@prisma-lossless/get-platform'
+import { HelpError } from '@prisma-lossless/internals'
 
 import { loadConfig } from './loadConfig'
 

@@ -1,4 +1,4 @@
-import { INDENT_SIZE } from '@prisma/ts-builders'
+import { INDENT_SIZE } from '@prisma-lossless/ts-builders'
 
 import { ArrayValue } from './ArrayValue'
 import { ErrorWriter, fieldsSeparator } from './base'

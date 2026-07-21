@@ -1,8 +1,8 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import { ensureNeededBinariesExist } from '@prisma/engines'
-import type { BinaryPaths, DownloadOptions } from '@prisma/fetch-engine'
-import type { Command, Commands } from '@prisma/internals'
-import { arg, drawBox, format, HelpError, isError, link, unknownCommand } from '@prisma/internals'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import { ensureNeededBinariesExist } from '@prisma-lossless/engines'
+import type { BinaryPaths, DownloadOptions } from '@prisma-lossless/fetch-engine'
+import type { Command, Commands } from '@prisma-lossless/internals'
+import { arg, drawBox, format, HelpError, isError, link, unknownCommand } from '@prisma-lossless/internals'
 import { bold, dim, green, red } from 'kleur/colors'
 
 import { runCheckpointClientCheck } from './utils/checkpoint'

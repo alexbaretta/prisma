@@ -39,7 +39,7 @@ datasource db {
   
   `
   const ts = `
-import { PrismaClient } from  '@prisma/client'
+import { PrismaClient } from  '@prisma-lossless/client'
 const client = new PrismaClient();
 
 async function main(){

@@ -1,4 +1,4 @@
-import { getCommandWithExecutor } from '@prisma/internals'
+import { getCommandWithExecutor } from '@prisma-lossless/internals'
 import { bold, dim, green, red } from 'kleur/colors'
 
 const PRISMA_CLI_PACKAGE_NAME = 'prisma-lossless'

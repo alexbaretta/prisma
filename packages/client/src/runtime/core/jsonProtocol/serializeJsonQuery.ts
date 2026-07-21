@@ -1,6 +1,6 @@
-import { RuntimeDataModel, RuntimeModel, uncapitalize } from '@prisma/client-common'
-import { isLosslessJsonNumber, isObjectEnumValue } from '@prisma/client-runtime-utils'
-import { assertNever } from '@prisma/internals'
+import { RuntimeDataModel, RuntimeModel, uncapitalize } from '@prisma-lossless/client-common'
+import { isLosslessJsonNumber, isObjectEnumValue } from '@prisma-lossless/client-runtime-utils'
+import { assertNever } from '@prisma-lossless/internals'
 
 import { ErrorFormat } from '../../getPrismaClient'
 import { CallSite } from '../../utils/CallSite'

@@ -60,7 +60,7 @@ ownership question, or validation path remains unresolved.
   JavaScript `number` that was already constructed by user code.
 - Do not change non-JSON scalar numeric fields as part of this work.
 - Do not use driver-level PostgreSQL JSON parser overrides as the main
-  solution. `@prisma/adapter-pg` already preserves JSON text and hands
+  solution. `@prisma-lossless/adapter-pg` already preserves JSON text and hands
   JSON handling to Prisma runtime code.
 
 ## Known Patch Surface
@@ -267,6 +267,16 @@ outputs are removed during the clean build.
 | --- | ----------------------------------------------------------------------------- | -------- | ------ | ------------ |
 | 027 | [Preserve lifecycle build outputs](./027-preserve-lifecycle-build-outputs.md) | High     | [DONE] | 026          |
 
+### Sprint 14: Source Package Identity
+
+Sprint 14 removes release-time namespace mutation. Fork-owned package
+identity must be authoritative in the source workspace, build graph,
+generated metadata, and external release artifacts.
+
+| ID  | Tasklet                                                               | Priority | Status | Dependencies |
+| --- | --------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 028 | [Rename source packages to lossless](./028-rename-source-packages.md) | High     | [ ]    | 027          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This
@@ -357,7 +367,7 @@ environment flags:
 ```sh
 CI=true GITHUB_REF_NAME=target-7.8.0-lossless \
   TERM=xterm-256color TEST_SKIP_MSSQL=true \
-  TEST_SKIP_COCKROACHDB=true pnpm --filter @prisma/migrate test
+  TEST_SKIP_COCKROACHDB=true pnpm --filter @prisma-lossless/migrate test
 ```
 
 That rerun passed all migrate tests: `33` suites, `352` passed tests,
@@ -437,7 +447,7 @@ scripts/lossless-private-registry-run.integration.test.ts` passed
 - `pnpm build` passed (`44` successful, `44` total).
 - Root `pnpm test` first failed before tests started in the sandbox
   because `tsx` could not create its IPC pipe. The escalated rerun with
-  SQL Server and CockroachDB skipped reached `@prisma/migrate` and
+  SQL Server and CockroachDB skipped reached `@prisma-lossless/migrate` and
   failed only because local MongoDB was not running and the stale
   `tests-migrate-prisma-config-extensions` database already existed.
   The stale PostgreSQL test database was dropped, and the root test was
@@ -471,10 +481,10 @@ Tasklet 025 validation:
   fixture type drift. The repo-root build remains the passing build
   gate for this tasklet.
 - Root `pnpm test` with SQL Server, CockroachDB, and MongoDB skipped
-  failed once in `@prisma/migrate` because the local PostgreSQL test
+  failed once in `@prisma-lossless/migrate` because the local PostgreSQL test
   database `tests-migrate-prisma-config-extensions` already existed and
   removed one expected snapshot line. After dropping that stale local
-  test database, `pnpm --filter @prisma/migrate test` passed (`33`
+  test database, `pnpm --filter @prisma-lossless/migrate test` passed (`33`
   suites, `341` passed tests, `2` skipped tests, `543` snapshots).
 
 ## Validation Bug Review: Client Type Harness Package Rename
@@ -488,13 +498,13 @@ the generated test client is effectively typed as `any`.
 Violated contract or invariant: Sprint 2 renamed the local client
 package to `@prisma-lossless/client`, but the client type-test harness
 must still copy the actual local client package before generating typed
-fixtures. Asking `getPackedPackage('@prisma/client')` after the rename
+fixtures. Asking `getPackedPackage('@prisma-lossless/client')` after the rename
 does not resolve the workspace package and can copy the wrong package.
 
 Owning layer: `packages/client/src/__tests__/types/types.test.ts` owns
 packing the local client package for these generated type fixtures.
 `packages/client/src/utils/generateInFolder.ts` owns the generated
-fixture output location, which remains `node_modules/@prisma/client`
+fixture output location, which remains `node_modules/@prisma-lossless/client`
 for legacy fixture imports.
 
 Intended solution: change the type-test harness to pack
@@ -504,7 +514,7 @@ paths unchanged, and install the same packed source under
 resolve their runtime imports after the fork rename.
 
 Rejected wrong-layer solution: do not rewrite every legacy type fixture
-from `@prisma/client` to `@prisma-lossless/client`, and do not weaken
+from `@prisma-lossless/client` to `@prisma-lossless/client`, and do not weaken
 or remove `tsd` error assertions. The generated fixture import surface
 is a compatibility test surface; the package/runtime aliasing is what
 must reflect the fork rename.
@@ -517,7 +527,7 @@ CockroachDB migrate suite.
 Post-implementation review: the implemented change stays in the
 type-test harness. It does not weaken `tsd`, does not alter generated
 client type contracts, and does not rewrite fixture imports away from
-the compatibility `@prisma/client` surface. The harness now copies the
+the compatibility `@prisma-lossless/client` surface. The harness now copies the
 same packed `@prisma-lossless/client` source to both the compatibility
 fixture path and the renamed runtime package path required by generated
 declarations.
@@ -537,7 +547,7 @@ packages/client run test` passed (`40` suites passed, `1` skipped,
 
 Observed problem: after the client type-test harness fix, root
 `pnpm test` reaches the `prisma-lossless` CLI package. CLI update and
-version tests still assert stock `@prisma/client` and `prisma` output,
+version tests still assert stock `@prisma-lossless/client` and `prisma` output,
 while generate tests fail because temp fixtures cannot resolve
 `@prisma-lossless/client`.
 
@@ -548,21 +558,21 @@ package because `resolvePrismaClient()` now reads the local client
 package metadata and resolves `@prisma-lossless/client`.
 
 Owning layer: CLI tests own the expected public messages. The shared
-Jest fixture helper in `@prisma/get-platform` owns temp fixture
+Jest fixture helper in `@prisma-lossless/get-platform` owns temp fixture
 `node_modules` setup for CLI tests that generate Prisma Client from an
 isolated project directory.
 
 Intended solution: update CLI update-message, print-update-message, and
 version snapshots to assert `prisma-lossless` and
 `@prisma-lossless/client`. Extend the fixture helper to symlink the
-local client package at both `node_modules/@prisma/client` for legacy
+local client package at both `node_modules/@prisma-lossless/client` for legacy
 fixture imports and `node_modules/@prisma-lossless/client` for the
 renamed package resolver.
 
 Rejected wrong-layer solution: do not change the CLI constants back to
 stock Prisma names, do not weaken generate tests, and do not rewrite
 custom-output schema fixtures that intentionally exercise arbitrary
-output paths such as `@prisma/client`.
+output paths such as `@prisma-lossless/client`.
 
 Validation that proves the fix: rerun the focused CLI tests covering
 update messages, version output, and generate fixtures, then rerun root
@@ -571,7 +581,7 @@ update messages, version output, and generate fixtures, then rerun root
 Post-implementation review: the implemented change keeps the forked
 package constants intact. CLI assertions now expect
 `prisma-lossless` and `@prisma-lossless/client`, and the fixture helper
-continues to expose the legacy `@prisma/client` path while adding the
+continues to expose the legacy `@prisma-lossless/client` path while adding the
 renamed `@prisma-lossless/client` path required by package resolution.
 The fix does not weaken generate coverage and does not reinterpret
 custom output paths as package names.

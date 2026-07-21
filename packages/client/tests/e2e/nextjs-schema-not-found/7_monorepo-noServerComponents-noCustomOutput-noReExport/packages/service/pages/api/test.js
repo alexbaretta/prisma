@@ -1,5 +1,5 @@
-const { PrismaPg } = require('@prisma/adapter-pg')
-const { PrismaClient } = require('@prisma/client')
+const { PrismaPg } = require('@prisma-lossless/adapter-pg')
+const { PrismaClient } = require('@prisma-lossless/client')
 
 async function doPrismaQuery() {
   const adapter = new PrismaPg({

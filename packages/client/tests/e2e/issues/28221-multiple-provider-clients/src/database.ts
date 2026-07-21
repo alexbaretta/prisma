@@ -1,5 +1,5 @@
-import { PrismaMariaDb } from '@prisma/adapter-mariadb'
-import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaMariaDb } from '@prisma-lossless/adapter-mariadb'
+import { PrismaPg } from '@prisma-lossless/adapter-pg'
 
 import { PrismaClient as MySQLClient } from '../generated/mysql-client/client'
 import { PrismaClient as PostgresClient } from '../generated/postgres-client/client'

@@ -1,4 +1,4 @@
-import { defaultTestConfig } from '@prisma/config'
+import { defaultTestConfig } from '@prisma-lossless/config'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 const createPoolMock = vi.fn(() => ({ end: vi.fn() }))

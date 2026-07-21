@@ -5,7 +5,7 @@
  * schema rules during parameterization.
  */
 
-import { JsonInputTaggedValue } from '@prisma/json-protocol'
+import { JsonInputTaggedValue } from '@prisma-lossless/json-protocol'
 
 /**
  * Tagged value types that represent scalar values.

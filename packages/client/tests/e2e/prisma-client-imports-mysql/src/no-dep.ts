@@ -1,4 +1,4 @@
-import { PrismaPlanetScale } from '@prisma/adapter-planetscale'
+import { PrismaPlanetScale } from '@prisma-lossless/adapter-planetscale'
 
 // import { withAccelerate } from '@prisma/extension-accelerate'
 // import { readReplicas } from '@prisma/extension-read-replicas'

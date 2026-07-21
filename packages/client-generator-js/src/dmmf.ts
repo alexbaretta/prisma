@@ -1,5 +1,5 @@
-import { type Dictionary, keyBy } from '@prisma/client-common'
-import type * as DMMF from '@prisma/dmmf'
+import { type Dictionary, keyBy } from '@prisma-lossless/client-common'
+import type * as DMMF from '@prisma-lossless/dmmf'
 
 type NamespacedTypeMap<T> = {
   prisma: Record<string, T>

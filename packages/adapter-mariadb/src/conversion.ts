@@ -1,4 +1,4 @@
-import { ArgType, ColumnType, ColumnTypeEnum, ResultValue } from '@prisma/driver-adapter-utils'
+import { ArgType, ColumnType, ColumnTypeEnum, ResultValue } from '@prisma-lossless/driver-adapter-utils'
 import * as mariadb from 'mariadb'
 
 const UNSIGNED_FLAG = 1 << 5

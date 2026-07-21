@@ -1,6 +1,6 @@
-import type { PrismaConfigInternal } from '@prisma/config'
-import type { Command, Commands } from '@prisma/internals'
-import { arg, format, HelpError, isError, unknownCommand } from '@prisma/internals'
+import type { PrismaConfigInternal } from '@prisma-lossless/config'
+import type { Command, Commands } from '@prisma-lossless/internals'
+import { arg, format, HelpError, isError, unknownCommand } from '@prisma-lossless/internals'
 import { bold, dim, red } from 'kleur/colors'
 
 export class DbCommand implements Command {

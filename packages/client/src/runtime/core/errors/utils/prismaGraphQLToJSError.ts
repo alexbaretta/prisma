@@ -1,4 +1,4 @@
-import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError } from '@prisma/client-runtime-utils'
+import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError } from '@prisma-lossless/client-runtime-utils'
 
 import { RequestError } from '../../engines/common/types/RequestError'
 

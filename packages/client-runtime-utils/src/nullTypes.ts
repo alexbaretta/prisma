@@ -94,7 +94,7 @@ export const AnyNull = new AnyNullClass(secret)
  * Check if a value is an ObjectEnumValue instance. Uses a global symbol
  * instead of instanceof to work across bundle boundaries (e.g., when a
  * Next.js app bundles browser and server code separately, creating duplicate
- * module instances of @prisma/client-runtime-utils).
+ * module instances of @prisma-lossless/client-runtime-utils).
  * See: https://github.com/prisma/prisma/issues/29257
  */
 export function isObjectEnumValue(value: unknown): value is ObjectEnumValue {

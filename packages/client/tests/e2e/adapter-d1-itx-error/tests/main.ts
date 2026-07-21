@@ -1,5 +1,5 @@
-import { PrismaD1 } from '@prisma/adapter-d1'
-import { PrismaClient } from '@prisma/client'
+import { PrismaD1 } from '@prisma-lossless/adapter-d1'
+import { PrismaClient } from '@prisma-lossless/client'
 
 const prisma = new PrismaClient({
   errorFormat: 'minimal',

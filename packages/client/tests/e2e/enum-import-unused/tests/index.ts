@@ -1,4 +1,4 @@
-import { EnumUnused, EnumUsed, Prisma } from '@prisma/client'
+import { EnumUnused, EnumUsed, Prisma } from '@prisma-lossless/client'
 
 test('can import enum from browser bundle', () => {
   // `enum` for Prisma utility functions

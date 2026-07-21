@@ -1,4 +1,4 @@
-import { GetPrismaClientConfig, RuntimeDataModel, RuntimeModel, uncapitalize } from '@prisma/client-common'
+import { GetPrismaClientConfig, RuntimeDataModel, RuntimeModel, uncapitalize } from '@prisma-lossless/client-common'
 import leven from 'js-levenshtein'
 
 import { buildArgumentsRenderingTree, renderArgsTree } from '../core/errorRendering/ArgumentsRenderingTree'

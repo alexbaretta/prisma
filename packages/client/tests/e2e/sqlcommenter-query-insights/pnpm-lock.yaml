@@ -8,16 +8,16 @@ importers:
 
   .:
     dependencies:
-      '@prisma/adapter-better-sqlite3':
+      '@prisma-lossless/adapter-better-sqlite3':
         specifier: /tmp/prisma-adapter-better-sqlite3-0.0.0.tgz
         version: file:../../tmp/prisma-adapter-better-sqlite3-0.0.0.tgz
-      '@prisma/client':
+      '@prisma-lossless/client':
         specifier: /tmp/prisma-client-0.0.0.tgz
         version: file:../../tmp/prisma-client-0.0.0.tgz(prisma@file:../../tmp/prisma-0.0.0.tgz(@types/react@19.2.7)(better-sqlite3@12.5.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))
-      '@prisma/sqlcommenter':
+      '@prisma-lossless/sqlcommenter':
         specifier: /tmp/prisma-sqlcommenter-0.0.0.tgz
         version: file:../../tmp/prisma-sqlcommenter-0.0.0.tgz
-      '@prisma/sqlcommenter-query-insights':
+      '@prisma-lossless/sqlcommenter-query-insights':
         specifier: /tmp/prisma-sqlcommenter-query-insights-0.0.0.tgz
         version: file:../../tmp/prisma-sqlcommenter-query-insights-0.0.0.tgz
     devDependencies:
@@ -69,15 +69,15 @@ packages:
     resolution: {integrity: sha512-JwqeCQ1U3fvccttHZq7Tk0m/TMC6WcFAQZdukypW3AzlJYKYTGNVd1ANU2GuhKnv4UQuOFj3oAl0LLG/gxFN1w==}
     engines: {node: '>=16'}
 
-  '@prisma/adapter-better-sqlite3@file:../../tmp/prisma-adapter-better-sqlite3-0.0.0.tgz':
+  '@prisma-lossless/adapter-better-sqlite3@file:../../tmp/prisma-adapter-better-sqlite3-0.0.0.tgz':
     resolution: {integrity: sha512-E6B6NsPlg8qCOjTfOCHmLOzHxP99lcekm66BKKX97ct2tYDS2co4kUZ06bOQg61+/lyUSbS0DL2ckZLVSiGM/w==, tarball: file:../../tmp/prisma-adapter-better-sqlite3-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/client-runtime-utils@file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz':
+  '@prisma-lossless/client-runtime-utils@file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz':
     resolution: {integrity: sha512-IcyD8XBHqp0Ze0fs6auYRnDE+TauiB48i8u0G18QHxVKWgCIkYcUOuibXoNckf+0U+0uwUKWsjmRO7LGIGwf0g==, tarball: file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/client@file:../../tmp/prisma-client-0.0.0.tgz':
+  '@prisma-lossless/client@file:../../tmp/prisma-client-0.0.0.tgz':
     resolution: {integrity: sha512-TjyZ/c9R57AaH0jjZwRxsjpbMn36Z9IAcGWM1xbOlabFya4vsOuTwSBUcSyx6yTOJmD13yF6nhTd8hSw7VgSwA==, tarball: file:../../tmp/prisma-client-0.0.0.tgz}
     version: 0.0.0
     engines: {node: ^20.19 || ^22.12 || >=24.0}
@@ -90,50 +90,50 @@ packages:
       typescript:
         optional: true
 
-  '@prisma/config@file:../../tmp/prisma-config-0.0.0.tgz':
+  '@prisma-lossless/config@file:../../tmp/prisma-config-0.0.0.tgz':
     resolution: {integrity: sha512-x8H46vS3sOeFFUWFF/jleprCGRJq3B0cjXdC+MT88OJWKj+9npfw5/02FTBOyRLusk8Q4hqXWzfWHzHO/k/3mA==, tarball: file:../../tmp/prisma-config-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/debug@6.8.2':
+  '@prisma-lossless/debug@6.8.2':
     resolution: {integrity: sha512-4muBSSUwJJ9BYth5N8tqts8JtiLT8QI/RSAzEogwEfpbYGFo9mYsInsVo8dqXdPO2+Rm5OG5q0qWDDE3nyUbVg==}
 
-  '@prisma/debug@file:../../tmp/prisma-debug-0.0.0.tgz':
+  '@prisma-lossless/debug@file:../../tmp/prisma-debug-0.0.0.tgz':
     resolution: {integrity: sha512-xwBwOQ7KdoIGiPFO1j4+5rS+anS/QuHm4VvktwLv3ASbOZoFkCCG8X8QrbRRXS7KoblRFep+sr3Kiaa7Q3y6Tw==, tarball: file:../../tmp/prisma-debug-0.0.0.tgz}
     version: 0.0.0
 
   '@prisma/dev@0.15.0':
     resolution: {integrity: sha512-KhWaipnFlS/fWEs6I6Oqjcy2S08vKGmxJ5LexqUl/3Ve0EgLUsZwdKF0MvqPM5F5ttw8GtfZarjM5y7VLwv9Ow==}
 
-  '@prisma/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
+  '@prisma-lossless/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
     resolution: {integrity: sha512-d7qYqZGFogvxfB0RJadqONOX04Dg0MHoIIJT2GNyGIZa0udigBUwcek1tq3eqc/JCBbbuVGGeDz3xm1jdHwjgg==, tarball: file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz}
     version: 0.0.0
 
   '@prisma/engines-version@7.2.0-1.3f298657b368429158ee75de33d3dc7ca4b307a5':
     resolution: {integrity: sha512-8hl0zGwU+0sYKJlbT5Waq5Ti5yIEJhWVrA29vjkbEpf4ZdnbuDaemTDl+99rb5kWrmE0+mbLycB7pOMBFanWXA==}
 
-  '@prisma/engines@file:../../tmp/prisma-engines-0.0.0.tgz':
+  '@prisma-lossless/engines@file:../../tmp/prisma-engines-0.0.0.tgz':
     resolution: {integrity: sha512-1hlthReof1W/Mbb9qU0ID+lHl0Ae9+QsrNFsdKGMXvq1X41xuoWcYWAT6FKhGndSmQnzgO9qV38xa2WtZ63hDw==, tarball: file:../../tmp/prisma-engines-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/fetch-engine@file:../../tmp/prisma-fetch-engine-0.0.0.tgz':
+  '@prisma-lossless/fetch-engine@file:../../tmp/prisma-fetch-engine-0.0.0.tgz':
     resolution: {integrity: sha512-SilD4nK5eXV62pkcVsSfVbQMSKofBSdQTZn8gCjjr75HaVdAr4vd6axrimnmV9kicmEOwpYKI3NPr0rcfAVjug==, tarball: file:../../tmp/prisma-fetch-engine-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/get-platform@6.8.2':
+  '@prisma-lossless/get-platform@6.8.2':
     resolution: {integrity: sha512-vXSxyUgX3vm1Q70QwzwkjeYfRryIvKno1SXbIqwSptKwqKzskINnDUcx85oX+ys6ooN2ATGSD0xN2UTfg6Zcow==}
 
-  '@prisma/get-platform@file:../../tmp/prisma-get-platform-0.0.0.tgz':
+  '@prisma-lossless/get-platform@file:../../tmp/prisma-get-platform-0.0.0.tgz':
     resolution: {integrity: sha512-b7YQzsCBjUHblNUCoX0nCSC3NFl93nVjSL44Azhgw6WhhtKmw6JIB2atin8EL7maen5uxY4/8Itxab7EpZ5zOQ==, tarball: file:../../tmp/prisma-get-platform-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/query-plan-executor@6.18.0':
+  '@prisma-lossless/query-plan-executor@6.18.0':
     resolution: {integrity: sha512-jZ8cfzFgL0jReE1R10gT8JLHtQxjWYLiQ//wHmVYZ2rVkFHoh0DT8IXsxcKcFlfKN7ak7k6j0XMNn2xVNyr5cA==}
 
-  '@prisma/sqlcommenter-query-insights@file:../../tmp/prisma-sqlcommenter-query-insights-0.0.0.tgz':
+  '@prisma-lossless/sqlcommenter-query-insights@file:../../tmp/prisma-sqlcommenter-query-insights-0.0.0.tgz':
     resolution: {integrity: sha512-nfx33VZ5tN25Jfu9a8wIkaF01GK0cUTBNDRMvS8pAlXpwGngoAsUPChg9vkZxBRYHfQ1eSZ7C2e32+dVVl1wqA==, tarball: file:../../tmp/prisma-sqlcommenter-query-insights-0.0.0.tgz}
     version: 0.0.0
 
-  '@prisma/sqlcommenter@file:../../tmp/prisma-sqlcommenter-0.0.0.tgz':
+  '@prisma-lossless/sqlcommenter@file:../../tmp/prisma-sqlcommenter-0.0.0.tgz':
     resolution: {integrity: sha512-MYpPelKt9XrBMXuDWDEHAkgVfTNeKT+2ZC5rm8gPh5QijYe+oyeKrx4QqnYX/m2d0E42b7C9L9vocvXj3pKgLA==, tarball: file:../../tmp/prisma-sqlcommenter-0.0.0.tgz}
     version: 0.0.0
 
@@ -588,20 +588,20 @@ snapshots:
       chevrotain: 10.5.0
       lilconfig: 2.1.0
 
-  '@prisma/adapter-better-sqlite3@file:../../tmp/prisma-adapter-better-sqlite3-0.0.0.tgz':
+  '@prisma-lossless/adapter-better-sqlite3@file:../../tmp/prisma-adapter-better-sqlite3-0.0.0.tgz':
     dependencies:
-      '@prisma/driver-adapter-utils': file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz
+      '@prisma-lossless/driver-adapter-utils': file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz
       better-sqlite3: 12.5.0
 
-  '@prisma/client-runtime-utils@file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz': {}
+  '@prisma-lossless/client-runtime-utils@file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz': {}
 
-  '@prisma/client@file:../../tmp/prisma-client-0.0.0.tgz(prisma@file:../../tmp/prisma-0.0.0.tgz(@types/react@19.2.7)(better-sqlite3@12.5.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))':
+  '@prisma-lossless/client@file:../../tmp/prisma-client-0.0.0.tgz(prisma@file:../../tmp/prisma-0.0.0.tgz(@types/react@19.2.7)(better-sqlite3@12.5.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))':
     dependencies:
-      '@prisma/client-runtime-utils': file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz
+      '@prisma-lossless/client-runtime-utils': file:../../tmp/prisma-client-runtime-utils-0.0.0.tgz
     optionalDependencies:
       prisma: file:../../tmp/prisma-0.0.0.tgz(@types/react@19.2.7)(better-sqlite3@12.5.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
 
-  '@prisma/config@file:../../tmp/prisma-config-0.0.0.tgz':
+  '@prisma-lossless/config@file:../../tmp/prisma-config-0.0.0.tgz':
     dependencies:
       c12: 3.1.0
       deepmerge-ts: 7.1.5
@@ -610,9 +610,9 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@prisma/debug@6.8.2': {}
+  '@prisma-lossless/debug@6.8.2': {}
 
-  '@prisma/debug@file:../../tmp/prisma-debug-0.0.0.tgz': {}
+  '@prisma-lossless/debug@file:../../tmp/prisma-debug-0.0.0.tgz': {}
 
   '@prisma/dev@0.15.0':
     dependencies:
@@ -621,8 +621,8 @@ snapshots:
       '@electric-sql/pglite-tools': 0.2.7(@electric-sql/pglite@0.3.2)
       '@hono/node-server': 1.19.6(hono@4.10.6)
       '@mrleebo/prisma-ast': 0.12.1
-      '@prisma/get-platform': 6.8.2
-      '@prisma/query-plan-executor': 6.18.0
+      '@prisma-lossless/get-platform': 6.8.2
+      '@prisma-lossless/query-plan-executor': 6.18.0
       foreground-child: 3.3.1
       get-port-please: 3.1.2
       hono: 4.10.6
@@ -636,38 +636,38 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@prisma/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
+  '@prisma-lossless/driver-adapter-utils@file:../../tmp/prisma-driver-adapter-utils-0.0.0.tgz':
     dependencies:
-      '@prisma/debug': file:../../tmp/prisma-debug-0.0.0.tgz
+      '@prisma-lossless/debug': file:../../tmp/prisma-debug-0.0.0.tgz
 
   '@prisma/engines-version@7.2.0-1.3f298657b368429158ee75de33d3dc7ca4b307a5': {}
 
-  '@prisma/engines@file:../../tmp/prisma-engines-0.0.0.tgz':
+  '@prisma-lossless/engines@file:../../tmp/prisma-engines-0.0.0.tgz':
     dependencies:
-      '@prisma/debug': file:../../tmp/prisma-debug-0.0.0.tgz
+      '@prisma-lossless/debug': file:../../tmp/prisma-debug-0.0.0.tgz
       '@prisma/engines-version': 7.2.0-1.3f298657b368429158ee75de33d3dc7ca4b307a5
-      '@prisma/fetch-engine': file:../../tmp/prisma-fetch-engine-0.0.0.tgz
-      '@prisma/get-platform': file:../../tmp/prisma-get-platform-0.0.0.tgz
+      '@prisma-lossless/fetch-engine': file:../../tmp/prisma-fetch-engine-0.0.0.tgz
+      '@prisma-lossless/get-platform': file:../../tmp/prisma-get-platform-0.0.0.tgz
 
-  '@prisma/fetch-engine@file:../../tmp/prisma-fetch-engine-0.0.0.tgz':
+  '@prisma-lossless/fetch-engine@file:../../tmp/prisma-fetch-engine-0.0.0.tgz':
     dependencies:
-      '@prisma/debug': file:../../tmp/prisma-debug-0.0.0.tgz
+      '@prisma-lossless/debug': file:../../tmp/prisma-debug-0.0.0.tgz
       '@prisma/engines-version': 7.2.0-1.3f298657b368429158ee75de33d3dc7ca4b307a5
-      '@prisma/get-platform': file:../../tmp/prisma-get-platform-0.0.0.tgz
+      '@prisma-lossless/get-platform': file:../../tmp/prisma-get-platform-0.0.0.tgz
 
-  '@prisma/get-platform@6.8.2':
+  '@prisma-lossless/get-platform@6.8.2':
     dependencies:
-      '@prisma/debug': 6.8.2
+      '@prisma-lossless/debug': 6.8.2
 
-  '@prisma/get-platform@file:../../tmp/prisma-get-platform-0.0.0.tgz':
+  '@prisma-lossless/get-platform@file:../../tmp/prisma-get-platform-0.0.0.tgz':
     dependencies:
-      '@prisma/debug': file:../../tmp/prisma-debug-0.0.0.tgz
+      '@prisma-lossless/debug': file:../../tmp/prisma-debug-0.0.0.tgz
 
-  '@prisma/query-plan-executor@6.18.0': {}
+  '@prisma-lossless/query-plan-executor@6.18.0': {}
 
-  '@prisma/sqlcommenter-query-insights@file:../../tmp/prisma-sqlcommenter-query-insights-0.0.0.tgz': {}
+  '@prisma-lossless/sqlcommenter-query-insights@file:../../tmp/prisma-sqlcommenter-query-insights-0.0.0.tgz': {}
 
-  '@prisma/sqlcommenter@file:../../tmp/prisma-sqlcommenter-0.0.0.tgz': {}
+  '@prisma-lossless/sqlcommenter@file:../../tmp/prisma-sqlcommenter-0.0.0.tgz': {}
 
   '@prisma/studio-core@0.8.2(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
     dependencies:
@@ -931,9 +931,9 @@ snapshots:
 
   prisma@file:../../tmp/prisma-0.0.0.tgz(@types/react@19.2.7)(better-sqlite3@12.5.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1):
     dependencies:
-      '@prisma/config': file:../../tmp/prisma-config-0.0.0.tgz
+      '@prisma-lossless/config': file:../../tmp/prisma-config-0.0.0.tgz
       '@prisma/dev': 0.15.0
-      '@prisma/engines': file:../../tmp/prisma-engines-0.0.0.tgz
+      '@prisma-lossless/engines': file:../../tmp/prisma-engines-0.0.0.tgz
       '@prisma/studio-core': 0.8.2(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       mysql2: 3.15.3
       postgres: 3.4.7

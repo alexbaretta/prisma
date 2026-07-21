@@ -8,7 +8,7 @@ importers:
 
   .:
     dependencies:
-      '@prisma/config':
+      '@prisma-lossless/config':
         specifier: ../../packages/config
         version: link:../../packages/config
       better-sqlite3:

@@ -46,7 +46,7 @@ suite
     console.log(String(event.target))
   })
   .on('complete', () => {
-    printSize('./node_modules/@prisma/client')
+    printSize('./node_modules/@prisma-lossless/client')
     printSize('./node_modules/.prisma/client')
     printSize('./node_modules/.prisma/client/index.d.ts')
     printSize('./node_modules/.prisma/client/index.js')
@@ -56,7 +56,12 @@ suite
     })
     execaSync(
       'zip',
-      ['-r', 'dotPlusAtPrismaClientFolder.zip', './node_modules/.prisma/client', './node_modules/@prisma/client'],
+      [
+        '-r',
+        'dotPlusAtPrismaClientFolder.zip',
+        './node_modules/.prisma/client',
+        './node_modules/@prisma-lossless/client',
+      ],
       {
         stdout: 'pipe',
         cwd: __dirname,

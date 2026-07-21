@@ -1,5 +1,5 @@
-import { parseJsonFieldValue } from '@prisma/client-runtime-utils'
-import { type ColumnType, ColumnTypeEnum, type SqlResultSet } from '@prisma/driver-adapter-utils'
+import { parseJsonFieldValue } from '@prisma-lossless/client-runtime-utils'
+import { type ColumnType, ColumnTypeEnum, type SqlResultSet } from '@prisma-lossless/driver-adapter-utils'
 
 import { assertNever } from '../utils'
 

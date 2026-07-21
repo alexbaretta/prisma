@@ -1,4 +1,4 @@
-import type { SqlCommenterQueryInfo } from '@prisma/sqlcommenter'
+import type { SqlCommenterQueryInfo } from '@prisma-lossless/sqlcommenter'
 
 import { shapeQuery } from '../shape/shape'
 
