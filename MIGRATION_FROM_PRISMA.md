@@ -51,22 +51,15 @@ The `.10` identity installs, but it was produced by staging package
 metadata from source manifests that still used development versions and
 workspace dependency specifiers.
 
-Build prisma-lossless before a consumer invokes the registry wrapper.
-The consumer supplies the exact package version but does not build the
-fork, inspect its Git state, or manage a release manifest:
-
-```sh
-pnpm build
-```
-
 Run each consumer install or build through the ephemeral registry
-wrapper. The wrapper transiently packs the already-built graph, starts
-its own Verdaccio process on an OS-assigned loopback port, publishes the
-exact packages, runs the command after `--`, and removes the registry
-and release artifacts on success or failure:
+wrapper. The wrapper builds prisma-lossless, transiently packs the
+release graph, starts its own Verdaccio process on an OS-assigned
+loopback port, publishes the exact packages, runs the command after
+`--`, and removes the registry and release artifacts on success or
+failure:
 
 ```sh
-pnpm exec tsx scripts/lossless-private-registry-run.ts \
+pnpm exec tsx scripts/private-registry-run.ts \
   --consumer-dir /path/to/consumer \
   --from-built 7.8.0-lossless.11 \
   -- corepack pnpm install --frozen-lockfile
@@ -90,7 +83,7 @@ A consumer Docker build should pass the Docker URL into its package
 installation stage, for example:
 
 ```sh
-pnpm exec tsx scripts/lossless-private-registry-run.ts \
+pnpm exec tsx scripts/private-registry-run.ts \
   --consumer-dir /path/to/consumer \
   --from-built 7.8.0-lossless.11 \
   -- \
@@ -134,12 +127,12 @@ npx prisma-lossless studio
 After changing dependencies and imports, reinstall and regenerate:
 
 ```sh
-pnpm exec tsx scripts/lossless-private-registry-run.ts \
+pnpm exec tsx scripts/private-registry-run.ts \
   --consumer-dir /path/to/consumer \
   --from-built 7.8.0-lossless.11 \
   -- corepack pnpm install --frozen-lockfile
 
-pnpm exec tsx scripts/lossless-private-registry-run.ts \
+pnpm exec tsx scripts/private-registry-run.ts \
   --consumer-dir /path/to/consumer \
   --from-built 7.8.0-lossless.11 \
   -- corepack pnpm exec prisma-lossless generate

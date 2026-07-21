@@ -10,7 +10,7 @@ export const DEFAULT_DOCKER_REGISTRY_URL = 'http://host.docker.internal:4873/'
 export const PRIVATE_RELEASE_DIST_TAG = 'lossless'
 export const PRIVATE_REGISTRY_MAX_BODY_SIZE = '200mb'
 
-const DEFAULT_ROOT = path.join(os.tmpdir(), 'prisma-lossless-private-registry')
+const DEFAULT_ROOT = path.join(os.tmpdir(), 'prisma-private-registry')
 const PUBLIC_REGISTRY_HOSTS = new Set(['registry.npmjs.org', 'npmjs.org', 'www.npmjs.com'])
 const APPROVED_PUBLISH_HOSTS = new Set(['127.0.0.1', 'localhost', '[::1]'])
 
@@ -385,7 +385,7 @@ async function main(argv: string[]): Promise<void> {
       return
     default:
       throw new Error(
-        'Usage: pnpm exec tsx scripts/lossless-private-registry.ts ' +
+        'Usage: pnpm exec tsx scripts/private-registry.ts ' +
           '[config|commands|start|health|authenticate|publish|inspect|stop] [registry] [package]',
       )
   }

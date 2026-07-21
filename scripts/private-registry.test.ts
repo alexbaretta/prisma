@@ -13,7 +13,7 @@ import {
   PRIVATE_REGISTRY_MAX_BODY_SIZE,
   PRIVATE_RELEASE_DIST_TAG,
   VERDACCIO_VERSION,
-} from './lossless-private-registry'
+} from './private-registry'
 
 describe('lossless private registry contract', () => {
   test('approves only the private local publish endpoint', () => {

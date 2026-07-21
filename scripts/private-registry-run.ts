@@ -1,4 +1,4 @@
-import { type ChildProcess, spawn, type SpawnOptions } from 'node:child_process'
+import { type ChildProcess, spawn, type SpawnOptions, spawnSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import fs from 'node:fs'
 import net from 'node:net'
@@ -13,17 +13,17 @@ import {
   type StartedRegistry,
   startRegistry,
   stopStartedRegistry,
-} from './lossless-private-registry'
+} from './private-registry'
 import {
   prepareBuiltPrivateReleaseCandidates,
   readPackedPackageJson,
   RELEASE_PACKAGES,
   validateReleasePackageMetadata,
-} from './lossless-private-release'
+} from './private-release'
 
 const MAX_PORT_ALLOCATION_ATTEMPTS = 5
-const RUNTIME_ROOT = path.join(os.tmpdir(), 'prisma-lossless-private-registry-runs')
-const BUILT_RELEASE_ROOT = path.join(os.tmpdir(), 'prisma-lossless-private-registry-built-releases')
+const RUNTIME_ROOT = path.join(os.tmpdir(), 'prisma-private-registry-runs')
+const BUILT_RELEASE_ROOT = path.join(os.tmpdir(), 'prisma-private-registry-built-releases')
 
 type JsonObject = Record<string, unknown>
 
@@ -68,6 +68,7 @@ export type RegistryRunnerDependencies = {
 }
 
 export type BuiltReleaseRunnerDependencies = {
+  buildArtifacts: () => void
   makeReleaseRoot: () => string
   prepareRelease: (version: string, outputRoot: string) => PrivateReleaseManifest
   runRegistry: (manifest: PrivateReleaseManifest, command: readonly string[], consumerDir: string) => Promise<number>
@@ -96,6 +97,7 @@ const DEFAULT_DEPENDENCIES: RegistryRunnerDependencies = {
 }
 
 const DEFAULT_BUILT_RELEASE_DEPENDENCIES: BuiltReleaseRunnerDependencies = {
+  buildArtifacts: buildPrismaLosslessArtifacts,
   makeReleaseRoot: createBuiltReleaseRoot,
   prepareRelease: prepareBuiltPrivateReleaseCandidates,
   runRegistry: runWithEphemeralRegistry,
@@ -350,6 +352,7 @@ export async function runWithBuiltRelease(
   dependencies: BuiltReleaseRunnerDependencies = DEFAULT_BUILT_RELEASE_DEPENDENCIES,
 ): Promise<number> {
   const resolvedConsumerDir = resolveConsumerDirectory(consumerDir)
+  dependencies.buildArtifacts()
   const releaseRoot = dependencies.makeReleaseRoot()
 
   try {
@@ -363,6 +366,25 @@ export async function runWithBuiltRelease(
 export function createBuiltReleaseRoot(): string {
   fs.mkdirSync(BUILT_RELEASE_ROOT, { recursive: true })
   return fs.mkdtempSync(path.join(BUILT_RELEASE_ROOT, 'built-release-'))
+}
+
+export function buildPrismaLosslessArtifacts(): void {
+  const result = spawnSync('pnpm', ['build'], {
+    cwd: process.cwd(),
+    stdio: 'inherit',
+  })
+
+  if (result.error) {
+    throw result.error
+  }
+
+  if (result.signal) {
+    throw new Error(`pnpm build terminated by ${result.signal}`)
+  }
+
+  if (result.status !== 0) {
+    throw new Error(`pnpm build failed with exit code ${result.status ?? 'unknown'}`)
+  }
 }
 
 export async function runChildCommand(
@@ -551,7 +573,7 @@ export function parseArguments(argv: readonly string[]): RegistryRunnerArguments
 
 function usageError(): Error {
   return new Error(
-    'Usage: pnpm exec tsx scripts/lossless-private-registry-run.ts ' +
+    'Usage: pnpm exec tsx scripts/private-registry-run.ts ' +
       '--consumer-dir <consumer-project> [--from-built <version> | <private-release-manifest.json>] ' +
       '-- <command> [args...]',
   )

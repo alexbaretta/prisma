@@ -11,7 +11,7 @@ import {
   type StartedRegistry,
   startRegistry,
   stopStartedRegistry,
-} from './lossless-private-registry'
+} from './private-registry'
 import {
   createEphemeralPublisher,
   createRuntimePaths,
@@ -22,16 +22,9 @@ import {
   runChildCommand,
   runWithBuiltRelease,
   runWithEphemeralRegistry,
-} from './lossless-private-registry-run'
-import {
-  calculateTarballIntegrity,
-  prepareBuiltPrivateReleaseCandidates,
-  RELEASE_PACKAGES,
-} from './lossless-private-release'
-import {
-  type IndependentPrivateReleaseFixture,
-  readIndependentPrivateReleaseFixture,
-} from './lossless-private-release-fixtures'
+} from './private-registry-run'
+import { calculateTarballIntegrity, prepareBuiltPrivateReleaseCandidates, RELEASE_PACKAGES } from './private-release'
+import { type IndependentPrivateReleaseFixture, readIndependentPrivateReleaseFixture } from './private-release-fixtures'
 
 const RUN_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION === '1'
 const RUN_FRESH_CHECKOUT_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_FRESH_CHECKOUT_INTEGRATION === '1'
@@ -291,7 +284,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
           [
             'exec',
             'tsx',
-            'scripts/lossless-private-release.ts',
+            'scripts/private-release.ts',
             'build-pinned',
             RECORDED_VERSION,
             RECORDED_FIXTURE.sourceCommit,
@@ -306,7 +299,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
           [
             'exec',
             'tsx',
-            'scripts/lossless-private-release.ts',
+            'scripts/private-release.ts',
             'build-pinned',
             RECORDED_VERSION,
             RECORDED_FIXTURE.sourceCommit,
@@ -326,7 +319,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
         [
           'exec',
           'tsx',
-          'scripts/lossless-private-registry-run.ts',
+          'scripts/private-registry-run.ts',
           '--consumer-dir',
           consumerDir,
           '--from-built',
@@ -348,7 +341,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
         [
           'exec',
           'tsx',
-          'scripts/lossless-private-registry-run.ts',
+          'scripts/private-registry-run.ts',
           '--consumer-dir',
           consumerDir,
           '--from-built',
@@ -668,6 +661,7 @@ function repoLocalReleaseRoot(root: string, label: string): string {
 
 function builtDependencies(roots: TrackedRoots) {
   return {
+    buildArtifacts: () => undefined,
     makeReleaseRoot: () => roots.release[0],
     prepareRelease: prepareBuiltPrivateReleaseCandidates,
     runRegistry: (manifest: PrivateReleaseManifest, command: readonly string[], consumerDir: string) =>

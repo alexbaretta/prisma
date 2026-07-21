@@ -21,8 +21,8 @@ import {
   validatePrivateReleaseIdentity,
   validateReleaseManifestIntegrity,
   validateReleasePackageMetadata,
-} from './lossless-private-release'
-import { readIndependentPrivateReleaseFixture } from './lossless-private-release-fixtures'
+} from './private-release'
+import { readIndependentPrivateReleaseFixture } from './private-release-fixtures'
 
 const releaseVersion = `${PRIVATE_RELEASE_VERSION_PREFIX}.17`
 const sourceCommit = '0123456789abcdef0123456789abcdef01234567'

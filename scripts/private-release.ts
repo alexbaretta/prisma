@@ -9,15 +9,15 @@ import {
   DEFAULT_REGISTRY_URL,
   getRegistryRuntimePaths,
   type RegistryRuntimePaths,
-} from './lossless-private-registry'
+} from './private-registry'
 import {
   PRIVATE_RELEASE_IDENTITIES,
   type PrivateReleaseIdentity,
   type PrivateReleasePackageIdentity,
-} from './lossless-private-release-identities'
+} from './private-release-identities'
 
 export const PRIVATE_RELEASE_VERSION_PREFIX = '7.8.0-lossless'
-export const DEFAULT_RELEASE_OUTPUT_ROOT = path.join(os.tmpdir(), 'prisma-lossless-private-release-candidates')
+export const DEFAULT_RELEASE_OUTPUT_ROOT = path.join(os.tmpdir(), 'prisma-private-release-candidates')
 
 export type ReleasePackage = {
   name: string
@@ -686,7 +686,7 @@ function main(argv: string[]): void {
       return
     default:
       throw new Error(
-        'Usage: pnpm exec tsx scripts/lossless-private-release.ts ' +
+        'Usage: pnpm exec tsx scripts/private-release.ts ' +
           '[build|next-version] <approved-registry> | ' +
           'build-pinned <version> <source-commit> [output-root]',
       )

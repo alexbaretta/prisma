@@ -277,6 +277,16 @@ generated metadata, and external release artifacts.
 | --- | --------------------------------------------------------------------- | -------- | ------ | ------------ |
 | 028 | [Rename source packages to lossless](./028-rename-source-packages.md) | High     | [DONE] | 027          |
 
+### Sprint 15: Wrapper Build Entry Point
+
+Sprint 15 makes the ephemeral private registry wrapper the only command
+consumers need to invoke from this checkout, and shortens the private
+release script names now that the fork identity is authoritative.
+
+| ID  | Tasklet                                                                                 | Priority | Status | Dependencies |
+| --- | --------------------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 029 | [Build from wrapper and rename scripts](./029-build-from-wrapper-and-rename-scripts.md) | High     | [DONE] | 028          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This
@@ -390,11 +400,12 @@ the `lossless` dist-tag. Historical private versions `.5`, `.6`,
 they cannot satisfy the complete byte-for-byte, normal-install, and
 source-identity contract for current first-party consumers.
 
-Consumers should invoke the wrapper from this repository and let the
-wrapper run Corepack from the consumer directory:
+Consumers should invoke the wrapper from this repository. The wrapper
+builds the prisma-lossless artifacts, prepares the immutable package
+graph, and runs Corepack from the consumer directory:
 
 ```sh
-pnpm exec tsx scripts/lossless-private-registry-run.ts \
+pnpm exec tsx scripts/private-registry-run.ts \
   --consumer-dir /path/to/consumer \
   --from-built 7.8.0-lossless.11 \
   -- corepack pnpm install --frozen-lockfile
@@ -438,11 +449,11 @@ Tasklet 024 validation:
 - `pnpm exec prettier --check ...` passed for all touched files.
 - `NODE_OPTIONS=--max-old-space-size=8192 pnpm exec eslint ...`
   passed for all changed TypeScript tooling and tests.
-- `pnpm exec vitest run scripts/lossless-private-release.test.ts
-scripts/lossless-private-registry-run.test.ts
-scripts/lossless-private-registry.test.ts` passed (`32` tests).
+- `pnpm exec vitest run scripts/private-release.test.ts
+scripts/private-registry-run.test.ts
+scripts/private-registry.test.ts` passed (`32` tests).
 - `PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION=1 pnpm exec vitest run
-scripts/lossless-private-registry-run.integration.test.ts` passed
+scripts/private-registry-run.integration.test.ts` passed
   outside the sandbox (`4` tests). The test used an empty pnpm store,
   proved Corepack selected consumer `pnpm v11.1.1`, verified
   `LosslessNumber`, proved repeat `.6` packaging integrity, rejected

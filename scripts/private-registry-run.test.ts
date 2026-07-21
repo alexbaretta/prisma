@@ -5,11 +5,7 @@ import path from 'node:path'
 
 import { describe, expect, test, vi } from 'vitest'
 
-import {
-  RegistryPortUnavailableError,
-  type RegistryRuntimePaths,
-  type StartedRegistry,
-} from './lossless-private-registry'
+import { RegistryPortUnavailableError, type RegistryRuntimePaths, type StartedRegistry } from './private-registry'
 import {
   buildChildEnvironment,
   buildRegistryUrls,
@@ -22,7 +18,7 @@ import {
   runWithBuiltRelease,
   runWithEphemeralRegistry,
   startEphemeralRegistry,
-} from './lossless-private-registry-run'
+} from './private-registry-run'
 
 const MANIFEST: PrivateReleaseManifest = {
   version: '7.8.0-lossless.99',
@@ -111,11 +107,13 @@ describe('ephemeral private registry runner', () => {
 
   test('removes transient built releases after child success and failure', async () => {
     const consumerDir = createConsumerDir()
+    const buildArtifacts = vi.fn()
     const makeReleaseRoot = vi.fn(() => '/private/tmp/prebuilt-release')
     const prepareRelease = vi.fn(() => MANIFEST)
     const runRegistry = vi.fn(() => Promise.resolve(41))
     const removeRelease = vi.fn()
     const deps: BuiltReleaseRunnerDependencies = {
+      buildArtifacts,
       makeReleaseRoot,
       prepareRelease,
       runRegistry,
@@ -124,6 +122,7 @@ describe('ephemeral private registry runner', () => {
 
     try {
       await expect(runWithBuiltRelease(MANIFEST.version, ['consumer'], consumerDir, deps)).resolves.toBe(41)
+      expect(buildArtifacts.mock.invocationCallOrder[0]).toBeLessThan(prepareRelease.mock.invocationCallOrder[0])
       expect(prepareRelease).toHaveBeenCalledWith(MANIFEST.version, '/private/tmp/prebuilt-release')
       expect(runRegistry).toHaveBeenCalledWith(MANIFEST, ['consumer'], path.resolve(consumerDir))
       expect(removeRelease).toHaveBeenCalledWith('/private/tmp/prebuilt-release')
@@ -140,6 +139,7 @@ describe('ephemeral private registry runner', () => {
 
   test('removes transient built releases after prepare failure', async () => {
     const consumerDir = createConsumerDir()
+    const buildArtifacts = vi.fn()
     const makeReleaseRoot = vi.fn(() => '/private/tmp/prebuilt-release')
     const prepareRelease = vi.fn(() => {
       throw new Error('release unavailable')
@@ -147,6 +147,7 @@ describe('ephemeral private registry runner', () => {
     const runRegistry = vi.fn(() => Promise.resolve(0))
     const removeRelease = vi.fn()
     const deps: BuiltReleaseRunnerDependencies = {
+      buildArtifacts,
       makeReleaseRoot,
       prepareRelease,
       runRegistry,
@@ -160,6 +161,36 @@ describe('ephemeral private registry runner', () => {
       expect(prepareRelease).toHaveBeenCalledWith(MANIFEST.version, '/private/tmp/prebuilt-release')
       expect(runRegistry).not.toHaveBeenCalled()
       expect(removeRelease).toHaveBeenCalledWith('/private/tmp/prebuilt-release')
+    } finally {
+      fs.rmSync(consumerDir, { recursive: true, force: true })
+    }
+  })
+
+  test('stops built release preparation when the repository build fails', async () => {
+    const consumerDir = createConsumerDir()
+    const buildArtifacts = vi.fn(() => {
+      throw new Error('build failed')
+    })
+    const makeReleaseRoot = vi.fn(() => '/private/tmp/prebuilt-release')
+    const prepareRelease = vi.fn(() => MANIFEST)
+    const runRegistry = vi.fn(() => Promise.resolve(0))
+    const removeRelease = vi.fn()
+    const deps: BuiltReleaseRunnerDependencies = {
+      buildArtifacts,
+      makeReleaseRoot,
+      prepareRelease,
+      runRegistry,
+      removeRelease,
+    }
+
+    try {
+      await expect(runWithBuiltRelease(MANIFEST.version, ['consumer'], consumerDir, deps)).rejects.toThrow(
+        'build failed',
+      )
+      expect(makeReleaseRoot).not.toHaveBeenCalled()
+      expect(prepareRelease).not.toHaveBeenCalled()
+      expect(runRegistry).not.toHaveBeenCalled()
+      expect(removeRelease).not.toHaveBeenCalled()
     } finally {
       fs.rmSync(consumerDir, { recursive: true, force: true })
     }
