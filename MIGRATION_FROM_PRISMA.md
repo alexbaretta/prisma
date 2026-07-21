@@ -10,11 +10,11 @@ Replace stock Prisma packages in your application:
 ```json
 {
   "dependencies": {
-    "@prisma-lossless/client": "7.8.0-lossless.9",
-    "@prisma-lossless/adapter-pg": "7.8.0-lossless.9"
+    "@prisma-lossless/client": "7.8.0-lossless.10",
+    "@prisma-lossless/adapter-pg": "7.8.0-lossless.10"
   },
   "devDependencies": {
-    "prisma-lossless": "7.8.0-lossless.9"
+    "prisma-lossless": "7.8.0-lossless.10"
   }
 }
 ```
@@ -25,13 +25,28 @@ Remove these stock packages from direct application dependencies:
 - `@prisma/client`
 - `@prisma/adapter-pg`
 
-Use `7.8.0-lossless.9` or newer. Historical
+If the consumer uses pnpm 11, allow Prisma lifecycle scripts in the
+consumer repository before running a normal install:
+
+```yaml
+allowBuilds:
+  '@prisma-lossless/engines': true
+  prisma-lossless: true
+
+onlyBuiltDependencies:
+  - '@prisma-lossless/engines'
+  - prisma-lossless
+```
+
+Use `7.8.0-lossless.10` or newer. Historical
 `7.8.0-lossless.5`, `7.8.0-lossless.6`,
-`7.8.0-lossless.7`, and `7.8.0-lossless.8`
+`7.8.0-lossless.7`, `7.8.0-lossless.8`, and
+`7.8.0-lossless.9`
 identities are known, but the current wrapper
 rejects them instead of serving package bytes that do not match their
 immutable release identity or cannot be reproduced from a clean
-checkout.
+checkout. The `.9` identity reproduces, but it omits required engines
+lifecycle JavaScript files and cannot complete a normal cold install.
 
 Build prisma-lossless before a consumer invokes the registry wrapper.
 The consumer supplies the exact package version but does not build the
@@ -50,7 +65,7 @@ and release artifacts on success or failure:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.9 \
+  --from-built 7.8.0-lossless.10 \
   -- corepack pnpm install --frozen-lockfile
 ```
 
@@ -74,7 +89,7 @@ installation stage, for example:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.9 \
+  --from-built 7.8.0-lossless.10 \
   -- \
   docker build \
     --build-arg PRISMA_LOSSLESS_DOCKER_REGISTRY_URL \
@@ -118,12 +133,12 @@ After changing dependencies and imports, reinstall and regenerate:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.9 \
+  --from-built 7.8.0-lossless.10 \
   -- corepack pnpm install --frozen-lockfile
 
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.9 \
+  --from-built 7.8.0-lossless.10 \
   -- corepack pnpm exec prisma-lossless generate
 ```
 

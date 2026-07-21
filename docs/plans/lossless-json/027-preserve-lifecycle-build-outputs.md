@@ -1,6 +1,6 @@
 # Sprint 13
 
-### [ ] Tasklet 027: Preserve Lifecycle Build Outputs
+### [DONE] Tasklet 027: Preserve Lifecycle Build Outputs
 
 Branch: `target-7.8.0-lossless`
 
@@ -119,3 +119,170 @@ and pass repo-root `pnpm build`.
   integrities recorded.
 - The migration guide and plan index point consumers to the new
   immutable version.
+
+## Implementation Notes
+
+The shared compile helper now plans cleanup once across the full
+output set before any esbuild output is written. Nested generated
+output directories are covered by their generated ancestor, so
+`dist/scripts` is not deleted after lifecycle bundles have been
+written when a later `dist/index.js` output is built.
+
+The owning source fix was committed as:
+
+```text
+58e63ae633e5efe0dbb379fbce133e13e637f86a
+```
+
+That commit is the source provenance for
+`7.8.0-lossless.10`. Release `.9` remains immutable and is recorded as
+unavailable because it reproduces byte-for-byte but lacks the engines
+lifecycle JavaScript artifacts needed by a normal consumer install.
+
+The ephemeral consumer integration now has two distinct install
+proofs. The acceptance proof runs `pnpm install --frozen-lockfile`
+from an empty store with lifecycle scripts enabled. A separate
+`--ignore-scripts` proof remains for package-resolution coverage only.
+
+During the cold-install proof, pnpm `11.1.1` required explicit
+`allowBuilds` entries in the temporary consumer's
+`pnpm-workspace.yaml`; `onlyBuiltDependencies` was visible in config
+but did not authorize these lifecycle scripts by itself. The migration
+guide now documents both entries for pnpm 11 consumers.
+
+## Release Identity
+
+Version:
+
+```text
+7.8.0-lossless.10
+```
+
+Source provenance:
+
+```text
+58e63ae633e5efe0dbb379fbce133e13e637f86a
+```
+
+Complete package integrities:
+
+```text
+@prisma-lossless/debug
+sha512-sfELdxpxNVmOHVnYEw9yqjEgYBcqqc/8+5zVrdiuQUH582AfWSHpk945s3Ah5Eag1oT/phR5XpO/qhnCc9CFhw==
+
+@prisma-lossless/driver-adapter-utils
+sha512-b7GKRN7U4tOExz6QpffsjFemIR1/olvXF+4FJG6YgSj86LhgYR7OkdF+7oefjJgFj8x0nCl7fHWJGQ/Sggm/5w==
+
+@prisma-lossless/get-platform
+sha512-I/nh/plOnHJbvDvNupUhn6+5mB3KCaYx+4BN+Ua4NeVWdlFNsJg/HUe9Zb1NxQtqiABU54sAVQULRNIJU/Ui/w==
+
+@prisma-lossless/fetch-engine
+sha512-H6V4qd31ikPiqcp7fyzf3/vPEKGx/gWNlBeAE6IcPPKxmasHOBZV2/waDOizo4IsV33TyRMkSFIqgrsKAlwBsQ==
+
+@prisma-lossless/engines
+sha512-FNl4zmocJ7EbouE31CNcUgaLBJzMy/epqpPHkQ5MY4h4XN9IVLIq1X71l8VSRhu5d8dGqU398/EoFVtVJzEe6A==
+
+@prisma-lossless/config
+sha512-BRjh3qWeYGPHDZe2/XZEHlfDsicJjEJMX8FgP9hN0avxkkB1lsr/0VCSp5CqcJj5Yn7KJIpNMTOcwOZtMQze/Q==
+
+@prisma-lossless/client-runtime-utils
+sha512-0z9GZSZYsaLnh0xHfafHAkqkV+lnRUSbEEh0GDg2pW81WiWKS1B7HqkMWIgipSRnW6Bi2d3Q8T5t5SBgfsDFig==
+
+@prisma-lossless/adapter-pg
+sha512-IvQNcTOAbIc07rspYH5GJXNQppflN5RcjL4m/ijBJBTfKC5sx5ALbO63m7bZLKmMBVy0U/U1raUgrS5RzHV/Rg==
+
+@prisma-lossless/client
+sha512-yTQctWGLDhSGuVarvVnAhldPPiLlfFzgYw5R0FNaY/Jd1rjxuX8dUn2K1FI8cqplljgzS2abK8mWD05wr0XBLA==
+
+prisma-lossless
+sha512-xdqrTXxfOw4d6jAPmo256NNgin2V3MD/DN2zsJnxVKowiHChoUliVLf7hHqrM2LK3fS2a74RfCMU+6+e44Xkxw==
+```
+
+The engines tarball for `.10` contains:
+
+```text
+package/dist/scripts/localinstall.js
+package/dist/scripts/postinstall.js
+package/scripts/postinstall.js
+```
+
+Repeated packaging of `.10` from the same built graph produced the
+same integrity metadata and matched the independent release fixture.
+
+## Validation Evidence
+
+Focused unit tests:
+
+```sh
+pnpm exec vitest run helpers/compile/build.test.ts \
+  scripts/lossless-private-release.test.ts \
+  scripts/lossless-private-registry-run.test.ts
+```
+
+Result: passed, `35` tests across `3` files.
+
+Affected engines build:
+
+```sh
+pnpm --filter @prisma/engines build
+```
+
+Result: passed. The build produced
+`packages/engines/dist/scripts/postinstall.js` and
+`packages/engines/dist/scripts/localinstall.js`.
+
+Focused cold-install integration:
+
+```sh
+PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION=1 \
+  pnpm exec vitest run \
+  scripts/lossless-private-registry-run.integration.test.ts \
+  -t "installs the recorded release"
+```
+
+Result: passed. The temporary consumer used pnpm `11.1.1`, installed
+from an empty store with lifecycle scripts enabled, generated Prisma
+Client `7.8.0-lossless.10`, imported and instantiated the generated
+client, and proved `LosslessNumber` stringification.
+
+Full ephemeral-registry integration:
+
+```sh
+PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION=1 \
+  pnpm exec vitest run \
+  scripts/lossless-private-registry-run.integration.test.ts
+```
+
+Result: passed, `5` tests passed and the fresh-checkout test was
+skipped because `PRISMA_LOSSLESS_RUN_FRESH_CHECKOUT_INTEGRATION` was
+not set. The passing cases covered concurrent isolated registries,
+normal lifecycle-enabled install, `--ignore-scripts` resolution,
+unavailable and mismatched identity rejection before child execution,
+and cleanup after child failure.
+
+Repo-root build:
+
+```sh
+pnpm build
+```
+
+Result: passed, `44` tasks successful.
+
+The fresh-clean-checkout integration is intentionally run after this
+tasklet state is committed, so the cloned checkout includes the final
+release identity fixture and wrapper test updates.
+
+## Post-Implementation Review
+
+The fix remains at the owning build layer. It does not inject
+lifecycle files into release staging, reorder only the engines package,
+or mutate `.9` package identity. The integration now follows the
+consumer product path: an exact version is served through the wrapper,
+Corepack resolves from the consumer directory, pnpm installs from an
+empty store, lifecycle scripts are allowed by consumer config, and
+generation is run from the installed fork.
+
+The rejected unsafe alternatives remain rejected. No consumer lockfile
+is weakened to accept a second artifact for `.9`, no registry storage
+is made permanent, and no copied wrapper implementation is required in
+consumer repositories.

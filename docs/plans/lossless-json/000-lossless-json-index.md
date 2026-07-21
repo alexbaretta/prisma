@@ -265,7 +265,7 @@ outputs are removed during the clean build.
 
 | ID  | Tasklet                                                                       | Priority | Status | Dependencies |
 | --- | ----------------------------------------------------------------------------- | -------- | ------ | ------------ |
-| 027 | [Preserve lifecycle build outputs](./027-preserve-lifecycle-build-outputs.md) | High     | [ ]    | 026          |
+| 027 | [Preserve lifecycle build outputs](./027-preserve-lifecycle-build-outputs.md) | High     | [DONE] | 026          |
 
 ## Execution Order
 
@@ -365,12 +365,16 @@ That rerun passed all migrate tests: `33` suites, `352` passed tests,
 
 ## Private Distribution Status
 
-Tasklets 015 through 026 are `[DONE]`. The current immutable private
-release is `7.8.0-lossless.9`, served through the ephemeral registry
+Tasklets 015 through 027 are `[DONE]`. Tasklet 027 supersedes
+reproducible-but-uninstallable `.9` package bytes with
+`7.8.0-lossless.10`, whose engines tarball includes the required
+lifecycle JavaScript outputs and passes normal cold installation with
+package lifecycle scripts enabled. The current immutable private
+release is `7.8.0-lossless.10`, served through the ephemeral registry
 wrapper with the `lossless` dist-tag. Historical private versions
-`.5`, `.6`, `.7`, and `.8` remain recorded but unavailable because
-they cannot satisfy the immutable byte-for-byte reproduction contract
-for current first-party consumers.
+`.5`, `.6`, `.7`, `.8`, and `.9` remain recorded but unavailable
+because they cannot satisfy the complete byte-for-byte and
+normal-install contract for current first-party consumers.
 
 Consumers should invoke the wrapper from this repository and let the
 wrapper run Corepack from the consumer directory:
@@ -378,7 +382,7 @@ wrapper run Corepack from the consumer directory:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.9 \
+  --from-built 7.8.0-lossless.10 \
   -- corepack pnpm install --frozen-lockfile
 ```
 
@@ -390,8 +394,12 @@ unavailable because its generated Prisma Client metadata still carried
 the workspace development version `0.0.0`. The `7.8.0-lossless.7`
 identity is recorded as unavailable because its client source maps were
 produced with random fill-plugin paths and cannot be reproduced from a
-fresh clean checkout. The wrapper rejects all three versions before
-starting Verdaccio and instructs consumers to use `.8`.
+fresh clean checkout. The `7.8.0-lossless.8` identity is unavailable
+because it captured a stale ignored get-platform chunk. The
+`7.8.0-lossless.9` identity is unavailable because it omitted required
+engines lifecycle JavaScript files and fails a normal cold install.
+The wrapper rejects all five versions before starting Verdaccio and
+instructs consumers to use `.10`.
 
 The isolated npm consumer at
 `tmp/lossless-json-tasklet-019/consumer-7.8.0-lossless.5` previously
@@ -401,7 +409,8 @@ release identity proof with a temporary consumer whose lockfile is
 independent of the serving identity and pins all ten private packages.
 Tasklet 025 supersedes the usable private release identity with `.7`
 and proves generated client metadata in an external consumer. Tasklet
-026 supersedes `.7` with reproducible `.8` package bytes.
+026 supersedes `.7` with reproducible `.9` package bytes. Tasklet 027
+supersedes `.9` with lifecycle-complete `.10` package bytes.
 
 This closes the separate first-party consumption gap without
 publishing to the worldwide npm registry and without requiring a

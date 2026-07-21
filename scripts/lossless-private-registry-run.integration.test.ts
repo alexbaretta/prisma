@@ -37,8 +37,8 @@ const RUN_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION ===
 const RUN_FRESH_CHECKOUT_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_FRESH_CHECKOUT_INTEGRATION === '1'
 const PRESERVE_INTEGRATION_ROOT = process.env.PRISMA_LOSSLESS_PRESERVE_INTEGRATION_ROOT === '1'
 const VERSION = '7.8.0-lossless.999999'
-const HISTORICAL_VERSION = '7.8.0-lossless.7'
-const RECORDED_VERSION = '7.8.0-lossless.9'
+const HISTORICAL_VERSION = '7.8.0-lossless.9'
+const RECORDED_VERSION = '7.8.0-lossless.10'
 const CONSUMER_PNPM_VERSION = '11.1.1'
 const SOURCE_COMMIT = '0123456789abcdef0123456789abcdef01234567'
 const RECORDED_FIXTURE = readIndependentPrivateReleaseFixture(RECORDED_VERSION)
@@ -131,7 +131,6 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
         writeVerifyScript(root, verifyOutput, storeDir, [
           'install',
           '--frozen-lockfile',
-          '--ignore-scripts',
           '--store-dir',
           storeDir,
           '--reporter',
@@ -151,6 +150,10 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
       generatedPackageVersion: string
       generatedDependencyNames: string[]
       generatedOutput: string
+      enginesLocalinstallExecuted: boolean
+      enginesLocalinstallExists: boolean
+      enginesPostinstallExecuted: boolean
+      enginesPostinstallExists: boolean
       installedClientVersion: string
       instantiatedClient: boolean
       losslessNumber: string
@@ -168,6 +171,10 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
     expect(result.generatedOutput).toContain(`Generated Prisma Client (v${RECORDED_VERSION})`)
     expect(result.generatedOutput).not.toContain('0.0.0')
     expect(result.generatedOutput).not.toMatch(/Versions of .*don't match/)
+    expect(result.enginesLocalinstallExists).toBe(true)
+    expect(result.enginesPostinstallExists).toBe(true)
+    expect(result.enginesLocalinstallExecuted).toBe(true)
+    expect(result.enginesPostinstallExecuted).toBe(true)
     expect(result.installedClientVersion).toBe(RECORDED_VERSION)
     expect(result.instantiatedClient).toBe(true)
     expect(result.losslessNumber).toBe('9007199254740993')
@@ -177,6 +184,37 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
     expect(result.installOutput).toMatch(/downloaded\s+119/i)
     expect(result.installOutput).not.toMatch(/Already up to date/i)
     expectLockfileMatchesIndependentFixture(path.join(consumerDir, 'pnpm-lock.yaml'), RECORDED_FIXTURE)
+  }, 300_000)
+
+  test('resolves the recorded release with lifecycle scripts disabled', async () => {
+    const consumerDir = createConsumerDir(root, 'ignore-scripts-consumer')
+    const storeDir = path.join(root, 'ignore-scripts-pnpm-store')
+    const roots = trackedRoots(root, 'ignore-scripts')
+
+    writeRealConsumerPackageJson(consumerDir)
+    fs.mkdirSync(storeDir)
+
+    const exitCode = await runWithBuiltRelease(
+      RECORDED_VERSION,
+      [
+        process.execPath,
+        writeInstallScript(root, 'ignore-scripts', [
+          'install',
+          '--ignore-scripts',
+          '--store-dir',
+          storeDir,
+          '--reporter',
+          'append-only',
+        ]),
+      ],
+      consumerDir,
+      builtDependencies(roots),
+    )
+
+    expect(exitCode).toBe(0)
+    expectRootsRemoved(roots)
+    expectLockfileMatchesIndependentFixture(path.join(consumerDir, 'pnpm-lock.yaml'), RECORDED_FIXTURE)
+    expect(fs.existsSync(path.join(consumerDir, 'node_modules'))).toBe(true)
   }, 300_000)
 
   test('rejects unavailable and mismatched release identities before child execution', async () => {
@@ -190,7 +228,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
         consumerDir,
         builtDependencies(unavailableRoots),
       ),
-    ).rejects.toThrow(/Use 7\.8\.0-lossless\.9/)
+    ).rejects.toThrow(/Use 7\.8\.0-lossless\.10/)
     expectRootsRemoved(unavailableRoots)
 
     const manifest = prepareBuiltPrivateReleaseCandidates(RECORDED_VERSION, repoLocalReleaseRoot(root, 'mismatch'))
@@ -301,6 +339,27 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
         checkoutDir,
       )
       expectLockfileMatchesIndependentFixture(path.join(consumerDir, 'pnpm-lock.yaml'), RECORDED_FIXTURE)
+
+      runRequired(
+        'pnpm',
+        [
+          'exec',
+          'tsx',
+          'scripts/lossless-private-registry-run.ts',
+          '--consumer-dir',
+          consumerDir,
+          '--from-built',
+          RECORDED_VERSION,
+          '--',
+          'corepack',
+          'pnpm',
+          'install',
+          '--frozen-lockfile',
+          '--reporter',
+          'append-only',
+        ],
+        checkoutDir,
+      )
     },
     900_000,
   )
@@ -403,13 +462,26 @@ function writeRealConsumerPackageJson(consumerDir: string): void {
         private: true,
         packageManager: `pnpm@${CONSUMER_PNPM_VERSION}`,
         dependencies,
-        pnpm: {
-          onlyBuiltDependencies: ['@prisma-lossless/engines', 'prisma-lossless'],
-        },
       },
       null,
       2,
     ),
+  )
+  fs.writeFileSync(
+    path.join(consumerDir, 'pnpm-workspace.yaml'),
+    [
+      'allowBuilds:',
+      "  '@prisma-lossless/engines': true",
+      '  prisma-lossless: true',
+      '',
+      'onlyBuiltDependencies:',
+      "  - '@prisma-lossless/engines'",
+      '  - prisma-lossless',
+      '',
+      'packages:',
+      '  - .',
+      '',
+    ].join('\n'),
   )
 }
 
@@ -454,6 +526,20 @@ function writeVerifyScript(root: string, outputPath: string, storeDir: string, i
         return [result.stdout, result.stderr].join('\\n').trim()
       }
 
+      function runNodeScript(scriptPath) {
+        const result = spawnSync(process.execPath, [scriptPath], {
+          cwd: process.cwd(),
+          env: process.env,
+          encoding: 'utf-8',
+        })
+        if (result.status !== 0) {
+          process.stderr.write(result.stdout)
+          process.stderr.write(result.stderr)
+          process.exit(result.status ?? 1)
+        }
+        return true
+      }
+
       const pnpmVersion = run(['--version'])
       const storeWasEmpty = fs.readdirSync(${JSON.stringify(storeDir)}).length === 0
       const modulesWereEmpty = !fs.existsSync(path.join(process.cwd(), 'node_modules'))
@@ -480,6 +566,11 @@ function writeVerifyScript(root: string, outputPath: string, storeDir: string, i
       const generatedOutput = run(['exec', 'prisma-lossless', 'generate', '--schema', 'prisma/schema.prisma', '--no-hints'])
       const consumerRequire = createRequire(path.join(process.cwd(), 'package.json'))
       const { PrismaPg } = consumerRequire('@prisma-lossless/adapter-pg')
+      const installedEnginesPackageJsonPath = consumerRequire.resolve('@prisma-lossless/engines/package.json')
+      const installedEnginesDir = path.dirname(installedEnginesPackageJsonPath)
+      const enginesLocalinstallPath = path.join(installedEnginesDir, 'dist', 'scripts', 'localinstall.js')
+      const enginesPostinstallPath = path.join(installedEnginesDir, 'dist', 'scripts', 'postinstall.js')
+      const enginesPostinstallWrapperPath = path.join(installedEnginesDir, 'scripts', 'postinstall.js')
       const installedClientPackageJsonPath = consumerRequire.resolve('@prisma-lossless/client/package.json')
       const installedClientPackageJson = consumerRequire('@prisma-lossless/client/package.json')
       const generatedPackageJsonPath = path.join(
@@ -513,6 +604,10 @@ function writeVerifyScript(root: string, outputPath: string, storeDir: string, i
           generatedDependencyNames: Object.keys(generatedPackageJson.dependencies ?? {}),
           generatedPackageVersion: generatedPackageJson.version,
           generatedOutput,
+          enginesLocalinstallExecuted: runNodeScript(enginesLocalinstallPath),
+          enginesLocalinstallExists: fs.existsSync(enginesLocalinstallPath),
+          enginesPostinstallExecuted: runNodeScript(enginesPostinstallWrapperPath),
+          enginesPostinstallExists: fs.existsSync(enginesPostinstallPath),
           installedClientVersion: installedClientPackageJson.version,
           instantiatedClient:
             typeof PrismaClient === 'function' &&

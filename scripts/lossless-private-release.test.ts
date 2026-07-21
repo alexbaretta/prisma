@@ -56,19 +56,22 @@ describe('lossless private release graph', () => {
     const retiredIdentity = readPrivateReleaseIdentity('7.8.0-lossless.6')
     const randomMapIdentity = readPrivateReleaseIdentity('7.8.0-lossless.7')
     const staleChunkIdentity = readPrivateReleaseIdentity('7.8.0-lossless.8')
-    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.9')
+    const missingLifecycleIdentity = readPrivateReleaseIdentity('7.8.0-lossless.9')
+    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.10')
     const historicalFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.5')
-    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.9')
+    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.10')
 
     expect(identity.sourceCommit).toBe('f98f2e0f42cd7d9d9556567f9236c98eed00da16')
     expect(identity.status).toBe('unavailable')
-    expect(identity.replacementVersion).toBe('7.8.0-lossless.9')
+    expect(identity.replacementVersion).toBe('7.8.0-lossless.10')
     expect(retiredIdentity.status).toBe('unavailable')
-    expect(retiredIdentity.replacementVersion).toBe('7.8.0-lossless.9')
+    expect(retiredIdentity.replacementVersion).toBe('7.8.0-lossless.10')
     expect(randomMapIdentity.status).toBe('unavailable')
-    expect(randomMapIdentity.replacementVersion).toBe('7.8.0-lossless.9')
+    expect(randomMapIdentity.replacementVersion).toBe('7.8.0-lossless.10')
     expect(staleChunkIdentity.status).toBe('unavailable')
-    expect(staleChunkIdentity.replacementVersion).toBe('7.8.0-lossless.9')
+    expect(staleChunkIdentity.replacementVersion).toBe('7.8.0-lossless.10')
+    expect(missingLifecycleIdentity.status).toBe('unavailable')
+    expect(missingLifecycleIdentity.replacementVersion).toBe('7.8.0-lossless.10')
     expect(identity.packages).toEqual(
       historicalFixture.packages.map(({ name, integrity }) => ({
         name,
@@ -95,6 +98,7 @@ describe('lossless private release graph', () => {
     const retiredIdentity = readPrivateReleaseIdentity('7.8.0-lossless.6')
     const randomMapIdentity = readPrivateReleaseIdentity('7.8.0-lossless.7')
     const staleChunkIdentity = readPrivateReleaseIdentity('7.8.0-lossless.8')
+    const missingLifecycleIdentity = readPrivateReleaseIdentity('7.8.0-lossless.9')
 
     expect(() => assertAvailablePrivateReleaseIdentity(identity)).toThrow(
       /Private release 7\.8\.0-lossless\.5 is recorded as unavailable/,
@@ -108,10 +112,14 @@ describe('lossless private release graph', () => {
     expect(() => assertAvailablePrivateReleaseIdentity(staleChunkIdentity)).toThrow(
       /Private release 7\.8\.0-lossless\.8 is recorded as unavailable/,
     )
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7\.8\.0-lossless\.9/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.6')).toThrow(/Use 7\.8\.0-lossless\.9/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.7')).toThrow(/Use 7\.8\.0-lossless\.9/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.8')).toThrow(/Use 7\.8\.0-lossless\.9/)
+    expect(() => assertAvailablePrivateReleaseIdentity(missingLifecycleIdentity)).toThrow(
+      /Private release 7\.8\.0-lossless\.9 is recorded as unavailable/,
+    )
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7\.8\.0-lossless\.10/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.6')).toThrow(/Use 7\.8\.0-lossless\.10/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.7')).toThrow(/Use 7\.8\.0-lossless\.10/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.8')).toThrow(/Use 7\.8\.0-lossless\.10/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.9')).toThrow(/Use 7\.8\.0-lossless\.10/)
   })
 
   test('rejects incomplete or mismatched release identities', () => {
@@ -141,7 +149,7 @@ describe('lossless private release graph', () => {
     expect(() =>
       validatePrivateReleaseIdentity({
         ...identity,
-        replacementVersion: '^7.8.0-lossless.9',
+        replacementVersion: '^7.8.0-lossless.10',
       }),
     ).toThrow(/version is invalid/)
   })
