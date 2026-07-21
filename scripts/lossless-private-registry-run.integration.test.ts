@@ -35,6 +35,7 @@ import {
 
 const RUN_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION === '1'
 const RUN_FRESH_CHECKOUT_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_FRESH_CHECKOUT_INTEGRATION === '1'
+const PRESERVE_INTEGRATION_ROOT = process.env.PRISMA_LOSSLESS_PRESERVE_INTEGRATION_ROOT === '1'
 const VERSION = '7.8.0-lossless.999999'
 const HISTORICAL_VERSION = '7.8.0-lossless.7'
 const RECORDED_VERSION = '7.8.0-lossless.9'
@@ -52,8 +53,13 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
   })
 
   afterAll(() => {
+    if (PRESERVE_INTEGRATION_ROOT) {
+      console.log(`Preserved integration root: ${root}`)
+      return
+    }
+
     fs.rmSync(root, { recursive: true, force: true })
-  })
+  }, 120_000)
 
   test('runs concurrent isolated registries and stops both', async () => {
     const firstOutput = path.join(root, 'first.json')
@@ -235,7 +241,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
 
       fs.mkdirSync(freshRoot, { recursive: true })
       runRequired('git', ['clone', '--shared', process.cwd(), checkoutDir], process.cwd())
-      runRequired('pnpm', ['install', '--frozen-lockfile'], checkoutDir)
+      runRequired('pnpm', ['install', '--frozen-lockfile', '--ignore-scripts'], checkoutDir)
       runRequired('pnpm', ['build'], checkoutDir)
 
       const firstManifest = loadPrivateReleaseManifest(
@@ -632,7 +638,7 @@ function runRequired(command: string, args: readonly string[], cwd: string): str
   const result = spawnSync(command, [...args], {
     cwd,
     encoding: 'utf-8',
-    env: process.env,
+    env: createStandaloneChildEnv(),
   })
 
   if (result.status !== 0) {
@@ -643,4 +649,23 @@ function runRequired(command: string, args: readonly string[], cwd: string): str
   }
 
   return result.stdout.trim()
+}
+
+function createStandaloneChildEnv(): NodeJS.ProcessEnv {
+  const env = { ...process.env }
+
+  for (const key of Object.keys(env)) {
+    if (key === 'VITEST' || key.startsWith('VITEST_') || key.startsWith('PRISMA_LOSSLESS_RUN_')) {
+      delete env[key]
+    }
+  }
+
+  delete env.DEV
+  delete env.IGNORE_EXTERNALS
+  delete env.MINIFY
+  delete env.NODE_ENV
+  delete env.PRISMA_COPY_RUNTIME_SOURCEMAPS
+  delete env.WATCH
+
+  return env
 }

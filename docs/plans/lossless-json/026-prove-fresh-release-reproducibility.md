@@ -1,10 +1,10 @@
 # Sprint 12
 
-### [ ] Tasklet 026: Prove Fresh Release Reproducibility
+### [DONE] Tasklet 026: Prove Fresh Release Reproducibility
 
 Branch: `target-7.8.0-lossless`
 
-Status: approved for implementation by the user prompt.
+Status: complete; implementation and validation evidence recorded.
 
 ## Goal
 
@@ -239,6 +239,69 @@ Validation that proves the subproblem fix: add focused tests proving
 root outputs and source-owned `scripts` outputs are skipped while
 generated outputs are still cleaned, then rerun the repo-root build.
 
+Confirmed subproblem: the fresh-checkout integration cannot use a
+plain `pnpm install --frozen-lockfile` in a source tree whose build
+outputs are intentionally absent. The workspace `@prisma/engines`
+postinstall script expects built `dist/scripts/*.js` files, so install
+fails before the test can run the source build.
+
+Violated contract or invariant: the fresh-checkout proof must start
+from source and build prerequisites from scratch. It must not require
+preexisting ignored build outputs, but it also must not let install
+postinstall scripts run before those outputs can be generated.
+
+Owning layer: the fresh-checkout integration test owns how it
+bootstraps an exported source tree before invoking the repo build and
+release packing.
+
+Intended solution: install the fresh checkout with
+`pnpm install --frozen-lockfile --ignore-scripts`, then run
+`pnpm build` to generate package outputs through the normal build
+graph before packing `.9`.
+
+Rejected solution: do not copy built outputs from the original
+checkout and do not make the test pass by running the wrapper from the
+original tree. Either approach would hide the clean-source
+reproducibility condition being tested.
+
+Validation that proves the subproblem fix: rerun the fresh-checkout
+integration and prove it gets past install, builds the cloned source,
+packs `.9` twice, and installs through the wrapper from the clone.
+
+Confirmed subproblem: the fresh-checkout integration originally passed
+the Vitest worker environment and build-mode toggles into the cloned
+checkout's build. That is not a real external source-build environment
+and can alter publishable client bytes. The preserved failure produced
+unminified client runtime files because client builds consult `DEV`
+and `MINIFY`. The suite cleanup also removes a full cloned
+`node_modules` tree, which can exceed Vitest's default ten second hook
+timeout.
+
+Violated contract or invariant: the fresh-checkout proof must model a
+standalone external process. It must not let test-runner variables such
+as `VITEST_*` or `NODE_ENV=test`, nor build toggles such as `DEV`,
+`MINIFY`, `WATCH`, `IGNORE_EXTERNALS`, or
+`PRISMA_COPY_RUNTIME_SOURCEMAPS`, become build inputs. Its cleanup must
+be allowed enough time to remove the heavy temporary tree.
+
+Owning layer: the integration test command runner owns the child
+environment for source-build proof commands and the suite owns its
+temporary root cleanup timeout.
+
+Intended solution: strip Vitest-specific variables, tasklet gating
+variables, `NODE_ENV`, and known Prisma build toggles from
+`runRequired` child commands, while preserving the normal shell,
+package-manager, and toolchain environment. Extend the after-all
+cleanup timeout.
+
+Rejected solution: do not update `.9` to accept bytes produced only
+under a Vitest worker environment. The immutable release must represent
+the real standalone build path.
+
+Validation that proves the subproblem fix: rerun the fresh-checkout
+integration and confirm it reproduces the recorded `.9` integrities
+from a clean clone while cleanup completes.
+
 ## Implementation Steps
 
 1. Reproduce the `.7` mismatch locally from the clean checkout and
@@ -270,21 +333,59 @@ release-source inputs.
 
 The recorded `.7` client tarball cannot be reproduced without the
 random source-map namespace from the original session-local build. It
-is therefore marked unavailable. The replacement release is
-`7.8.0-lossless.8`, with source provenance:
+is therefore marked unavailable.
+
+The initial replacement release, `7.8.0-lossless.8`, was also marked
+unavailable. Its `@prisma-lossless/get-platform` package included a
+stale ignored `dist/chunk-WFCM4MDC.js` build chunk that was not
+produced by a fresh clean root build.
+
+The current replacement release is `7.8.0-lossless.9`, with source
+provenance:
 
 ```text
-e44a7eb72e49bdac92b34f820dee9fbb1248abad
+790912aad9a5a1a562d5038c65d91f70d023de4c
 ```
 
-The `.8` package graph was packed twice in separate release roots:
+The `.9` package graph was packed twice in separate release roots:
 
 ```text
-/private/tmp/prisma-lossless-private-release-8/runs/1784599961030-e44a7eb72e49/private-release-manifest.json
-/private/tmp/prisma-lossless-private-release-8-repro/runs/1784599987766-e44a7eb72e49/private-release-manifest.json
+/private/tmp/prisma-lossless-private-release-9/runs/1784602166720-790912aad9a5/private-release-manifest.json
+/private/tmp/prisma-lossless-private-release-9-repro/runs/1784602185461-790912aad9a5/private-release-manifest.json
 ```
 
 Every package integrity matched between those two runs.
+
+The recorded `.9` package integrities are:
+
+```text
+@prisma-lossless/debug
+sha512-pG2Hd8Fx4piA8pRYD0pzYikRaV4Uc9Sx7iHo5XzJoxhgVFpsKgQdEiR/8P4EJRrHHwhDe2EZpInKIjAPpX2Ovw==
+@prisma-lossless/driver-adapter-utils
+sha512-zKqRLokSEllGq9s4ITrWnj/oBF8Bzrj1Uq6n2FDA8mIHyt4+hEt5V5qHkbsCaxt3RPcCtLnIUHbx32cTS6+nuw==
+@prisma-lossless/get-platform
+sha512-Mo1SE+qx7joSh02/gg4oavvZENx5Gyv6m33E4PEy8HGsjc88TIaI0uxFiF+lbz1ZMnmCVxcXJVE3XDM1PBnF3w==
+@prisma-lossless/fetch-engine
+sha512-SroAXaOe+YxP7Pf4I8dqZb34IDnDADoo8FnMVtuo/WJx3zUxmqqIvDqpSZ3ZVNcgWTmqVnO6AKagZL6CAeZhyg==
+@prisma-lossless/engines
+sha512-bnu9MPLjJGpt+XdRnxT1mQxsLWWIJVmrLIEutDOEp8OkZwtArXUO5cCoRA3quunlqfOxSZOhFzmAoHStRuC7xw==
+@prisma-lossless/config
+sha512-FZxIZLI3rGD6nxBAzQBxqAWKv90twuMZFV0Mtd2iyXkE/tB4votAsb2/GhPMolXZ/cuD2FJKihujgEKmL9atDA==
+@prisma-lossless/client-runtime-utils
+sha512-9iBUGpk97M6kUtREMgPNAWMu88pYAkjZFaH/k5ZC/dhbX8SAw+kW4kfAmw+hmOKBurxdEo6TgFrsN9u4J4mUdw==
+@prisma-lossless/adapter-pg
+sha512-HCjHHf9H2kFkjRK11mUvzHozEW8ov47t3/icGXXpUA0filhKs3qmhse1296ikfuI11hOE/f4g3QShq7V1CoBOg==
+@prisma-lossless/client
+sha512-vPWG12Wj//MfwHPh30z0QXR1E16c1cmChm9ttxcPWCsz2xHioLyazWrrSijR0PZpAcYm4e/Y5OJAXkYqt3S9tA==
+prisma-lossless
+sha512-OW8v1bLTH2eIuGkHJQi0lLpy1fiSPqpaL6RE2F9WbWOcg/FUczUl1pPO+ITOokEQz009SoJZULoAzBKDkxdqKw==
+```
+
+The fresh-checkout integration initially found a second test-harness
+leak: `DEV` and `MINIFY` from the Vitest process can alter client
+runtime minification. `runRequired` now strips Vitest variables,
+tasklet gating variables, `NODE_ENV`, and known Prisma build toggles
+before invoking source-build subprocesses.
 
 ## Post-Implementation Review
 
@@ -299,9 +400,21 @@ that affects client package bytes. This prevents a future build-helper
 change from being treated as unrelated tooling when an immutable
 release is prepared from a later checkout.
 
-The `.7` identity remains recorded with its original bytes but is
-unavailable. The wrapper now rejects `.5`, `.6`, and `.7` before
-Verdaccio startup and instructs consumers to use `.8`.
+The output cleanup now skips package roots and source-owned
+directories, so the build helper no longer deletes `packages/cli` or
+tracked files under `packages/client/scripts` when an esbuild target
+uses `outdir: "."` or writes beside source-owned scripts.
+
+The `.7` and `.8` identities remain recorded with their original bytes
+but are unavailable. The wrapper now rejects `.5`, `.6`, `.7`, and
+`.8` before Verdaccio startup and instructs consumers to use `.9`.
+
+The fresh-checkout proof remains in the real release path. It clones
+the current repository, installs with `--ignore-scripts` so absent
+ignored build outputs are not required before the source build, runs
+`pnpm build`, packs `.9` twice in distinct release roots, and then
+serves the recorded release through the wrapper to a temporary
+external consumer.
 
 ## Validation Evidence
 
@@ -310,23 +423,33 @@ helpers/compile/plugins/fill-plugin/fillPlugin.test.ts` passed
   (`4` tests).
 - `pnpm --filter @prisma-lossless/client build` passed after the
   deterministic fill-plugin change.
+- `pnpm exec vitest run helpers/compile/build.test.ts` passed
+  (`5` tests).
 - `pnpm exec tsx scripts/lossless-private-release.ts build-pinned
-7.8.0-lossless.8
-e44a7eb72e49bdac92b34f820dee9fbb1248abad
-/private/tmp/prisma-lossless-private-release-8` passed.
-- A second independent `build-pinned` run for `.8` passed in
-  `/private/tmp/prisma-lossless-private-release-8-repro`, and all ten
+7.8.0-lossless.9
+790912aad9a5a1a562d5038c65d91f70d023de4c
+/private/tmp/prisma-lossless-private-release-9` passed.
+- A second independent `build-pinned` run for `.9` passed in
+  `/private/tmp/prisma-lossless-private-release-9-repro`, and all ten
   package integrities matched the first run.
 - `pnpm exec vitest run
+helpers/compile/build.test.ts
 helpers/compile/plugins/fill-plugin/fillPlugin.test.ts
 scripts/lossless-private-release.test.ts
-scripts/lossless-private-registry-run.test.ts` passed (`32` tests).
-- `prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.8')` passed
-  and validated the recorded `.8` identity before registry startup.
+scripts/lossless-private-registry-run.test.ts` passed (`37` tests).
+- `prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.9')` passed
+  and validated the recorded `.9` identity before registry startup.
+- `PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION=1
+PRISMA_LOSSLESS_RUN_FRESH_CHECKOUT_INTEGRATION=1 pnpm exec vitest run
+scripts/lossless-private-registry-run.integration.test.ts -t
+"fresh clean checkout"` passed outside the sandbox (`1` test passed,
+  `4` skipped by name filter, duration `411.33s`).
 - `PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION=1 pnpm exec vitest run
 scripts/lossless-private-registry-run.integration.test.ts` passed
   outside the sandbox (`4` tests passed, `1` fresh-checkout test
-  skipped pending the final committed tree).
+  skipped by the explicit fresh-checkout gate, duration `191.48s`).
+- `pnpm build` passed at the repo root for the current tree (`44`
+  successful, `44` total).
 
 ## Acceptance Criteria
 

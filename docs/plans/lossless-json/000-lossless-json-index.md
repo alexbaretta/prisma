@@ -254,7 +254,7 @@ Verdaccio startup.
 
 | ID  | Tasklet                                                                             | Priority | Status | Dependencies |
 | --- | ----------------------------------------------------------------------------------- | -------- | ------ | ------------ |
-| 026 | [Prove fresh release reproducibility](./026-prove-fresh-release-reproducibility.md) | High     | [ ]    | 025          |
+| 026 | [Prove fresh release reproducibility](./026-prove-fresh-release-reproducibility.md) | High     | [DONE] | 025          |
 
 ## Execution Order
 
@@ -354,10 +354,22 @@ That rerun passed all migrate tests: `33` suites, `352` passed tests,
 
 ## Private Distribution Status
 
-Tasklets 015 through 025 are `[DONE]`. Tasklet 026 is validating the
-replacement release for first-party use. The current immutable private
-release candidate is `7.8.0-lossless.8`, served
-through the ephemeral registry wrapper with the `lossless` dist-tag.
+Tasklets 015 through 026 are `[DONE]`. The current immutable private
+release is `7.8.0-lossless.9`, served through the ephemeral registry
+wrapper with the `lossless` dist-tag. Historical private versions
+`.5`, `.6`, `.7`, and `.8` remain recorded but unavailable because
+they cannot satisfy the immutable byte-for-byte reproduction contract
+for current first-party consumers.
+
+Consumers should invoke the wrapper from this repository and let the
+wrapper run Corepack from the consumer directory:
+
+```sh
+pnpm exec tsx scripts/lossless-private-registry-run.ts \
+  --consumer-dir /path/to/consumer \
+  --from-built 7.8.0-lossless.9 \
+  -- corepack pnpm install --frozen-lockfile
+```
 
 The historical `7.8.0-lossless.5` identity is recorded as
 unavailable. GWEN's lockfile proves the original `.5` client tarball
