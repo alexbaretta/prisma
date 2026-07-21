@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
+import { RELEASE_PACKAGE_REPOSITORY_URL } from '../private-release'
 import {
   assertLosslessPublicPackageMetadata,
   filterPublishOrderToPackages,
@@ -27,6 +28,10 @@ function packageFixture(name: string, version = '7.8.0-lossless.14'): Package {
     packageJson: {
       name,
       version,
+      repository: {
+        type: 'git',
+        url: RELEASE_PACKAGE_REPOSITORY_URL,
+      },
     },
   }
 }

@@ -59,6 +59,8 @@ describe('lossless private release graph', () => {
     const missingLifecycleIdentity = readPrivateReleaseIdentity('7.8.0-lossless.9')
     const stagedMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.10')
     const unscopedPublicIdentity = readPrivateReleaseIdentity('7.8.0-lossless.11')
+    const stockMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.12')
+    const latestStockMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.13')
     const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.14')
     const historicalFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.5')
     const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.14')
@@ -84,6 +86,10 @@ describe('lossless private release graph', () => {
     )
     expect(unscopedPublicIdentity.status).toBe('unavailable')
     expect(unscopedPublicIdentity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(stockMetadataIdentity.status).toBe('unavailable')
+    expect(stockMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(latestStockMetadataIdentity.status).toBe('unavailable')
+    expect(latestStockMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.14')
     expect(currentIdentity.status).toBe('available')
     expect(identity.packages).toHaveLength(RELEASE_PACKAGES.length)
     expect(identity.packages[1]).toEqual({
@@ -107,6 +113,8 @@ describe('lossless private release graph', () => {
     const missingLifecycleIdentity = readPrivateReleaseIdentity('7.8.0-lossless.9')
     const stagedMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.10')
     const unscopedPublicIdentity = readPrivateReleaseIdentity('7.8.0-lossless.11')
+    const stockMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.12')
+    const latestStockMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.13')
 
     expect(() => assertAvailablePrivateReleaseIdentity(identity)).toThrow(
       /Private release 7\.8\.0-lossless\.5 is recorded as unavailable/,
@@ -129,6 +137,12 @@ describe('lossless private release graph', () => {
     expect(() => assertAvailablePrivateReleaseIdentity(unscopedPublicIdentity)).toThrow(
       /Private release 7\.8\.0-lossless\.11 is recorded as unavailable/,
     )
+    expect(() => assertAvailablePrivateReleaseIdentity(stockMetadataIdentity)).toThrow(
+      /Private release 7\.8\.0-lossless\.12 is recorded as unavailable/,
+    )
+    expect(() => assertAvailablePrivateReleaseIdentity(latestStockMetadataIdentity)).toThrow(
+      /Private release 7\.8\.0-lossless\.13 is recorded as unavailable/,
+    )
     expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7.8.0-lossless.14/)
     expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.6')).toThrow(/Use 7.8.0-lossless.14/)
     expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.7')).toThrow(/Use 7.8.0-lossless.14/)
@@ -136,6 +150,8 @@ describe('lossless private release graph', () => {
     expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.9')).toThrow(/Use 7.8.0-lossless.14/)
     expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.10')).toThrow(/Use 7.8.0-lossless.14/)
     expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.11')).toThrow(/Use 7.8.0-lossless.14/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.12')).toThrow(/Use 7.8.0-lossless.14/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.13')).toThrow(/Use 7.8.0-lossless.14/)
   })
 
   test('rejects incomplete or mismatched release identities', () => {

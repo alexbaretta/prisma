@@ -547,7 +547,7 @@ scripts/ci/publish.ts scripts/ci/publish.test.ts` passed with 0
 - All ten packages are publicly published to npmjs.org when the final
   publish command runs.
 
-### [ ] Tasklet 032: Correct Public Repository Metadata
+### [DONE] Tasklet 032: Correct Public Repository Metadata
 
 Status: approved for implementation by the user report that npm lists
 the stock Prisma repository for prisma-lossless packages.
@@ -590,3 +590,47 @@ release package manifest points at `github.com/prisma/prisma` and pass
 for the corrected fork metadata. Formatting, focused private-release
 tests, focused publish tests, and a dry-run package metadata check
 must pass before minting or publishing a replacement version.
+
+## Post-Implementation Review: Correct Public Repository Metadata
+
+Observed result: the public release package graph now records the fork
+repository `https://github.com/alexbaretta/prisma.git`. Existing
+homepage and issue tracker metadata in those packages now points to
+the matching fork README and issue tracker. Release metadata
+validation rejects public package manifests that advertise the
+upstream Prisma repository, homepage, or issue tracker.
+
+Contract review: the fix stays in source package metadata and the
+release validation layer. It does not rewrite staged artifacts during
+packing, does not attempt to mutate already-published npm metadata,
+and does not rely on manual npm website edits. Because npm metadata
+for `7.8.0-lossless.13` is immutable, that release is recorded as
+unavailable and replaced by `7.8.0-lossless.14`.
+
+Rejected wrong-layer solution retained: do not edit npmjs.org package
+pages manually and do not repack `.13` with different bytes. The
+correct package metadata must be present in source and enforced before
+packing or publishing.
+
+Validation evidence:
+
+- `pnpm install` refreshed the workspace links for the `.14` graph.
+- `pnpm build` passed outside the sandbox with 44 successful tasks.
+  The sandboxed attempt failed earlier because `tsx` could not create
+  IPC pipes under `/var/folders/...` (`EPERM`).
+- `pnpm exec vitest run scripts/private-release.test.ts
+scripts/ci/publish.test.ts` passed with 34 tests.
+- `preparePinnedPrivateReleaseCandidates('7.8.0-lossless.14',
+'0cada8c97c73855d0639b40cc33da0ccbfc4d179')` produced the recorded
+  ten-package identity.
+- `prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.14')`
+  reproduced the recorded identity with ten packages.
+- Packed package metadata inspection showed all ten packages record
+  `https://github.com/alexbaretta/prisma.git`; packages that carry
+  homepage and bugs metadata point to the matching fork URLs.
+- Unauthenticated `npm view` checks reported all ten
+  `7.8.0-lossless.14` package versions absent on npmjs.org before
+  publication.
+- `pnpm run publish-lossless-public-dryrun` passed for all ten
+  packages under the `lossless` tag and printed all ten dry
+  `npm dist-tag add ... latest` commands.
