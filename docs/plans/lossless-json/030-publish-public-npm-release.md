@@ -184,6 +184,66 @@ package, and publish order includes the scoped CLI package last. The
 public dry-run must show npm preparing `@prisma-lossless/cli` while the
 tarball still provides the `prisma-lossless` executable.
 
+## Post-Implementation Review: Scoped CLI Package
+
+Observed result: the CLI npm package source is now named
+`@prisma-lossless/cli`, while its binary remains `prisma-lossless`.
+The release graph, private registry tooling, public publish tooling,
+consumer documentation, client peer dependency metadata, bootstrap
+messages, generated config imports, and update-message tests now use
+the scoped package where package identity is required. Historical
+immutable releases through `.11` remain recorded with their original
+unscoped package names and are unavailable with replacement
+`7.8.0-lossless.12`.
+
+Contract review: the fix keeps package ownership in the
+`@prisma-lossless` npm organization and preserves the user command
+surface as a binary name. It does not rewrite artifacts during public
+publication and does not suppress the CLI package from the graph.
+The immutable `.12` release identity is recorded against source
+commit `b2ab5c601d5e894c4a3c80ad8363c89ae7d5dea5` and reproduces
+the package graph ending in `@prisma-lossless/cli`.
+
+Rejected wrong-layer solution retained: do not publish the unscoped
+`prisma-lossless` package manually, and do not ask consumers to mix a
+scoped runtime graph with an unscoped CLI package. That would keep
+ownership split across npm namespaces.
+
+Validation evidence:
+
+- `pnpm build` passed from the repo root after the package rename.
+- `prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.12')`
+  passed after recording the `.12` identity.
+- `pnpm exec vitest run scripts/private-release.test.ts
+scripts/private-registry.test.ts scripts/private-registry-run.test.ts
+scripts/ci/publish.test.ts` passed with 48 tests.
+- `pnpm --filter @prisma-lossless/cli test
+src/__tests__/update-message.test.ts
+src/__tests__/printUpdateMessage.test.ts` passed with 12 tests
+  and 7 snapshots.
+- `pnpm --filter @prisma-lossless/cli test
+src/bootstrap/__tests__/Bootstrap.vitest.ts
+src/__tests__/Init.vitest.ts` passed with 44 tests.
+- `pnpm exec prettier --check` passed for the touched release
+  tooling, docs, and plan files.
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm exec eslint`
+  passed for touched release tooling with 0 errors and 7 existing
+  unsafe-`any` warnings.
+- `pnpm run publish-lossless-public-dryrun` passed. Its publish
+  order ended with `@prisma-lossless/cli`, and its engines tarball
+  included `dist/scripts/postinstall.js` and
+  `dist/scripts/localinstall.js`.
+
+Remaining acceptance work: the non-dry-run
+`pnpm run publish-lossless-public` command reached its built-in
+dry-run successfully, then failed on the first real publish because
+this Codex process is not authenticated to npmjs.org. `npm whoami
+--registry=https://registry.npmjs.org/` returned `E401 Unauthorized`,
+and no `.12` package was published. Re-run the same command from an
+authenticated shell, then verify all ten package versions are visible
+on npmjs.org under the `lossless` dist-tag before marking this
+tasklet `[DONE]`.
+
 ## Implementation Steps
 
 1. Add `--lossless-public-release <version>` to `scripts/ci/publish.ts`.
