@@ -138,9 +138,10 @@ scripts/ci/publish.ts scripts/ci/publish.test.ts` passed with 0
   the `lossless` dist-tag.
 - `pnpm build` passed with 44 successful build tasks.
 
-Resolved acceptance work: the non-dry-run public npm publication was
-run from an authenticated shell, and npmjs.org verification now reports
-all ten package versions under the `lossless` dist-tag.
+Resolved acceptance work: npmjs.org verification reports all ten
+package versions under the `lossless` dist-tag. The authenticated
+publish command still needed retry repair because it failed after npm
+accepted packages and a rerun treated existing versions as fatal.
 
 ## Pre-Implementation Review: Scoped CLI Package
 
@@ -239,9 +240,10 @@ dry-run successfully, then failed on the first real publish because
 this Codex process is not authenticated to npmjs.org. `npm whoami
 --registry=https://registry.npmjs.org/` returned `E401 Unauthorized`,
 and no `.12` package was published from the Codex shell. The user then
-ran the same command from an authenticated shell, and npmjs.org
+ran the same command from an authenticated shell. npmjs.org
 verification reports all ten `.12` packages publicly available under
-the `lossless` dist-tag.
+the `lossless` dist-tag, but the command did not finish cleanly and a
+rerun failed on the old graph-wide absence preflight.
 
 ## Pre-Implementation Review: Optional Slack Notification
 
@@ -306,6 +308,69 @@ scripts/ci/publish.test.ts
 docs/plans/lossless-json/030-publish-public-npm-release.md` passed.
 - A full test suite was not run after this notification-only fix per
   the user's explicit request to keep validation focused.
+
+## Pre-Implementation Review: Idempotent Public Publish Retry
+
+Observed problem: retrying `pnpm run publish-lossless-public` after a
+partially successful public publish fails before the publish loop
+because `assertLosslessPublicVersionsUnpublished` rejects the first
+already-published package version. npm publication is not atomic
+across the ten-package graph, so a retry must tolerate packages that
+npm already accepted.
+
+Violated contract or invariant: the public release tool must be
+restartable after a partial upload. An already-published
+`name@version` is not by itself a fatal error for a retry; it is the
+expected state for packages accepted before the previous failure.
+
+Owning layer: `scripts/ci/publish.ts` owns public npm publication and
+must handle npm's per-package conflict response in the publish loop.
+
+Intended solution: remove the graph-wide absence preflight for the
+lossless public mode. In the per-package publish step, catch npm's
+already-published version error, log a warning, and continue to the
+next package when static package metadata is enabled. Preserve normal
+failure behavior for all other publish errors.
+
+Rejected solution: do not ask the user to mint a new version solely to
+recover from a retryable partial upload, and do not require manual
+package-by-package publishing outside `scripts/ci/publish.ts`.
+
+Validation that proves the fix: focused unit tests must prove the
+already-published npm error is classified, unrelated publish errors
+are not classified, and the existing lossless publish tests still pass.
+
+## Post-Implementation Review: Idempotent Public Publish Retry
+
+Observed result: the lossless public publish mode no longer performs
+the graph-wide absence preflight. The real publish loop now catches
+npm's already-published version error, logs a warning for that
+`name@version`, and continues to the next package. Other publish
+errors still throw.
+
+Contract review: the fix is in the publish layer that owns npm's
+per-package result handling. It does not bypass `scripts/ci/publish.ts`,
+does not manually publish packages, and does not weaken metadata
+validation before publishing. Retry behavior is scoped to the static
+lossless public release path.
+
+Rejected wrong-layer solution retained: do not mint a new release just
+to recover from a partial upload, and do not ask the user to finish the
+graph package-by-package.
+
+Validation evidence:
+
+- `npm view` against `https://registry.npmjs.org/` showed all ten
+  `7.8.0-lossless.12` package versions exist. The existing packages
+  still have `latest` at `.11` and `lossless` at `.12`; the new
+  `@prisma-lossless/cli` package has both tags at `.12`.
+- `pnpm exec vitest run scripts/ci/publish.test.ts` passed with 15
+  tests.
+- `pnpm exec prettier --check scripts/ci/publish.ts
+scripts/ci/publish.test.ts
+docs/plans/lossless-json/030-publish-public-npm-release.md` passed.
+- A full test suite was not run per the user's explicit request to
+  keep this fix quick and focused.
 
 ## Implementation Steps
 

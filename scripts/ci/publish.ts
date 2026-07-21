@@ -8,7 +8,7 @@ import arg from 'arg'
 import topo from 'batching-toposort'
 import { execaCommand, type ExecaError } from 'execa'
 import globby from 'globby'
-import { blue, bold, cyan, dim, magenta, red, underline } from 'kleur/colors'
+import { blue, bold, cyan, dim, magenta, red, underline, yellow } from 'kleur/colors'
 import pRetry from 'p-retry'
 import semver from 'semver'
 
@@ -52,20 +52,6 @@ async function runResult(cwd: string, cmd: string): Promise<string> {
   } catch (_e) {
     const e = _e as ExecaError
     throw new Error(red(`Error running ${bold(cmd)} in ${underline(cwd)}:`) + (e.stderr || e.stack || e.message))
-  }
-}
-
-async function runResultOrError(cwd: string, cmd: string): Promise<{ status: number; stdout: string; stderr: string }> {
-  try {
-    const result = await execaCommand(cmd, {
-      cwd,
-      stdio: 'pipe',
-      shell: true,
-    })
-    return { status: result.exitCode, stdout: result.stdout, stderr: result.stderr }
-  } catch (_e) {
-    const e = _e as ExecaError
-    return { status: e.exitCode ?? 1, stdout: e.stdout ?? '', stderr: e.stderr ?? e.message }
   }
 }
 
@@ -196,26 +182,20 @@ export function assertLosslessPublicPackageMetadata(packages: Packages, version:
   }
 }
 
-async function assertLosslessPublicVersionsUnpublished(
-  packageNames: readonly string[],
-  version: string,
-): Promise<void> {
-  for (const packageName of packageNames) {
-    const packageSpec = `${packageName}@${version}`
-    const result = await runResultOrError(
-      '.',
-      `npm view ${packageSpec} version --json --registry https://registry.npmjs.org/`,
-    )
-    const output = `${result.stdout}\n${result.stderr}`
-
-    if (result.status === 0) {
-      throw new Error(`Refusing to publish ${packageSpec}; that version already exists on npmjs.org`)
-    }
-
-    if (!output.includes('E404') && !output.includes('404 Not Found')) {
-      throw new Error(`Could not verify npm absence for ${packageSpec}: ${output.trim()}`)
-    }
+export function isAlreadyPublishedPackageError(error: unknown, packageName: string, version: string): boolean {
+  if (!(error instanceof Error)) {
+    return false
   }
+
+  const packageNameVariants = [packageName, encodeURIComponent(packageName), packageName.replace('/', '%2f')]
+  const message = error.message
+
+  return (
+    packageNameVariants.some((nameVariant) => message.includes(nameVariant)) &&
+    message.includes(version) &&
+    message.includes('previously published versions') &&
+    (message.includes('E403') || message.includes('403 Forbidden'))
+  )
 }
 
 export function getPackageDependencies(packages: RawPackages): Packages {
@@ -720,10 +700,6 @@ Check them out at https://github.com/prisma/ecosystem-tests/actions?query=workfl
       ? filterPublishOrderToPackages(getPublishOrder(packages), LOSSLESS_PUBLIC_PACKAGE_NAMES)
       : filterPublishOrder(getPublishOrder(packages), ['@prisma-lossless/integration-tests'])
 
-    if (losslessPublicRelease) {
-      await assertLosslessPublicVersionsUnpublished(LOSSLESS_PUBLIC_PACKAGE_NAMES, losslessPublicRelease)
-    }
-
     if (!dryRun) {
       console.log(`Let's first do a dry run!`)
       await publishPackages(packages, publishOrder, true, prismaVersion, tag, args['--release'], {
@@ -737,6 +713,7 @@ Check them out at https://github.com/prisma/ecosystem-tests/actions?query=workfl
     await publishPackages(packages, publishOrder, dryRun, prismaVersion, tag, args['--release'], {
       staticPackageMetadata: losslessPublicRelease !== undefined,
       executeNpmDryRun: losslessPublicRelease !== undefined,
+      skipAlreadyPublished: losslessPublicRelease !== undefined,
     })
 
     const enginesCommitHash = getEnginesCommitHash()
@@ -837,7 +814,7 @@ async function publishPackages(
   prismaVersion: string,
   tag: string,
   releaseVersion?: string,
-  options: { staticPackageMetadata?: boolean; executeNpmDryRun?: boolean } = {},
+  options: { staticPackageMetadata?: boolean; executeNpmDryRun?: boolean; skipAlreadyPublished?: boolean } = {},
 ): Promise<void> {
   // we need to release a new `prisma` CLI in all cases.
   // if there is a change in prisma-client-js, it will also use this new version
@@ -952,7 +929,16 @@ async function publishPackages(
          */
         const dryRunFlag = dryRun && options.executeNpmDryRun ? ' --dry-run' : ''
         const commandDryRun = dryRun && !options.executeNpmDryRun
-        await run(pkgDir, `pnpm publish --no-git-checks --access public --tag ${tag}${dryRunFlag}`, commandDryRun)
+        try {
+          await run(pkgDir, `pnpm publish --no-git-checks --access public --tag ${tag}${dryRunFlag}`, commandDryRun)
+        } catch (error) {
+          if (options.skipAlreadyPublished && isAlreadyPublishedPackageError(error, pkgName, newVersion)) {
+            console.warn(yellow(`Skipping ${pkgName}@${newVersion}; that version already exists on npmjs.org.`))
+            continue
+          }
+
+          throw error
+        }
       }
     }
   }

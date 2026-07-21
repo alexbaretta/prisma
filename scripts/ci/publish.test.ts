@@ -8,6 +8,7 @@ import {
   getPatchBranch,
   getPrismaBranch,
   getSlackReleaseFeedWebhook,
+  isAlreadyPublishedPackageError,
   LOSSLESS_PUBLIC_PACKAGE_NAMES,
   type Package,
   shouldUseLocalTestVersion,
@@ -159,5 +160,31 @@ describe('lossless public publish mode', () => {
     expect(getSlackReleaseFeedWebhook({ SLACK_RELEASE_FEED_WEBHOOK: 'https://hooks.slack.test/release' })).toBe(
       'https://hooks.slack.test/release',
     )
+  })
+
+  test('detects npm already-published package errors', () => {
+    expect(
+      isAlreadyPublishedPackageError(
+        new Error(
+          'Error running pnpm publish --no-git-checks --access public --tag lossless in packages/debug:' +
+            'npm error code E403\n' +
+            'npm error 403 403 Forbidden - PUT https://registry.npmjs.org/@prisma-lossless%2fdebug - ' +
+            'You cannot publish over the previously published versions: 7.8.0-lossless.12',
+        ),
+        '@prisma-lossless/debug',
+        '7.8.0-lossless.12',
+      ),
+    ).toBe(true)
+  })
+
+  test('does not classify unrelated publish errors as already published', () => {
+    expect(
+      isAlreadyPublishedPackageError(
+        new Error('npm error code ENEEDAUTH\nnpm error need auth This command requires you to be logged in.'),
+        '@prisma-lossless/debug',
+        '7.8.0-lossless.12',
+      ),
+    ).toBe(false)
+    expect(isAlreadyPublishedPackageError('not an error', '@prisma-lossless/debug', '7.8.0-lossless.12')).toBe(false)
   })
 })
