@@ -17,7 +17,7 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.5',
     sourceCommit: 'f98f2e0f42cd7d9d9556567f9236c98eed00da16',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.11',
+    replacementVersion: '7.8.0-lossless.12',
     unavailableReason:
       'The historical client tarball integrity is known from the GWEN lockfile, ' +
       'but the current built graph cannot reproduce those package bytes.',
@@ -68,7 +68,7 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.6',
     sourceCommit: 'f98f2e0f42cd7d9d9556567f9236c98eed00da16',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.11',
+    replacementVersion: '7.8.0-lossless.12',
     unavailableReason:
       'The release installed with correct package metadata, but generated ' +
       'clients still carried the development version placeholder.',
@@ -119,7 +119,7 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.7',
     sourceCommit: 'de26dd06509902ef202e675bb3eb2d2ee9b7fc4a',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.11',
+    replacementVersion: '7.8.0-lossless.12',
     unavailableReason:
       'The release was produced with random fill-plugin source-map ' +
       'names and cannot be reproduced from a fresh clean checkout.',
@@ -170,7 +170,7 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.8',
     sourceCommit: 'e44a7eb72e49bdac92b34f820dee9fbb1248abad',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.11',
+    replacementVersion: '7.8.0-lossless.12',
     unavailableReason:
       'The release was produced from a checkout with a stale ignored ' +
       '@prisma-lossless/get-platform dist chunk and cannot be reproduced ' +
@@ -222,7 +222,7 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.9',
     sourceCommit: '790912aad9a5a1a562d5038c65d91f70d023de4c',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.11',
+    replacementVersion: '7.8.0-lossless.12',
     unavailableReason:
       'The release reproduced byte-for-byte, but the engines package ' +
       'omitted dist/scripts lifecycle JavaScript files and failed normal install.',
@@ -273,12 +273,12 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.10',
     sourceCommit: '58e63ae633e5efe0dbb379fbce133e13e637f86a',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.11',
+    replacementVersion: '7.8.0-lossless.12',
     unavailableReason:
       'The release was produced by staging metadata from source ' +
       'packages that still used development versions and workspace ' +
       'dependency specifiers. Source package identity is authoritative ' +
-      'starting with 7.8.0-lossless.11.',
+      'starting with 7.8.0-lossless.12.',
     packages: [
       {
         name: '@prisma-lossless/debug',
@@ -325,7 +325,12 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
   {
     version: '7.8.0-lossless.11',
     sourceCommit: '65e86f5c32ac361ab31ea95967bdac8256cb0775',
-    status: 'available',
+    status: 'unavailable',
+    replacementVersion: '7.8.0-lossless.12',
+    unavailableReason:
+      'The public npm release attempt retained the unscoped ' +
+      'prisma-lossless CLI package name, which is not owned by the ' +
+      '@prisma-lossless npm organization.',
     packages: [
       {
         name: '@prisma-lossless/debug',
@@ -366,6 +371,53 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
       {
         name: 'prisma-lossless',
         integrity: 'sha512-0oCj8EQWRz6ixgQQ6hxDMFVyjopsVYFZ+XkMKlU7Kl0lARaQQzAXq3x9gBhOfgCH5ljfJC+h7a1AIsBPwxl3Pg==',
+      },
+    ],
+  },
+  {
+    version: '7.8.0-lossless.12',
+    sourceCommit: 'b2ab5c601d5e894c4a3c80ad8363c89ae7d5dea5',
+    status: 'available',
+    packages: [
+      {
+        name: '@prisma-lossless/debug',
+        integrity: 'sha512-NHioGmrg2cWh+S+o1coa6cYhTmMSksLzodS3vqI+Pv1Qu7aC4QJTaVhiHeS7rJ85Q3ulwCNSrxShabaawUqEHQ==',
+      },
+      {
+        name: '@prisma-lossless/driver-adapter-utils',
+        integrity: 'sha512-CMJLcNAmxvtd4aG8Cbd1nIQWLzEA6FhKbB3VD7C8dFbGvwQmkNrcJUj0lRphTNinSVVaV+KICQ9PbFoGSzS6CQ==',
+      },
+      {
+        name: '@prisma-lossless/get-platform',
+        integrity: 'sha512-7z8Wb5VZgMppll33TLan84uXZz0lbtgRxrBhcrhQIvd2j66mnGXIdga4uggj50a8OjO2yRdH1OkQjq21KKPIpg==',
+      },
+      {
+        name: '@prisma-lossless/fetch-engine',
+        integrity: 'sha512-OxjtSsKozD6ciO890SRQrrPIfZk+eZNzDnx+HqLhktn7ybXR+n3j8YMdgpwUeLxMjh/7Trvdws52cy+xoS0LQg==',
+      },
+      {
+        name: '@prisma-lossless/engines',
+        integrity: 'sha512-yc7AYLKo4AZwsK+vGMCu3NKgjdBvi68BRW0oNUA5JS/0dgypjHjPzmmQi/6XB+SM1UyvxlJGhM4fJUPWWjOFmw==',
+      },
+      {
+        name: '@prisma-lossless/config',
+        integrity: 'sha512-QLxXBBVrxYt7sD4dAqByUk/z2KfplNFK4RIRPAHt+2FjYMEGzuLx3aFth97T8T5sYPSVf7YIxEVT2hkwcRqMvA==',
+      },
+      {
+        name: '@prisma-lossless/client-runtime-utils',
+        integrity: 'sha512-K9LuDs9d4aCciL8ePTq9S2rFJJy2dJcZaU/XlseNmXQK9BaKWvE+kPbbISGAGqYzbWiZUii89l9HVpJvRbiVIw==',
+      },
+      {
+        name: '@prisma-lossless/adapter-pg',
+        integrity: 'sha512-6nbUX3Kzs0oolZhhyyYNxiFnXmboN7SkSb9TJqM3fC7wHVki9w7AoUdBQJqjav2uE7+Y3XiredwCcYKuGXz0iw==',
+      },
+      {
+        name: '@prisma-lossless/client',
+        integrity: 'sha512-8mR9AcAWs3nLgTc8+1X7gpMheXkuyqi8jIp/2pUr72n9WahbeWQ31dYYbWKBStd68oRoNzplmnQtzZ4sUt+zeQ==',
+      },
+      {
+        name: '@prisma-lossless/cli',
+        integrity: 'sha512-xyop2iOg82IeLsDv8cfeQTcbc5maiM5Z3VFmOrPZkJwoNNGYVwExGAoR2kNcT353rE7rQ3xJ25DIuslfEoRwsg==',
       },
     ],
   },
