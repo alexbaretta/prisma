@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/adapter-better-sqlite3",
-  "version": "7.8.0-lossless.12",
+  "version": "7.8.0-lossless.13",
   "description": "Prisma's driver adapter for better-sqlite3, a fast SQLite3 driver for JavaScript runtimes",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -35,7 +35,7 @@
   "license": "Apache-2.0",
   "sideEffects": false,
   "dependencies": {
-    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.12",
+    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.13",
     "better-sqlite3": "^12.6.0"
   },
   "devDependencies": {

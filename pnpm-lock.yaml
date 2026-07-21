@@ -225,7 +225,7 @@ importers:
   packages/adapter-better-sqlite3:
     dependencies:
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       better-sqlite3:
         specifier: ^12.6.0
@@ -244,7 +244,7 @@ importers:
         specifier: ^4.20251014.0
         version: 4.20251117.0
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       ky:
         specifier: 1.7.5
@@ -256,7 +256,7 @@ importers:
         specifier: ^0.17.0
         version: 0.17.0(encoding@0.1.13)
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       async-mutex:
         specifier: 0.5.0
@@ -265,7 +265,7 @@ importers:
   packages/adapter-mariadb:
     dependencies:
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       mariadb:
         specifier: 3.4.5
@@ -274,7 +274,7 @@ importers:
   packages/adapter-mssql:
     dependencies:
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       async-mutex:
         specifier: 0.5.0
@@ -293,20 +293,20 @@ importers:
         specifier: '>0.6.0 <2'
         version: 0.10.2
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       postgres-array:
         specifier: 3.0.4
         version: 3.0.4
     devDependencies:
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
 
   packages/adapter-pg:
     dependencies:
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       '@types/pg':
         specifier: ^8.16.0
@@ -319,7 +319,7 @@ importers:
         version: 3.0.4
     devDependencies:
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
 
   packages/adapter-planetscale:
@@ -328,7 +328,7 @@ importers:
         specifier: ^1.19.0
         version: 1.19.0
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       async-mutex:
         specifier: 0.5.0
@@ -341,7 +341,7 @@ importers:
   packages/adapter-ppg:
     dependencies:
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       '@prisma/ppg':
         specifier: ^1.0.1
@@ -354,7 +354,7 @@ importers:
         version: 3.0.4
     devDependencies:
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
 
   packages/bundle-size:
@@ -369,34 +369,34 @@ importers:
         specifier: 1.19.0
         version: 1.19.0
       '@prisma-lossless/adapter-d1':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-d1
       '@prisma-lossless/adapter-libsql':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-libsql
       '@prisma-lossless/adapter-mariadb':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-mariadb
       '@prisma-lossless/adapter-mssql':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-mssql
       '@prisma-lossless/adapter-neon':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-neon
       '@prisma-lossless/adapter-pg':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-pg
       '@prisma-lossless/adapter-planetscale':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-planetscale
       '@prisma-lossless/cli':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../cli
       '@prisma-lossless/client':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client
       '@prisma-lossless/client-runtime-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-runtime-utils
       pg:
         specifier: 8.14.1
@@ -427,10 +427,10 @@ importers:
   packages/cli:
     dependencies:
       '@prisma-lossless/config':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../config
       '@prisma-lossless/engines':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../engines
       '@prisma/dev':
         specifier: 0.24.14
@@ -464,40 +464,40 @@ importers:
         specifier: 2.1.0
         version: 2.1.0(@opentelemetry/api@1.9.0)
       '@prisma-lossless/adapter-libsql':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-libsql
       '@prisma-lossless/client':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client
       '@prisma-lossless/client-generator-registry':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-generator-registry
       '@prisma-lossless/credentials-store':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../credentials-store
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../dmmf
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       '@prisma-lossless/fetch-engine':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../fetch-engine
       '@prisma-lossless/generator':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator
       '@prisma-lossless/get-platform':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-platform
       '@prisma-lossless/internals':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../internals
       '@prisma-lossless/migrate':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../migrate
       '@prisma/management-api-sdk':
         specifier: 1.12.0
@@ -632,7 +632,7 @@ importers:
   packages/client:
     dependencies:
       '@prisma-lossless/client-runtime-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-runtime-utils
     devDependencies:
       '@cloudflare/workers-types':
@@ -690,100 +690,100 @@ importers:
         specifier: 1.19.0
         version: 1.19.0
       '@prisma-lossless/adapter-better-sqlite3':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-better-sqlite3
       '@prisma-lossless/adapter-d1':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-d1
       '@prisma-lossless/adapter-libsql':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-libsql
       '@prisma-lossless/adapter-mariadb':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-mariadb
       '@prisma-lossless/adapter-mssql':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-mssql
       '@prisma-lossless/adapter-neon':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-neon
       '@prisma-lossless/adapter-pg':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-pg
       '@prisma-lossless/adapter-planetscale':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-planetscale
       '@prisma-lossless/client-common':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-common
       '@prisma-lossless/client-engine-runtime':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-engine-runtime
       '@prisma-lossless/client-generator-js':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-generator-js
       '@prisma-lossless/client-generator-ts':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-generator-ts
       '@prisma-lossless/config':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../config
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../dmmf
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       '@prisma-lossless/engines':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../engines
       '@prisma-lossless/fetch-engine':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../fetch-engine
       '@prisma-lossless/generator':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator
       '@prisma-lossless/generator-helper':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator-helper
       '@prisma-lossless/get-platform':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-platform
       '@prisma-lossless/instrumentation':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../instrumentation
       '@prisma-lossless/instrumentation-contract':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../instrumentation-contract
       '@prisma-lossless/internals':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../internals
       '@prisma-lossless/json-protocol':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../json-protocol
       '@prisma-lossless/migrate':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../migrate
       '@prisma-lossless/param-graph':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../param-graph
       '@prisma-lossless/param-graph-builder':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../param-graph-builder
       '@prisma-lossless/query-plan-executor':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../query-plan-executor
       '@prisma-lossless/sqlcommenter':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../sqlcommenter
       '@prisma-lossless/sqlcommenter-trace-context':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../sqlcommenter-trace-context
       '@prisma-lossless/ts-builders':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../ts-builders
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
@@ -939,22 +939,22 @@ importers:
   packages/client-common:
     dependencies:
       '@prisma-lossless/client-engine-runtime':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-engine-runtime
       '@prisma-lossless/dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../dmmf
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       '@prisma-lossless/generator':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator
       '@prisma-lossless/internals':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../internals
       '@prisma-lossless/param-graph':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../param-graph
 
   packages/client-engine-runtime:
@@ -969,22 +969,22 @@ importers:
         specifier: 2.2.2
         version: 2.2.2
       '@prisma-lossless/client-runtime-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-runtime-utils
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       '@prisma-lossless/json-protocol':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../json-protocol
       '@prisma-lossless/param-graph':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../param-graph
       '@prisma-lossless/sqlcommenter':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../sqlcommenter
       klona:
         specifier: 2.0.6
@@ -1003,10 +1003,10 @@ importers:
         specifier: 4.0.0
         version: 4.0.0(benchmark@2.1.4)
       '@prisma-lossless/get-dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-dmmf
       '@prisma-lossless/param-graph-builder':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../param-graph-builder
       '@types/benchmark':
         specifier: 2.1.5
@@ -1024,31 +1024,31 @@ importers:
         specifier: 0.21.12
         version: 0.21.12
       '@prisma-lossless/client-common':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-common
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../dmmf
       '@prisma-lossless/fetch-engine':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../fetch-engine
       '@prisma-lossless/generator':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator
       '@prisma-lossless/get-platform':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-platform
       '@prisma-lossless/internals':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../internals
       '@prisma-lossless/param-graph-builder':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../param-graph-builder
       '@prisma-lossless/ts-builders':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../ts-builders
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
@@ -1079,16 +1079,16 @@ importers:
   packages/client-generator-registry:
     dependencies:
       '@prisma-lossless/client-generator-js':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-generator-js
       '@prisma-lossless/client-generator-ts':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-generator-ts
       '@prisma-lossless/generator':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator
       '@prisma-lossless/internals':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../internals
 
   packages/client-generator-ts:
@@ -1097,31 +1097,31 @@ importers:
         specifier: 0.21.12
         version: 0.21.12
       '@prisma-lossless/client-common':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-common
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../dmmf
       '@prisma-lossless/fetch-engine':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../fetch-engine
       '@prisma-lossless/generator':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator
       '@prisma-lossless/get-platform':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-platform
       '@prisma-lossless/internals':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../internals
       '@prisma-lossless/param-graph-builder':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../param-graph-builder
       '@prisma-lossless/ts-builders':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../ts-builders
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
@@ -1181,10 +1181,10 @@ importers:
         version: 2.0.0
     devDependencies:
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/get-platform':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-platform
       dotenv:
         specifier: 17.2.3
@@ -1217,19 +1217,19 @@ importers:
   packages/driver-adapter-utils:
     dependencies:
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
 
   packages/engines:
     dependencies:
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/fetch-engine':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../fetch-engine
       '@prisma-lossless/get-platform':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-platform
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
@@ -1257,10 +1257,10 @@ importers:
   packages/fetch-engine:
     dependencies:
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/get-platform':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-platform
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
@@ -1327,19 +1327,19 @@ importers:
   packages/generator:
     devDependencies:
       '@prisma-lossless/dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../dmmf
 
   packages/generator-helper:
     dependencies:
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../dmmf
       '@prisma-lossless/generator':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator
     devDependencies:
       '@swc-node/register':
@@ -1364,10 +1364,10 @@ importers:
   packages/get-dmmf:
     dependencies:
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../dmmf
       '@prisma/prisma-schema-wasm':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
@@ -1386,7 +1386,7 @@ importers:
   packages/get-platform:
     dependencies:
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
     devDependencies:
       '@codspeed/benchmark.js-plugin':
@@ -1433,7 +1433,7 @@ importers:
         specifier: 1.9.0
         version: 1.9.0
       '@prisma-lossless/instrumentation-contract':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../instrumentation-contract
       '@types/node':
         specifier: ~20.19.24
@@ -1451,16 +1451,16 @@ importers:
   packages/integration-tests:
     devDependencies:
       '@prisma-lossless/client-runtime-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-runtime-utils
       '@prisma-lossless/get-platform':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-platform
       '@prisma-lossless/internals':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../internals
       '@prisma-lossless/migrate':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../migrate
       '@sindresorhus/slugify':
         specifier: 2.2.1
@@ -1523,37 +1523,37 @@ importers:
   packages/internals:
     dependencies:
       '@prisma-lossless/config':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../config
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../dmmf
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       '@prisma-lossless/engines':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../engines
       '@prisma-lossless/fetch-engine':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../fetch-engine
       '@prisma-lossless/generator':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator
       '@prisma-lossless/generator-helper':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator-helper
       '@prisma-lossless/get-dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-dmmf
       '@prisma-lossless/get-platform':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-platform
       '@prisma-lossless/schema-files-loader':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../schema-files-loader
       '@prisma/prisma-schema-wasm':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
@@ -1688,25 +1688,25 @@ importers:
   packages/migrate:
     dependencies:
       '@prisma-lossless/client-generator-registry':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-generator-registry
       '@prisma-lossless/config':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../config
       '@prisma-lossless/debug':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../debug
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       '@prisma-lossless/generator':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../generator
       '@prisma-lossless/get-platform':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../get-platform
       '@prisma-lossless/internals':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../internals
       '@prisma/engines-version':
         specifier: 7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a
@@ -1716,7 +1716,7 @@ importers:
         version: 2.4.2
     devDependencies:
       '@prisma-lossless/adapter-libsql':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-libsql
       '@sindresorhus/slugify':
         specifier: 2.2.1
@@ -1811,10 +1811,10 @@ importers:
   packages/param-graph-builder:
     dependencies:
       '@prisma-lossless/dmmf':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../dmmf
       '@prisma-lossless/param-graph':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../param-graph
 
   packages/query-plan-executor:
@@ -1835,19 +1835,19 @@ importers:
         specifier: 2.1.0
         version: 2.1.0(@opentelemetry/api@1.9.0)
       '@prisma-lossless/adapter-mariadb':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-mariadb
       '@prisma-lossless/adapter-mssql':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-mssql
       '@prisma-lossless/adapter-pg':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../adapter-pg
       '@prisma-lossless/client-engine-runtime':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client-engine-runtime
       '@prisma-lossless/driver-adapter-utils':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../driver-adapter-utils
       hono:
         specifier: ^4.12.23
@@ -1871,13 +1871,13 @@ importers:
   packages/sqlcommenter:
     devDependencies:
       '@prisma-lossless/json-protocol':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../json-protocol
 
   packages/sqlcommenter-query-insights:
     devDependencies:
       '@prisma-lossless/sqlcommenter':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../sqlcommenter
       fast-check:
         specifier: 4.3.0
@@ -1886,22 +1886,22 @@ importers:
   packages/sqlcommenter-query-tags:
     devDependencies:
       '@prisma-lossless/sqlcommenter':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../sqlcommenter
 
   packages/sqlcommenter-trace-context:
     devDependencies:
       '@prisma-lossless/instrumentation-contract':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../instrumentation-contract
       '@prisma-lossless/sqlcommenter':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../sqlcommenter
 
   packages/ts-builders:
     dependencies:
       '@prisma-lossless/internals':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../internals
 
   packages/type-benchmark-tests:
@@ -1910,7 +1910,7 @@ importers:
         specifier: 0.48.2
         version: 0.48.2(typescript@5.4.5)
       '@prisma-lossless/client':
-        specifier: 7.8.0-lossless.12
+        specifier: 7.8.0-lossless.13
         version: link:../client
 
 packages:

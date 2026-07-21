@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/nextjs-monorepo-workaround-plugin",
-  "version": "7.8.0-lossless.12",
+  "version": "7.8.0-lossless.13",
   "description": "Ensures that your Prisma files are copied",
   "main": "index.js",
   "repository": {

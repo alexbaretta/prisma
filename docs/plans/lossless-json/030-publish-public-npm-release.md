@@ -1,6 +1,6 @@
 # Sprint 16
 
-### [DONE] Tasklet 030: Publish Public Npm Release
+### [ ] Tasklet 030: Publish Public Npm Release
 
 Branch: `target-7.8.0-lossless`
 
@@ -371,6 +371,39 @@ scripts/ci/publish.test.ts
 docs/plans/lossless-json/030-publish-public-npm-release.md` passed.
 - A full test suite was not run per the user's explicit request to
   keep this fix quick and focused.
+
+## Pre-Implementation Review: Mint Public Version 13
+
+Observed problem: rerunning the `.12` public publish still fails on
+`@prisma-lossless/client-runtime-utils@7.8.0-lossless.12`. The retry
+classifier did not see npm's stderr in the thrown error shape, and
+the `.12` public attempt no longer provides a clean end-to-end
+publication run.
+
+Violated contract or invariant: the public release version used by
+consumers should come from a clean, repeatable release command, not
+from a partially-failed command that requires interpreting mixed npm
+state after the fact.
+
+Owning layer: source package metadata, immutable release identity
+fixtures, public publish scripts, and migration documentation own the
+versioned package graph.
+
+Intended solution: bump the lossless package graph and public publish
+commands from `7.8.0-lossless.12` to `7.8.0-lossless.13`, record a
+new immutable release identity for `.13`, update user migration
+guidance to install `.13`, and broaden the retry classifier so it can
+inspect nested process error stdout/stderr while retaining fatal
+handling for unrelated publish failures.
+
+Rejected solution: do not continue asking the user to republish `.12`
+or manually repair the graph through the npm website. Also do not hide
+the retry classifier defect by version bumping only; the classifier
+still owns future partial-publish recovery.
+
+Validation that proves the fix: focused release and publish unit tests
+must pass, formatting must pass for touched files, and npmjs.org must
+report `.13` absent before the user runs the actual public publish.
 
 ## Implementation Steps
 

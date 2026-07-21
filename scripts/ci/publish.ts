@@ -188,14 +188,26 @@ export function isAlreadyPublishedPackageError(error: unknown, packageName: stri
   }
 
   const packageNameVariants = [packageName, encodeURIComponent(packageName), packageName.replace('/', '%2f')]
-  const message = error.message
+  const output = getPublishErrorOutput(error)
 
   return (
-    packageNameVariants.some((nameVariant) => message.includes(nameVariant)) &&
-    message.includes(version) &&
-    message.includes('previously published versions') &&
-    (message.includes('E403') || message.includes('403 Forbidden'))
+    packageNameVariants.some((nameVariant) => output.includes(nameVariant)) &&
+    output.includes(version) &&
+    output.includes('previously published versions') &&
+    (output.includes('E403') || output.includes('403 Forbidden'))
   )
+}
+
+function getPublishErrorOutput(error: Error): string {
+  const outputError = error as Error & {
+    shortMessage?: unknown
+    stderr?: unknown
+    stdout?: unknown
+  }
+
+  return [error.message, outputError.shortMessage, outputError.stderr, outputError.stdout]
+    .filter((value): value is string => typeof value === 'string')
+    .join('\n')
 }
 
 export function getPackageDependencies(packages: RawPackages): Packages {
