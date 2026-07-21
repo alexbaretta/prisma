@@ -7,6 +7,7 @@ import {
   getLosslessPublicPackages,
   getPatchBranch,
   getPrismaBranch,
+  getSlackReleaseFeedWebhook,
   LOSSLESS_PUBLIC_PACKAGE_NAMES,
   type Package,
   shouldUseLocalTestVersion,
@@ -146,5 +147,17 @@ describe('lossless public publish mode', () => {
         LOSSLESS_PUBLIC_PACKAGE_NAMES,
       ),
     ).toEqual([['@prisma-lossless/debug'], ['@prisma-lossless/client'], ['@prisma-lossless/cli']])
+  })
+
+  test('treats missing or blank Slack webhooks as optional', () => {
+    expect(getSlackReleaseFeedWebhook({})).toBeUndefined()
+    expect(getSlackReleaseFeedWebhook({ SLACK_RELEASE_FEED_WEBHOOK: '' })).toBeUndefined()
+    expect(getSlackReleaseFeedWebhook({ SLACK_RELEASE_FEED_WEBHOOK: '   ' })).toBeUndefined()
+  })
+
+  test('retains configured Slack release feed webhooks', () => {
+    expect(getSlackReleaseFeedWebhook({ SLACK_RELEASE_FEED_WEBHOOK: 'https://hooks.slack.test/release' })).toBe(
+      'https://hooks.slack.test/release',
+    )
   })
 })

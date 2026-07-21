@@ -1,6 +1,6 @@
 # Sprint 16
 
-### [ ] Tasklet 030: Publish Public Npm Release
+### [DONE] Tasklet 030: Publish Public Npm Release
 
 Branch: `target-7.8.0-lossless`
 
@@ -138,10 +138,9 @@ scripts/ci/publish.ts scripts/ci/publish.test.ts` passed with 0
   the `lossless` dist-tag.
 - `pnpm build` passed with 44 successful build tasks.
 
-Remaining acceptance work: run the non-dry-run public npm publication
-from an authenticated shell, then verify npmjs.org reports all ten
-package versions under the `lossless` dist-tag. Do not mark this
-tasklet `[DONE]` until that public publish evidence exists.
+Resolved acceptance work: the non-dry-run public npm publication was
+run from an authenticated shell, and npmjs.org verification now reports
+all ten package versions under the `lossless` dist-tag.
 
 ## Pre-Implementation Review: Scoped CLI Package
 
@@ -234,15 +233,79 @@ src/__tests__/Init.vitest.ts` passed with 44 tests.
   included `dist/scripts/postinstall.js` and
   `dist/scripts/localinstall.js`.
 
-Remaining acceptance work: the non-dry-run
+Resolved acceptance work: the non-dry-run
 `pnpm run publish-lossless-public` command reached its built-in
 dry-run successfully, then failed on the first real publish because
 this Codex process is not authenticated to npmjs.org. `npm whoami
 --registry=https://registry.npmjs.org/` returned `E401 Unauthorized`,
-and no `.12` package was published. Re-run the same command from an
-authenticated shell, then verify all ten package versions are visible
-on npmjs.org under the `lossless` dist-tag before marking this
-tasklet `[DONE]`.
+and no `.12` package was published from the Codex shell. The user then
+ran the same command from an authenticated shell, and npmjs.org
+verification reports all ten `.12` packages publicly available under
+the `lossless` dist-tag.
+
+## Pre-Implementation Review: Optional Slack Notification
+
+Observed problem: the authenticated public publish completed all ten
+npm package uploads for `7.8.0-lossless.12`, then printed an
+`Incoming webhook URL is required` stack trace from the Slack
+notification path. Local npm publication is an approved execution
+mode, but that shell does not necessarily have Prisma CI's Slack
+webhook secret.
+
+Violated contract or invariant: package publication is the irreversible
+contract boundary. A missing optional notification secret must not make
+a successful local publication look failed after npm accepted the
+release graph. The publish script should still send Slack release
+messages when the webhook is configured.
+
+Owning layer: `scripts/ci/publish.ts` owns post-publish release
+notifications. It should decide whether a Slack webhook is configured
+before constructing `IncomingWebhook`.
+
+Intended solution: add a typed helper that reads
+`SLACK_RELEASE_FEED_WEBHOOK` from the environment, treats empty or
+missing values as absent, and make `sendSlackMessage` return after a
+clear log message when no webhook is configured. Preserve existing
+Slack behavior when the variable is present.
+
+Rejected solution: do not require local publishers to export a fake
+Slack webhook, and do not remove Slack notification support for CI.
+Both approaches would move responsibility to the wrong layer.
+
+Validation that proves the fix: focused unit tests must prove missing
+and empty webhook variables are skipped while configured webhooks are
+retained. After publication, npmjs.org verification must prove all ten
+packages are visible under the `lossless` dist-tag.
+
+## Post-Implementation Review: Optional Slack Notification
+
+Observed result: `scripts/ci/publish.ts` now reads the optional Slack
+release feed webhook through a typed helper. `sendSlackMessage`
+returns with a clear log message when
+`SLACK_RELEASE_FEED_WEBHOOK` is absent or blank, and still constructs
+`IncomingWebhook` when the webhook is configured.
+
+Contract review: the fix stays in the post-publish notification layer.
+It does not change package selection, version validation, npm
+publication, dist-tag assignment, or immutable release metadata. A
+missing local Slack secret no longer makes a successful publication
+look like a release failure after npm has accepted the graph.
+
+Rejected wrong-layer solution retained: local publishers should not
+export fake Slack webhook values, and CI Slack notification support
+should not be removed.
+
+Validation evidence:
+
+- `npm view` against `https://registry.npmjs.org/` verified all ten
+  `7.8.0-lossless.12` packages are published and tagged `lossless`.
+- `pnpm exec vitest run scripts/ci/publish.test.ts` passed with 13
+  tests.
+- `pnpm exec prettier --check scripts/ci/publish.ts
+scripts/ci/publish.test.ts
+docs/plans/lossless-json/030-publish-public-npm-release.md` passed.
+- A full test suite was not run after this notification-only fix per
+  the user's explicit request to keep validation focused.
 
 ## Implementation Steps
 

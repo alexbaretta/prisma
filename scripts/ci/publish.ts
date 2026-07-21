@@ -1052,8 +1052,23 @@ type SlackMessageArgs = {
   dryRun?: boolean
 }
 
+export function getSlackReleaseFeedWebhook(env: NodeJS.ProcessEnv = process.env): string | undefined {
+  const webhook = env.SLACK_RELEASE_FEED_WEBHOOK
+  if (webhook === undefined || webhook.trim().length === 0) {
+    return undefined
+  }
+
+  return webhook
+}
+
 async function sendSlackMessage({ version, enginesCommitInfo, prismaCommitInfo, dryRun }: SlackMessageArgs) {
-  const webhook = new IncomingWebhook(process.env.SLACK_RELEASE_FEED_WEBHOOK!)
+  const releaseFeedWebhook = getSlackReleaseFeedWebhook()
+  if (releaseFeedWebhook === undefined) {
+    console.log('Skipping Slack release notification because SLACK_RELEASE_FEED_WEBHOOK is not set.')
+    return
+  }
+
+  const webhook = new IncomingWebhook(releaseFeedWebhook)
   const dryRunStr = dryRun ? 'DRYRUN: ' : ''
 
   const prismaLines = getLines(prismaCommitInfo.message)
