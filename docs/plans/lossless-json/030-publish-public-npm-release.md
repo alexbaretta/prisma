@@ -546,3 +546,47 @@ scripts/ci/publish.ts scripts/ci/publish.test.ts` passed with 0
   commands after publication.
 - All ten packages are publicly published to npmjs.org when the final
   publish command runs.
+
+### [ ] Tasklet 032: Correct Public Repository Metadata
+
+Status: approved for implementation by the user report that npm lists
+the stock Prisma repository for prisma-lossless packages.
+
+## Pre-Implementation Review: Correct Public Repository Metadata
+
+Observed problem: npmjs.org lists
+`https://github.com/prisma/prisma` as the repository for published
+`@prisma-lossless/*` packages. The source package manifests for the ten
+public release packages still contain
+`https://github.com/prisma/prisma.git`, and several also contain stock
+Prisma homepage and issue tracker URLs.
+
+Violated contract or invariant: public package metadata is part of the
+artifact identity consumers inspect before adoption. A fork-owned
+`@prisma-lossless/*` package must not advertise the upstream Prisma
+repository, homepage, or issue tracker as if it were stock Prisma.
+
+Owning layer: the source `package.json` files for the public release
+graph own npm package metadata. `scripts/private-release.ts` owns the
+pre-publish metadata validation that must prevent this regression from
+reaching npm again.
+
+Intended solution: update the ten public release package manifests to
+advertise the fork repository at
+`https://github.com/alexbaretta/prisma.git`, the matching README
+homepage, and the matching issue tracker where homepage or bugs
+metadata is present. Strengthen release metadata validation so any
+future public package graph that points to upstream Prisma is rejected
+before packing or publishing.
+
+Rejected solution: do not try to edit npmjs.org metadata for
+`7.8.0-lossless.13`; npm package version metadata is immutable after
+publication. Do not leave this as a manual npm website correction,
+because the source manifests would keep producing the same wrong
+metadata in the next release.
+
+Validation that proves the fix: focused unit tests must fail if a
+release package manifest points at `github.com/prisma/prisma` and pass
+for the corrected fork metadata. Formatting, focused private-release
+tests, focused publish tests, and a dry-run package metadata check
+must pass before minting or publishing a replacement version.

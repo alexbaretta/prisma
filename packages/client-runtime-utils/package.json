@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/client-runtime-utils",
-  "version": "7.8.0-lossless.13",
+  "version": "7.8.0-lossless.14",
   "description": "Utility types and singletons used by the Prisma Client.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/prisma/prisma.git",
+    "url": "https://github.com/alexbaretta/prisma.git",
     "directory": "packages/client-runtime-utils"
   },
   "license": "Apache-2.0",

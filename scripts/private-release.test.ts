@@ -16,6 +16,9 @@ import {
   PRIVATE_RELEASE_SOURCE_DIRS,
   PRIVATE_RELEASE_VERSION_PREFIX,
   readPrivateReleaseIdentity,
+  RELEASE_PACKAGE_BUGS_URL,
+  RELEASE_PACKAGE_HOMEPAGE_URL,
+  RELEASE_PACKAGE_REPOSITORY_URL,
   RELEASE_PACKAGES,
   selectNextReleaseVersion,
   validatePrivateReleaseIdentity,
@@ -56,23 +59,23 @@ describe('lossless private release graph', () => {
     const missingLifecycleIdentity = readPrivateReleaseIdentity('7.8.0-lossless.9')
     const stagedMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.10')
     const unscopedPublicIdentity = readPrivateReleaseIdentity('7.8.0-lossless.11')
-    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.13')
+    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.14')
     const historicalFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.5')
-    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.13')
+    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.14')
 
     expect(identity.sourceCommit).toBe('f98f2e0f42cd7d9d9556567f9236c98eed00da16')
     expect(identity.status).toBe('unavailable')
-    expect(identity.replacementVersion).toBe('7.8.0-lossless.13')
+    expect(identity.replacementVersion).toBe('7.8.0-lossless.14')
     expect(retiredIdentity.status).toBe('unavailable')
-    expect(retiredIdentity.replacementVersion).toBe('7.8.0-lossless.13')
+    expect(retiredIdentity.replacementVersion).toBe('7.8.0-lossless.14')
     expect(randomMapIdentity.status).toBe('unavailable')
-    expect(randomMapIdentity.replacementVersion).toBe('7.8.0-lossless.13')
+    expect(randomMapIdentity.replacementVersion).toBe('7.8.0-lossless.14')
     expect(staleChunkIdentity.status).toBe('unavailable')
-    expect(staleChunkIdentity.replacementVersion).toBe('7.8.0-lossless.13')
+    expect(staleChunkIdentity.replacementVersion).toBe('7.8.0-lossless.14')
     expect(missingLifecycleIdentity.status).toBe('unavailable')
-    expect(missingLifecycleIdentity.replacementVersion).toBe('7.8.0-lossless.13')
+    expect(missingLifecycleIdentity.replacementVersion).toBe('7.8.0-lossless.14')
     expect(stagedMetadataIdentity.status).toBe('unavailable')
-    expect(stagedMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.13')
+    expect(stagedMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.14')
     expect(identity.packages).toEqual(
       historicalFixture.packages.map(({ name, integrity }) => ({
         name,
@@ -80,7 +83,7 @@ describe('lossless private release graph', () => {
       })),
     )
     expect(unscopedPublicIdentity.status).toBe('unavailable')
-    expect(unscopedPublicIdentity.replacementVersion).toBe('7.8.0-lossless.13')
+    expect(unscopedPublicIdentity.replacementVersion).toBe('7.8.0-lossless.14')
     expect(currentIdentity.status).toBe('available')
     expect(identity.packages).toHaveLength(RELEASE_PACKAGES.length)
     expect(identity.packages[1]).toEqual({
@@ -126,13 +129,13 @@ describe('lossless private release graph', () => {
     expect(() => assertAvailablePrivateReleaseIdentity(unscopedPublicIdentity)).toThrow(
       /Private release 7\.8\.0-lossless\.11 is recorded as unavailable/,
     )
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7.8.0-lossless.13/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.6')).toThrow(/Use 7.8.0-lossless.13/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.7')).toThrow(/Use 7.8.0-lossless.13/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.8')).toThrow(/Use 7.8.0-lossless.13/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.9')).toThrow(/Use 7.8.0-lossless.13/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.10')).toThrow(/Use 7.8.0-lossless.13/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.11')).toThrow(/Use 7.8.0-lossless.13/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7.8.0-lossless.14/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.6')).toThrow(/Use 7.8.0-lossless.14/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.7')).toThrow(/Use 7.8.0-lossless.14/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.8')).toThrow(/Use 7.8.0-lossless.14/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.9')).toThrow(/Use 7.8.0-lossless.14/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.10')).toThrow(/Use 7.8.0-lossless.14/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.11')).toThrow(/Use 7.8.0-lossless.14/)
   })
 
   test('rejects incomplete or mismatched release identities', () => {
@@ -278,6 +281,7 @@ describe('lossless private release graph', () => {
 
   test('validates source-authored private release metadata', () => {
     const packageJson = {
+      ...releaseMetadataFixture('packages/get-platform'),
       name: '@prisma-lossless/get-platform',
       version: releaseVersion,
       dependencies: {
@@ -310,6 +314,7 @@ describe('lossless private release graph', () => {
     expect(() =>
       validateReleasePackageMetadata(
         {
+          ...releaseMetadataFixture('packages/get-platform'),
           name: '@prisma-lossless/get-platform',
           version: releaseVersion,
           dependencies: {
@@ -324,6 +329,7 @@ describe('lossless private release graph', () => {
     expect(() =>
       validateReleasePackageMetadata(
         {
+          ...releaseMetadataFixture('packages/get-platform'),
           name: '@prisma-lossless/get-platform',
           version: releaseVersion,
           dependencies: {
@@ -382,6 +388,7 @@ describe('lossless private release graph', () => {
     expect(() =>
       validateReleasePackageMetadata(
         {
+          ...releaseMetadataFixture('packages/get-platform'),
           name: '@prisma-lossless/get-platform',
           version: releaseVersion,
           dependencies: {
@@ -394,6 +401,56 @@ describe('lossless private release graph', () => {
     ).toThrow(/expected exact private release/)
   })
 
+  test('rejects stock Prisma package metadata in the public release graph', () => {
+    const packageJson = {
+      name: '@prisma-lossless/debug',
+      version: releaseVersion,
+      homepage: RELEASE_PACKAGE_HOMEPAGE_URL,
+      repository: {
+        type: 'git',
+        url: RELEASE_PACKAGE_REPOSITORY_URL,
+        directory: 'packages/debug',
+      },
+      bugs: RELEASE_PACKAGE_BUGS_URL,
+    }
+
+    expect(() => validateReleasePackageMetadata(packageJson, releaseVersion, sourceCommit)).not.toThrow()
+    expect(() =>
+      validateReleasePackageMetadata(
+        {
+          ...packageJson,
+          repository: {
+            type: 'git',
+            url: 'https://github.com/prisma/prisma.git',
+            directory: 'packages/debug',
+          },
+        },
+        releaseVersion,
+        sourceCommit,
+      ),
+    ).toThrow(/expected https:\/\/github\.com\/alexbaretta\/prisma\.git/)
+    expect(() =>
+      validateReleasePackageMetadata(
+        {
+          ...packageJson,
+          homepage: 'https://www.prisma.io',
+        },
+        releaseVersion,
+        sourceCommit,
+      ),
+    ).toThrow(/expected https:\/\/github\.com\/alexbaretta\/prisma#readme/)
+    expect(() =>
+      validateReleasePackageMetadata(
+        {
+          ...packageJson,
+          bugs: 'https://github.com/prisma/prisma/issues',
+        },
+        releaseVersion,
+        sourceCommit,
+      ),
+    ).toThrow(/expected https:\/\/github\.com\/alexbaretta\/prisma\/issues/)
+  })
+
   test('validates current source manifests without mutation', () => {
     const manifests = new Map(
       RELEASE_PACKAGES.map((releasePackage) => {
@@ -401,7 +458,7 @@ describe('lossless private release graph', () => {
           fs.readFileSync(path.join(process.cwd(), releasePackage.sourceDir, 'package.json'), 'utf-8'),
         )
 
-        validateReleasePackageMetadata(packageJson, '7.8.0-lossless.13', sourceCommit)
+        validateReleasePackageMetadata(packageJson, '7.8.0-lossless.14', sourceCommit)
         return [releasePackage.name, packageJson]
       }),
     )
@@ -409,20 +466,20 @@ describe('lossless private release graph', () => {
     const cliPackageJson = manifests.get('@prisma-lossless/cli')
 
     expect(clientPackageJson).toMatchObject({
-      version: '7.8.0-lossless.13',
+      version: '7.8.0-lossless.14',
       dependencies: {
-        '@prisma-lossless/client-runtime-utils': '7.8.0-lossless.13',
+        '@prisma-lossless/client-runtime-utils': '7.8.0-lossless.14',
       },
       peerDependencies: {
-        '@prisma-lossless/cli': '7.8.0-lossless.13',
+        '@prisma-lossless/cli': '7.8.0-lossless.14',
       },
     })
     expect(cliPackageJson).toMatchObject({
       name: '@prisma-lossless/cli',
-      version: '7.8.0-lossless.13',
+      version: '7.8.0-lossless.14',
       dependencies: {
-        '@prisma-lossless/config': '7.8.0-lossless.13',
-        '@prisma-lossless/engines': '7.8.0-lossless.13',
+        '@prisma-lossless/config': '7.8.0-lossless.14',
+        '@prisma-lossless/engines': '7.8.0-lossless.14',
       },
       bin: {
         'prisma-lossless': 'build/index.js',
@@ -431,9 +488,9 @@ describe('lossless private release graph', () => {
 
     expect(manifests.get('@prisma-lossless/adapter-pg')).toMatchObject({
       name: '@prisma-lossless/adapter-pg',
-      version: '7.8.0-lossless.13',
+      version: '7.8.0-lossless.14',
       dependencies: {
-        '@prisma-lossless/driver-adapter-utils': '7.8.0-lossless.13',
+        '@prisma-lossless/driver-adapter-utils': '7.8.0-lossless.14',
       },
     })
   })
@@ -447,4 +504,20 @@ function runGit(checkout: string, args: string[]): string {
   }
 
   return result.stdout.trim()
+}
+
+function releaseMetadataFixture(directory: string): {
+  repository: {
+    type: 'git'
+    url: string
+    directory: string
+  }
+} {
+  return {
+    repository: {
+      type: 'git',
+      url: RELEASE_PACKAGE_REPOSITORY_URL,
+      directory,
+    },
+  }
 }

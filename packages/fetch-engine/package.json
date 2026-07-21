@@ -1,18 +1,18 @@
 {
   "name": "@prisma-lossless/fetch-engine",
-  "version": "7.8.0-lossless.13",
+  "version": "7.8.0-lossless.14",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "Apache-2.0",
   "author": "Tim Suchanek <suchanek@prisma.io>",
-  "homepage": "https://www.prisma.io",
+  "homepage": "https://github.com/alexbaretta/prisma#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/prisma/prisma.git",
+    "url": "https://github.com/alexbaretta/prisma.git",
     "directory": "packages/fetch-engine"
   },
-  "bugs": "https://github.com/prisma/prisma/issues",
+  "bugs": "https://github.com/alexbaretta/prisma/issues",
   "enginesOverride": {},
   "devDependencies": {
     "@types/node": "~20.19.24",
@@ -36,9 +36,9 @@
     "typescript": "5.4.5"
   },
   "dependencies": {
-    "@prisma-lossless/debug": "7.8.0-lossless.13",
+    "@prisma-lossless/debug": "7.8.0-lossless.14",
     "@prisma/engines-version": "7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a",
-    "@prisma-lossless/get-platform": "7.8.0-lossless.13"
+    "@prisma-lossless/get-platform": "7.8.0-lossless.14"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

@@ -79,6 +79,9 @@ export const PRIVATE_RELEASE_SOURCE_DIRS: readonly string[] = [
 ]
 
 const RELEASE_PACKAGE_NAMES = new Set(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name))
+export const RELEASE_PACKAGE_REPOSITORY_URL = 'https://github.com/alexbaretta/prisma.git'
+export const RELEASE_PACKAGE_HOMEPAGE_URL = 'https://github.com/alexbaretta/prisma#readme'
+export const RELEASE_PACKAGE_BUGS_URL = 'https://github.com/alexbaretta/prisma/issues'
 const LEGACY_UNSCOPED_CLI_RELEASE_PACKAGE_NAMES: readonly string[] = [
   '@prisma-lossless/debug',
   '@prisma-lossless/driver-adapter-utils',
@@ -161,6 +164,8 @@ export function validateReleasePackageMetadata(packageJson: JsonObject, version:
     throw new Error(`Package ${name} does not record release version ${version}`)
   }
 
+  assertReleasePackageExternalMetadata(name, packageJson)
+
   for (const section of DEPENDENCY_SECTIONS) {
     const dependencies = readOptionalStringMap(packageJson[section])
 
@@ -168,6 +173,54 @@ export function validateReleasePackageMetadata(packageJson: JsonObject, version:
       assertAllowedDependencySpecifier(name, dependencyName, specifier, version)
     }
   }
+}
+
+function assertReleasePackageExternalMetadata(packageName: string, packageJson: JsonObject): void {
+  const repositoryUrl = readRepositoryUrl(packageJson.repository)
+
+  if (repositoryUrl !== RELEASE_PACKAGE_REPOSITORY_URL) {
+    throw new Error(
+      `Package ${packageName} records repository ${repositoryUrl ?? '<missing>'}; ` +
+        `expected ${RELEASE_PACKAGE_REPOSITORY_URL}`,
+    )
+  }
+
+  assertOptionalMetadataUrl(packageName, 'homepage', packageJson.homepage, RELEASE_PACKAGE_HOMEPAGE_URL)
+  assertOptionalMetadataUrl(packageName, 'bugs', readBugsUrl(packageJson.bugs), RELEASE_PACKAGE_BUGS_URL)
+}
+
+function assertOptionalMetadataUrl(packageName: string, metadataName: string, actual: unknown, expected: string): void {
+  if (actual === undefined) {
+    return
+  }
+
+  if (actual !== expected) {
+    throw new Error(`Package ${packageName} records ${metadataName} ${String(actual)}; expected ${expected}`)
+  }
+}
+
+function readRepositoryUrl(repository: unknown): string | undefined {
+  if (typeof repository === 'string') {
+    return repository
+  }
+
+  if (isJsonObject(repository) && typeof repository.url === 'string') {
+    return repository.url
+  }
+
+  return undefined
+}
+
+function readBugsUrl(bugs: unknown): string | undefined {
+  if (typeof bugs === 'string') {
+    return bugs
+  }
+
+  if (isJsonObject(bugs) && typeof bugs.url === 'string') {
+    return bugs.url
+  }
+
+  return undefined
 }
 
 export function assertReleaseGraphDependencyOrder(packages = RELEASE_PACKAGES): void {
