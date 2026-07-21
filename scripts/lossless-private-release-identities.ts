@@ -17,7 +17,7 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.5',
     sourceCommit: 'f98f2e0f42cd7d9d9556567f9236c98eed00da16',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.7',
+    replacementVersion: '7.8.0-lossless.8',
     unavailableReason:
       'The historical client tarball integrity is known from the GWEN lockfile, ' +
       'but the current built graph cannot reproduce those package bytes.',
@@ -68,7 +68,7 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
     version: '7.8.0-lossless.6',
     sourceCommit: 'f98f2e0f42cd7d9d9556567f9236c98eed00da16',
     status: 'unavailable',
-    replacementVersion: '7.8.0-lossless.7',
+    replacementVersion: '7.8.0-lossless.8',
     unavailableReason:
       'The release installed with correct package metadata, but generated ' +
       'clients still carried the development version placeholder.',
@@ -118,7 +118,11 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
   {
     version: '7.8.0-lossless.7',
     sourceCommit: 'de26dd06509902ef202e675bb3eb2d2ee9b7fc4a',
-    status: 'available',
+    status: 'unavailable',
+    replacementVersion: '7.8.0-lossless.8',
+    unavailableReason:
+      'The release was produced with random fill-plugin source-map ' +
+      'names and cannot be reproduced from a fresh clean checkout.',
     packages: [
       {
         name: '@prisma-lossless/debug',
@@ -159,6 +163,53 @@ export const PRIVATE_RELEASE_IDENTITIES: readonly PrivateReleaseIdentity[] = [
       {
         name: 'prisma-lossless',
         integrity: 'sha512-gqZO9gX2J5rNBp/41xTlc3kiwHcWgQZ1JUCNN4uC5O9b8LWkKruJ6dez41hByJAw2GFW0MY3ByHLJVtTdGVB/Q==',
+      },
+    ],
+  },
+  {
+    version: '7.8.0-lossless.8',
+    sourceCommit: 'e44a7eb72e49bdac92b34f820dee9fbb1248abad',
+    status: 'available',
+    packages: [
+      {
+        name: '@prisma-lossless/debug',
+        integrity: 'sha512-Eg0gF6hAgWewAzC4AQyEhW4FTH+B0FWpCeNr4I65Xy2AElIJyCu8fb3VHn1bAm7YdXGrUW8HCu6wGcMPAMPdJA==',
+      },
+      {
+        name: '@prisma-lossless/driver-adapter-utils',
+        integrity: 'sha512-6WvYzg/ar7D3C8EGkrnRpm9x4AJOTVhpcXraYXMV+AnBX94WGoDeluTPyUtdeCg3UVvH0R9FP/+0JYc413xTvA==',
+      },
+      {
+        name: '@prisma-lossless/get-platform',
+        integrity: 'sha512-8rIe/0K87F4r3JWwhH+Di8lQytavQlIwk6ysPKFKIzJMRNYzmmK/8zPQRFyYiz8T3Rsbz0pPhN/wFkabTnIFqQ==',
+      },
+      {
+        name: '@prisma-lossless/fetch-engine',
+        integrity: 'sha512-r0l/bBJH4n9XfdjzYbxHSJ48Y/pF/Q1KOnbu4wq7NGci4EkpG2dpe7vf1f61xW0nVHXyDNQhw93QpTsJRa7wXw==',
+      },
+      {
+        name: '@prisma-lossless/engines',
+        integrity: 'sha512-EsDodRL1tncTVr99Xrt9LN52k1oU0JBNZP9wnE1NVuGMGpTo6RHqSni6bxZDfZn2/TdOQXMbMoz3jCg+VtdPcA==',
+      },
+      {
+        name: '@prisma-lossless/config',
+        integrity: 'sha512-bGbLoPZTo5Mnqd7FmyLB2qUEmf086aC1lcrwyNX72JkS80ogSarlu0G52bJqUofLN0UUnFqx9BD/4bqWv2oJKg==',
+      },
+      {
+        name: '@prisma-lossless/client-runtime-utils',
+        integrity: 'sha512-vdjmt3TRDEP2ZwghVabNC2Tbc9uxuYcmxGed5E8eAxCEVSbxDGwEJ9qdAqq0AlQEG0owbuOsZiU4Q5WYfLtTQQ==',
+      },
+      {
+        name: '@prisma-lossless/adapter-pg',
+        integrity: 'sha512-aDjgSurnpycSgTxx8PmJhv+YWb+Ayt5pnhWDB38QD2lW2ski27kT8lPacTKP2GJU6o35bFKPxeY/oUGN7O26qA==',
+      },
+      {
+        name: '@prisma-lossless/client',
+        integrity: 'sha512-oMOo4JrmpfqFiXY4ExODCfN+zGGNaU/vBFpmWHisrDCTjrBBlDeAid7hYdJDhoHkZyx36Cj93ntiuslL9NIn7g==',
+      },
+      {
+        name: 'prisma-lossless',
+        integrity: 'sha512-60SstnN8xZGWy/aWJuP/7WxvYUNtUU07Sbr0jRkWpmEwfhfwgfBuI/PTRy2piotSewDDfC+K0r4Gd2ke22MLwA==',
       },
     ],
   },

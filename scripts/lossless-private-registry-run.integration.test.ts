@@ -34,9 +34,10 @@ import {
 } from './lossless-private-release-fixtures'
 
 const RUN_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_REGISTRY_INTEGRATION === '1'
+const RUN_FRESH_CHECKOUT_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_FRESH_CHECKOUT_INTEGRATION === '1'
 const VERSION = '7.8.0-lossless.999999'
-const HISTORICAL_VERSION = '7.8.0-lossless.6'
-const RECORDED_VERSION = '7.8.0-lossless.7'
+const HISTORICAL_VERSION = '7.8.0-lossless.7'
+const RECORDED_VERSION = '7.8.0-lossless.8'
 const CONSUMER_PNPM_VERSION = '11.1.1'
 const SOURCE_COMMIT = '0123456789abcdef0123456789abcdef01234567'
 const RECORDED_FIXTURE = readIndependentPrivateReleaseFixture(RECORDED_VERSION)
@@ -183,7 +184,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
         consumerDir,
         builtDependencies(unavailableRoots),
       ),
-    ).rejects.toThrow(/Use 7\.8\.0-lossless\.7/)
+    ).rejects.toThrow(/Use 7\.8\.0-lossless\.8/)
     expectRootsRemoved(unavailableRoots)
 
     const manifest = prepareBuiltPrivateReleaseCandidates(RECORDED_VERSION, repoLocalReleaseRoot(root, 'mismatch'))
@@ -222,6 +223,81 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
     expect(exitCode).toBe(42)
     expectRootsRemoved(roots)
   }, 180_000)
+
+  test.skipIf(!RUN_FRESH_CHECKOUT_INTEGRATION)(
+    'reproduces the recorded release from a fresh clean checkout',
+    () => {
+      const freshRoot = path.join(root, 'fresh-checkout-proof')
+      const checkoutDir = path.join(freshRoot, 'checkout')
+      const firstReleaseRoot = path.join(freshRoot, 'first-release')
+      const secondReleaseRoot = path.join(freshRoot, 'second-release')
+      const consumerDir = createConsumerDir(freshRoot, 'fresh-consumer')
+
+      fs.mkdirSync(freshRoot, { recursive: true })
+      runRequired('git', ['clone', '--shared', process.cwd(), checkoutDir], process.cwd())
+      runRequired('pnpm', ['install', '--frozen-lockfile'], checkoutDir)
+      runRequired('pnpm', ['build'], checkoutDir)
+
+      const firstManifest = loadPrivateReleaseManifest(
+        runRequired(
+          'pnpm',
+          [
+            'exec',
+            'tsx',
+            'scripts/lossless-private-release.ts',
+            'build-pinned',
+            RECORDED_VERSION,
+            RECORDED_FIXTURE.sourceCommit,
+            firstReleaseRoot,
+          ],
+          checkoutDir,
+        ),
+      )
+      const secondManifest = loadPrivateReleaseManifest(
+        runRequired(
+          'pnpm',
+          [
+            'exec',
+            'tsx',
+            'scripts/lossless-private-release.ts',
+            'build-pinned',
+            RECORDED_VERSION,
+            RECORDED_FIXTURE.sourceCommit,
+            secondReleaseRoot,
+          ],
+          checkoutDir,
+        ),
+      )
+
+      expect(integrities(firstManifest)).toEqual(integrities(secondManifest))
+      expectReleaseMatchesIndependentFixture(firstManifest, RECORDED_FIXTURE)
+      expectReleaseMatchesIndependentFixture(secondManifest, RECORDED_FIXTURE)
+
+      writeRealConsumerPackageJson(consumerDir)
+      runRequired(
+        'pnpm',
+        [
+          'exec',
+          'tsx',
+          'scripts/lossless-private-registry-run.ts',
+          '--consumer-dir',
+          consumerDir,
+          '--from-built',
+          RECORDED_VERSION,
+          '--',
+          'corepack',
+          'pnpm',
+          'install',
+          '--lockfile-only',
+          '--reporter',
+          'append-only',
+        ],
+        checkoutDir,
+      )
+      expectLockfileMatchesIndependentFixture(path.join(consumerDir, 'pnpm-lock.yaml'), RECORDED_FIXTURE)
+    },
+    900_000,
+  )
 })
 
 function createFixtureRelease(root: string): PrivateReleaseManifest {
@@ -550,4 +626,21 @@ function expectLockfileMatchesIndependentFixture(
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function runRequired(command: string, args: readonly string[], cwd: string): string {
+  const result = spawnSync(command, [...args], {
+    cwd,
+    encoding: 'utf-8',
+    env: process.env,
+  })
+
+  if (result.status !== 0) {
+    throw new Error(
+      `${command} ${args.join(' ')} failed in ${cwd} with exit code ${result.status}:\n` +
+        `${result.stdout}\n${result.stderr}`,
+    )
+  }
+
+  return result.stdout.trim()
 }

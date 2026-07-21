@@ -245,6 +245,17 @@ Client metadata still reports the development placeholder version
 | --- | --------------------------------------------------------------------------------------- | -------- | ------ | ------------ |
 | 025 | [Fix generated client release identity](./025-fix-generated-client-release-identity.md) | High     | [DONE] | 024          |
 
+### Sprint 12: Fresh Release Reproducibility
+
+Sprint 12 fixes the Tasklet 025 follow-up defect where a clean
+checkout at `198ccfba6` cannot reproduce the recorded
+`7.8.0-lossless.7` `@prisma-lossless/client` package integrity before
+Verdaccio startup.
+
+| ID  | Tasklet                                                                             | Priority | Status | Dependencies |
+| --- | ----------------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 026 | [Prove fresh release reproducibility](./026-prove-fresh-release-reproducibility.md) | High     | [ ]    | 025          |
+
 ## Execution Order
 
 Execute tasks in numeric order. Do not skip the failing-test task. This
@@ -343,8 +354,9 @@ That rerun passed all migrate tests: `33` suites, `352` passed tests,
 
 ## Private Distribution Status
 
-Tasklets 015 through 025 are `[DONE]`. The current immutable private
-release validated for first-party use is `7.8.0-lossless.7`, served
+Tasklets 015 through 025 are `[DONE]`. Tasklet 026 is validating the
+replacement release for first-party use. The current immutable private
+release candidate is `7.8.0-lossless.8`, served
 through the ephemeral registry wrapper with the `lossless` dist-tag.
 
 The historical `7.8.0-lossless.5` identity is recorded as
@@ -352,8 +364,11 @@ unavailable. GWEN's lockfile proves the original `.5` client tarball
 integrity, but the current prebuilt packaging path cannot reproduce
 those client bytes. The `7.8.0-lossless.6` identity is also recorded as
 unavailable because its generated Prisma Client metadata still carried
-the workspace development version `0.0.0`. The wrapper rejects both
-versions before starting Verdaccio and instructs consumers to use `.7`.
+the workspace development version `0.0.0`. The `7.8.0-lossless.7`
+identity is recorded as unavailable because its client source maps were
+produced with random fill-plugin paths and cannot be reproduced from a
+fresh clean checkout. The wrapper rejects all three versions before
+starting Verdaccio and instructs consumers to use `.8`.
 
 The isolated npm consumer at
 `tmp/lossless-json-tasklet-019/consumer-7.8.0-lossless.5` previously
@@ -362,7 +377,8 @@ locally running PostgreSQL `18.3` server. Tasklet 024 supersedes its
 release identity proof with a temporary consumer whose lockfile is
 independent of the serving identity and pins all ten private packages.
 Tasklet 025 supersedes the usable private release identity with `.7`
-and proves generated client metadata in an external consumer.
+and proves generated client metadata in an external consumer. Tasklet
+026 supersedes `.7` with reproducible `.8` package bytes.
 
 This closes the separate first-party consumption gap without
 publishing to the worldwide npm registry and without requiring a
