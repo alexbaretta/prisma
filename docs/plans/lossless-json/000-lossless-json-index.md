@@ -275,7 +275,7 @@ generated metadata, and external release artifacts.
 
 | ID  | Tasklet                                                               | Priority | Status | Dependencies |
 | --- | --------------------------------------------------------------------- | -------- | ------ | ------------ |
-| 028 | [Rename source packages to lossless](./028-rename-source-packages.md) | High     | [ ]    | 027          |
+| 028 | [Rename source packages to lossless](./028-rename-source-packages.md) | High     | [DONE] | 027          |
 
 ## Execution Order
 
@@ -375,16 +375,20 @@ That rerun passed all migrate tests: `33` suites, `352` passed tests,
 
 ## Private Distribution Status
 
-Tasklets 015 through 027 are `[DONE]`. Tasklet 027 supersedes
+Tasklets 015 through 027 are `[DONE]`. Tasklet 027 superseded
 reproducible-but-uninstallable `.9` package bytes with
 `7.8.0-lossless.10`, whose engines tarball includes the required
 lifecycle JavaScript outputs and passes normal cold installation with
-package lifecycle scripts enabled. The current immutable private
-release is `7.8.0-lossless.10`, served through the ephemeral registry
-wrapper with the `lossless` dist-tag. Historical private versions
-`.5`, `.6`, `.7`, `.8`, and `.9` remain recorded but unavailable
-because they cannot satisfy the complete byte-for-byte and
-normal-install contract for current first-party consumers.
+package lifecycle scripts enabled. Tasklet 028 supersedes `.10` with
+`7.8.0-lossless.11` because source package identity is now
+authoritative: fork-owned package manifests carry the lossless package
+names, exact release version, and exact fork-owned dependency
+specifiers before packing. The current immutable private release is
+`7.8.0-lossless.11`, served through the ephemeral registry wrapper with
+the `lossless` dist-tag. Historical private versions `.5`, `.6`,
+`.7`, `.8`, `.9`, and `.10` remain recorded but unavailable because
+they cannot satisfy the complete byte-for-byte, normal-install, and
+source-identity contract for current first-party consumers.
 
 Consumers should invoke the wrapper from this repository and let the
 wrapper run Corepack from the consumer directory:
@@ -392,7 +396,7 @@ wrapper run Corepack from the consumer directory:
 ```sh
 pnpm exec tsx scripts/lossless-private-registry-run.ts \
   --consumer-dir /path/to/consumer \
-  --from-built 7.8.0-lossless.10 \
+  --from-built 7.8.0-lossless.11 \
   -- corepack pnpm install --frozen-lockfile
 ```
 
@@ -408,8 +412,11 @@ fresh clean checkout. The `7.8.0-lossless.8` identity is unavailable
 because it captured a stale ignored get-platform chunk. The
 `7.8.0-lossless.9` identity is unavailable because it omitted required
 engines lifecycle JavaScript files and fails a normal cold install.
-The wrapper rejects all five versions before starting Verdaccio and
-instructs consumers to use `.10`.
+The `7.8.0-lossless.10` identity is unavailable because it was built
+by staging metadata from source manifests that still used development
+versions and workspace dependency specifiers. The wrapper rejects all
+six versions before starting Verdaccio and instructs consumers to use
+`.11`.
 
 The isolated npm consumer at
 `tmp/lossless-json-tasklet-019/consumer-7.8.0-lossless.5` previously

@@ -73,7 +73,7 @@ describe('validate', () => {
           Validation Error Count: 1
           [Context: validate]
 
-          Prisma CLI Version : 0.0.0"
+          Prisma CLI Version : 7.8.0-lossless.11"
         `)
       }
     })
@@ -106,7 +106,7 @@ describe('validate', () => {
           Validation Error Count: 1
           [Context: validate]
 
-          Prisma CLI Version : 0.0.0"
+          Prisma CLI Version : 7.8.0-lossless.11"
         `)
       }
     })
@@ -151,7 +151,7 @@ describe('validate', () => {
             Validation Error Count: 2
             [Context: validate]
 
-            Prisma CLI Version : 0.0.0"
+            Prisma CLI Version : 7.8.0-lossless.11"
           `)
         }
       })
@@ -186,7 +186,7 @@ describe('validate', () => {
             Validation Error Count: 1
             [Context: validate]
 
-            Prisma CLI Version : 0.0.0"
+            Prisma CLI Version : 7.8.0-lossless.11"
           `)
         }
       })
@@ -300,7 +300,7 @@ describe('validate', () => {
             Validation Error Count: 6
             [Context: validate]
 
-            Prisma CLI Version : 0.0.0"
+            Prisma CLI Version : 7.8.0-lossless.11"
           `)
         }
       })
@@ -427,7 +427,7 @@ describe('validate', () => {
             Validation Error Count: 6
             [Context: validate]
 
-            Prisma CLI Version : 0.0.0"
+            Prisma CLI Version : 7.8.0-lossless.11"
           `)
         }
       })

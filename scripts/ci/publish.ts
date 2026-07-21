@@ -103,7 +103,7 @@ export async function getPackages(): Promise<RawPackages> {
   }, {})
 }
 
-interface Package {
+export interface Package {
   private?: boolean
   name: string
   path: string
@@ -115,7 +115,25 @@ interface Package {
   packageJson: any
 }
 
-type Packages = { [packageName: string]: Package }
+export type Packages = { [packageName: string]: Package }
+export type PublishCommandFlags = {
+  '--test'?: boolean
+  '--publish'?: boolean
+}
+
+export function shouldUseLocalTestVersion(args: PublishCommandFlags, dryRun: boolean): boolean {
+  return args['--test'] === true && args['--publish'] !== true && !dryRun
+}
+
+export function getLocalTestVersion(packages: Packages): string {
+  const cliPackage = packages['prisma-lossless'] ?? packages.prisma
+
+  if (!cliPackage) {
+    throw new Error('Could not find local Prisma CLI package version for test-only run')
+  }
+
+  return cliPackage.version
+}
 
 export function getPackageDependencies(packages: RawPackages): Packages {
   const packageCache = Object.entries(packages).reduce<Packages>((acc, [name, pkg]) => {
@@ -535,7 +553,10 @@ async function publish() {
   console.log({ branch })
 
   // For branches that are named "integration/" we publish to the integration npm tag
-  if (branch && (process.env.FORCE_INTEGRATION_RELEASE === 'true' || branch.startsWith('integration/'))) {
+  if (shouldUseLocalTestVersion(args, dryRun)) {
+    prismaVersion = getLocalTestVersion(packages)
+    tag = 'test'
+  } else if (branch && (process.env.FORCE_INTEGRATION_RELEASE === 'true' || branch.startsWith('integration/'))) {
     prismaVersion = await getNewIntegrationVersion(packages, branch)
     tag = 'integration'
   }
