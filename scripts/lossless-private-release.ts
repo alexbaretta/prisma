@@ -76,6 +76,7 @@ export const RELEASE_PACKAGES: readonly ReleasePackage[] = [
 
 export const PRIVATE_RELEASE_SOURCE_DIRS: readonly string[] = [
   ...RELEASE_PACKAGES.map((releasePackage) => releasePackage.sourceDir),
+  'helpers/compile',
   'packages/client-generator-js',
   'packages/client-generator-ts',
 ]

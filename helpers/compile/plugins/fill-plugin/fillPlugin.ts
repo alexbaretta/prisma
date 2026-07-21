@@ -1,12 +1,13 @@
 import crypto from 'crypto'
 import * as esbuild from 'esbuild'
+import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import resolve from 'resolve'
 
 type LoadCache = { [K in string]: string }
 
-type Fillers = {
+export type Fillers = {
   [k in string]: {
     imports?: string
     globals?: string
@@ -33,8 +34,9 @@ const loader = (cache: LoadCache) => (module: string) => {
 
   const modulePkg = `${module}/package.json`
   const resolveOpt = { includeCoreModules: false }
-  const modulePath = path.dirname(resolve.sync(modulePkg, resolveOpt))
-  const filename = `${module}${crypto.randomBytes(4).toString('hex')}.js`
+  const modulePackageJsonPath = resolve.sync(modulePkg, resolveOpt)
+  const modulePath = path.dirname(modulePackageJsonPath)
+  const filename = buildDeterministicLoaderFileName(module, readPackageVersion(modulePackageJsonPath))
   const outfile = path.join(os.tmpdir(), 'esbuild', filename)
 
   esbuild.buildSync({
@@ -49,6 +51,80 @@ const loader = (cache: LoadCache) => (module: string) => {
   })
 
   return (cache[module] = outfile)
+}
+
+export function buildDeterministicLoaderFileName(module: string, version: string): string {
+  const safeModuleName = module.replace(/[^a-zA-Z0-9._-]+/g, '-')
+  const moduleIdentity = `${module}@${version}`
+
+  return `${safeModuleName}-${stableHash(moduleIdentity)}.js`
+}
+
+export function buildFillPluginNamespace(fillers: Fillers): string {
+  return `fill-plugin-${stableHash(stableFillersDescriptor(fillers))}`
+}
+
+function readPackageVersion(packageJsonPath: string): string {
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8')) as { version?: unknown }
+
+  if (typeof packageJson.version !== 'string') {
+    throw new Error(`Package ${packageJsonPath} does not declare a string version`)
+  }
+
+  return packageJson.version
+}
+
+function stableHash(value: string): string {
+  return crypto.createHash('sha256').update(value).digest('hex').slice(0, 12)
+}
+
+function stableFillersDescriptor(fillers: Fillers): string {
+  return JSON.stringify(
+    Object.entries(fillers)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([name, filler]) => [name, normalizeFillerDescriptor(filler)]),
+  )
+}
+
+function normalizeFillerDescriptor(filler: Fillers[string]): Record<string, string> {
+  const normalized: Record<string, string> = {}
+
+  for (const key of ['contents', 'define', 'globals', 'imports'] as const) {
+    const value = filler[key]
+
+    if (value !== undefined) {
+      normalized[key] = normalizeSourceMapVisiblePath(value)
+    }
+  }
+
+  return normalized
+}
+
+function normalizeSourceMapVisiblePath(value: string): string {
+  const normalizedValue = path.normalize(value)
+  const fillPluginDir = path.resolve(__dirname)
+  const relativeFillPluginPath = path.relative(fillPluginDir, normalizedValue)
+
+  if (path.isAbsolute(normalizedValue) && isRelativePathInsideDirectory(relativeFillPluginPath)) {
+    return toPosixPath(path.join('<fill-plugin>', relativeFillPluginPath))
+  }
+
+  const esbuildTempDir = path.join(os.tmpdir(), 'esbuild')
+  const relativeEsbuildPath = path.relative(esbuildTempDir, normalizedValue)
+
+  if (path.isAbsolute(normalizedValue) && isRelativePathInsideDirectory(relativeEsbuildPath)) {
+    return toPosixPath(path.join('<tmp-esbuild>', relativeEsbuildPath))
+  }
+
+  return toPosixPath(value)
+}
+
+function isRelativePathInsideDirectory(relativePath: string): boolean {
+  return relativePath !== '' && !relativePath.startsWith('..') && !path.isAbsolute(relativePath)
+}
+
+function toPosixPath(value: string): string {
+  return value.split(path.sep).join(path.posix.sep)
 }
 
 /**
@@ -219,14 +295,12 @@ export const smallDecimal = {
 const fillPlugin = ({ fillerOverrides, defaultFillers = true }: FillPluginOptions): esbuild.Plugin => ({
   name: 'fillPlugin',
   setup(build) {
-    const uid = Math.random().toString(36).substring(7) + ''
-    const namespace = `fill-plugin-${uid}`
-
     // overrides
     const fillers = {
       ...(defaultFillers ? defaultFillersConfig : {}),
       ...fillerOverrides,
     }
+    const namespace = buildFillPluginNamespace(fillers)
 
     // our first step is to update options with basic injections
     setInjectionsAndDefinitions(fillers, build.initialOptions)

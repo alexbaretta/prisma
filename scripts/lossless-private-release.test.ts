@@ -14,6 +14,7 @@ import {
   calculateTarballIntegrity,
   prepareBuiltPrivateReleaseCandidates,
   preparePinnedPrivateReleaseCandidates,
+  PRIVATE_RELEASE_SOURCE_DIRS,
   PRIVATE_RELEASE_VERSION_PREFIX,
   readPrivateReleaseIdentity,
   RELEASE_PACKAGES,
@@ -232,6 +233,10 @@ describe('lossless private release graph', () => {
       'prisma-lossless',
     ])
     expect(() => assertReleaseGraphDependencyOrder()).not.toThrow()
+  })
+
+  test('tracks shared compile helpers as release source inputs', () => {
+    expect(PRIVATE_RELEASE_SOURCE_DIRS).toContain('helpers/compile')
   })
 
   test('rewrites workspace metadata to an exact private version', () => {
