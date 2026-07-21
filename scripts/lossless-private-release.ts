@@ -81,19 +81,6 @@ export const PRIVATE_RELEASE_SOURCE_DIRS: readonly string[] = [
 const RELEASE_PACKAGE_NAMES = new Set(RELEASE_PACKAGES.map((releasePackage) => releasePackage.name))
 const RELEASE_PACKAGE_MTIME = new Date('1985-10-26T08:15:00.000Z')
 const ROOT_LICENSE_FILE = path.join(process.cwd(), 'LICENSE')
-const DEVELOPMENT_VERSION_PLACEHOLDER = '0.0.0'
-
-const CLIENT_RELEASE_VERSION_ARTIFACTS = [
-  'runtime/client.js',
-  'runtime/client.js.map',
-  'runtime/client.mjs',
-  'runtime/client.mjs.map',
-  'runtime/wasm-compiler-edge.js',
-  'runtime/wasm-compiler-edge.js.map',
-  'runtime/wasm-compiler-edge.mjs',
-  'runtime/wasm-compiler-edge.mjs.map',
-  'scripts/default-index.js',
-] as const
 
 export function selectNextReleaseVersion(publishedVersions: readonly string[]): string {
   const releaseVersion = new RegExp(`^${escapeRegExp(PRIVATE_RELEASE_VERSION_PREFIX)}\\.(\\d+)$`)
@@ -150,40 +137,8 @@ export function assertReleaseSourcesMatchCommit(
   }
 }
 
-export function rewritePackageJsonForPrivateRelease(
-  packageJson: JsonObject,
-  version: string,
-  sourceCommit: string,
-): JsonObject {
-  const rewritten = cloneJsonObject(packageJson)
-  const name = readPackageName(rewritten)
-
-  if (!RELEASE_PACKAGE_NAMES.has(name)) {
-    throw new Error(`Package is not in the private release graph: ${name}`)
-  }
-
-  rewritten.version = version
-  rewritten.prismaLosslessRelease = {
-    version,
-    sourceCommit,
-  }
-
-  if (name === 'prisma-lossless') {
-    const prisma = readOptionalObject(rewritten.prisma)
-    rewritten.prisma = {
-      ...prisma,
-      prismaCommit: sourceCommit,
-    }
-  }
-
-  for (const section of DEPENDENCY_SECTIONS) {
-    rewriteDependencySection(rewritten, section, version)
-  }
-
-  return rewritten
-}
-
 export function validateReleasePackageMetadata(packageJson: JsonObject, version: string, sourceCommit: string): void {
+  void sourceCommit
   const name = readPackageName(packageJson)
 
   if (!RELEASE_PACKAGE_NAMES.has(name)) {
@@ -192,12 +147,6 @@ export function validateReleasePackageMetadata(packageJson: JsonObject, version:
 
   if (packageJson.version !== version) {
     throw new Error(`Package ${name} does not record release version ${version}`)
-  }
-
-  const releaseMetadata = readOptionalObject(packageJson.prismaLosslessRelease)
-
-  if (releaseMetadata.version !== version || releaseMetadata.sourceCommit !== sourceCommit) {
-    throw new Error(`Package ${name} does not record the expected release provenance`)
   }
 
   for (const section of DEPENDENCY_SECTIONS) {
@@ -237,17 +186,6 @@ export function assertReleaseGraphDependencyOrder(packages = RELEASE_PACKAGES): 
       }
     }
   }
-}
-
-export function buildPrivateReleasePackageJsons(version: string, sourceCommit: string): Map<string, JsonObject> {
-  assertReleaseGraphDependencyOrder()
-
-  return new Map(
-    RELEASE_PACKAGES.map((releasePackage) => {
-      const packageJson = readPackageJson(path.join(process.cwd(), releasePackage.sourceDir, 'package.json'))
-      return [releasePackage.name, rewritePackageJsonForPrivateRelease(packageJson, version, sourceCommit)]
-    }),
-  )
 }
 
 export function readPublishedVersions(
@@ -481,20 +419,13 @@ function preparePrivateReleaseCandidatesForIdentity(
   fs.mkdirSync(stagingRoot, { recursive: true })
   fs.mkdirSync(artifactsDir, { recursive: true })
 
-  const packageJsons = buildPrivateReleasePackageJsons(version, sourceCommit)
+  assertReleaseGraphDependencyOrder()
   const packages = RELEASE_PACKAGES.map((releasePackage) => {
     const stagingDir = path.join(stagingRoot, packageSlug(releasePackage.name))
     const sourceDir = path.resolve(releasePackage.sourceDir)
-    const packageJson = packageJsons.get(releasePackage.name)
-
-    if (!packageJson) {
-      throw new Error(`Missing rewritten package metadata for ${releasePackage.name}`)
-    }
 
     copyPackageSource(sourceDir, stagingDir)
     copyRootLicenseFile(stagingDir)
-    fs.writeFileSync(path.join(stagingDir, 'package.json'), `${JSON.stringify(packageJson, null, 2)}\n`)
-    rewriteStagedPrivateReleaseArtifacts(stagingDir, releasePackage.name, version)
     normalizePackageStagingMetadata(stagingDir)
 
     const tarballPath = packStagedPackage(stagingDir, artifactsDir, releasePackage.name, version)
@@ -524,28 +455,6 @@ function preparePrivateReleaseCandidatesForIdentity(
   return manifest
 }
 
-export function rewriteStagedPrivateReleaseArtifacts(stagingDir: string, packageName: string, version: string): void {
-  if (packageName === '@prisma-lossless/client') {
-    for (const relativePath of CLIENT_RELEASE_VERSION_ARTIFACTS) {
-      replaceTextInExistingFile(path.join(stagingDir, relativePath), [[DEVELOPMENT_VERSION_PLACEHOLDER, version]])
-    }
-  }
-}
-
-function replaceTextInExistingFile(filePath: string, replacements: readonly (readonly [string, string])[]): void {
-  if (!fs.statSync(filePath, { throwIfNoEntry: false })?.isFile()) {
-    return
-  }
-
-  let content = fs.readFileSync(filePath, 'utf-8')
-
-  for (const [search, replacement] of replacements) {
-    content = content.split(search).join(replacement)
-  }
-
-  fs.writeFileSync(filePath, content)
-}
-
 function assertReleaseOutputRootOutsideCheckout(outputRoot: string): void {
   const resolvedOutputRoot = path.resolve(outputRoot)
   const relativeOutputRoot = path.relative(process.cwd(), resolvedOutputRoot)
@@ -570,49 +479,18 @@ export function readPackedPackageJson(tarballPath: string): JsonObject {
   return parseJsonObject(result.stdout)
 }
 
-function rewriteDependencySection(packageJson: JsonObject, section: DependencySection, version: string): void {
-  if (section === 'devDependencies') {
-    delete packageJson.devDependencies
-    return
-  }
-
-  const dependencies = readOptionalStringMap(packageJson[section])
-  const rewrittenDependencies: Record<string, string> = {}
-
-  for (const [dependencyName, specifier] of Object.entries(dependencies)) {
-    const isReleaseDependency = RELEASE_PACKAGE_NAMES.has(dependencyName)
-
-    if (specifier.startsWith('workspace:')) {
-      if (!isReleaseDependency) {
-        throw new Error(`Dependency ${dependencyName} is not in the private release graph`)
-      }
-
-      rewrittenDependencies[dependencyName] = version
-      continue
-    }
-
-    if (isReleaseDependency && (specifier === '*' || specifier === '0.0.0')) {
-      rewrittenDependencies[dependencyName] = version
-      continue
-    }
-
-    assertAllowedDependencySpecifier(readPackageName(packageJson), dependencyName, specifier, version)
-    rewrittenDependencies[dependencyName] = specifier
-  }
-
-  if (Object.keys(rewrittenDependencies).length === 0) {
-    delete packageJson[section]
-  } else {
-    packageJson[section] = rewrittenDependencies
-  }
-}
-
 function assertAllowedDependencySpecifier(
   packageName: string,
   dependencyName: string,
   specifier: string,
   version: string,
 ): void {
+  if (RELEASE_PACKAGE_NAMES.has(dependencyName) && specifier !== version) {
+    throw new Error(
+      `${packageName} depends on ${dependencyName} with ${specifier}; expected exact private release ${version}`,
+    )
+  }
+
   if (specifier.startsWith('npm:')) {
     assertAllowedNpmAliasSpecifier(packageName, dependencyName, specifier, version)
     return
@@ -748,10 +626,6 @@ function readPackageName(packageJson: JsonObject): string {
   return packageJson.name
 }
 
-function readOptionalObject(value: unknown): JsonObject {
-  return isJsonObject(value) ? value : {}
-}
-
 function readOptionalStringMap(value: unknown): Record<string, string> {
   if (value === undefined) {
     return {}
@@ -772,10 +646,6 @@ function readOptionalStringMap(value: unknown): Record<string, string> {
 
 function isJsonObject(value: unknown): value is JsonObject {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
-
-function cloneJsonObject(value: JsonObject): JsonObject {
-  return parseJsonObject(JSON.stringify(value))
 }
 
 function packageSlug(packageName: string): string {

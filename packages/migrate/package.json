@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/migrate",
-  "version": "0.0.0",
+  "version": "7.8.0-lossless.11",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
   "types": "dist/migrate/src/index.d.ts",
@@ -17,7 +17,7 @@
     "version": "latest"
   },
   "devDependencies": {
-    "@prisma-lossless/adapter-libsql": "workspace:*",
+    "@prisma-lossless/adapter-libsql": "7.8.0-lossless.11",
     "@sindresorhus/slugify": "2.2.1",
     "@swc/core": "1.11.5",
     "@swc/jest": "0.2.37",
@@ -47,17 +47,17 @@
     "typescript": "5.4.5"
   },
   "peerDependencies": {
-    "@prisma-lossless/internals": "*"
+    "@prisma-lossless/internals": "7.8.0-lossless.11"
   },
   "dependencies": {
-    "@prisma-lossless/client-generator-registry": "workspace:*",
-    "@prisma-lossless/config": "workspace:*",
-    "@prisma-lossless/debug": "workspace:*",
-    "@prisma-lossless/driver-adapter-utils": "workspace:*",
+    "@prisma-lossless/client-generator-registry": "7.8.0-lossless.11",
+    "@prisma-lossless/config": "7.8.0-lossless.11",
+    "@prisma-lossless/debug": "7.8.0-lossless.11",
+    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.11",
     "@prisma/engines-version": "7.8.0-6.3c6e192761c0362d496ed980de936e2f3cebcd3a",
-    "@prisma-lossless/generator": "workspace:*",
-    "@prisma-lossless/get-platform": "workspace:*",
-    "@prisma-lossless/internals": "workspace:*",
+    "@prisma-lossless/generator": "7.8.0-lossless.11",
+    "@prisma-lossless/get-platform": "7.8.0-lossless.11",
+    "@prisma-lossless/internals": "7.8.0-lossless.11",
     "prompts": "2.4.2"
   },
   "scripts": {

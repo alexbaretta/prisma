@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/integration-tests",
-  "version": "0.0.0",
+  "version": "7.8.0-lossless.11",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,10 +12,10 @@
     "directory": "packages/integration-tests"
   },
   "devDependencies": {
-    "@prisma-lossless/client-runtime-utils": "workspace:*",
-    "@prisma-lossless/get-platform": "workspace:*",
-    "@prisma-lossless/internals": "workspace:*",
-    "@prisma-lossless/migrate": "workspace:*",
+    "@prisma-lossless/client-runtime-utils": "7.8.0-lossless.11",
+    "@prisma-lossless/get-platform": "7.8.0-lossless.11",
+    "@prisma-lossless/internals": "7.8.0-lossless.11",
+    "@prisma-lossless/migrate": "7.8.0-lossless.11",
     "@sindresorhus/slugify": "2.2.1",
     "@swc/core": "1.11.5",
     "@swc/jest": "0.2.37",

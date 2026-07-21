@@ -38,7 +38,7 @@ const RUN_FRESH_CHECKOUT_INTEGRATION = process.env.PRISMA_LOSSLESS_RUN_FRESH_CHE
 const PRESERVE_INTEGRATION_ROOT = process.env.PRISMA_LOSSLESS_PRESERVE_INTEGRATION_ROOT === '1'
 const VERSION = '7.8.0-lossless.999999'
 const HISTORICAL_VERSION = '7.8.0-lossless.9'
-const RECORDED_VERSION = '7.8.0-lossless.10'
+const RECORDED_VERSION = '7.8.0-lossless.11'
 const CONSUMER_PNPM_VERSION = '11.1.1'
 const SOURCE_COMMIT = '0123456789abcdef0123456789abcdef01234567'
 const RECORDED_FIXTURE = readIndependentPrivateReleaseFixture(RECORDED_VERSION)
@@ -167,7 +167,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
     expect(result.generatedClientVersion).toBe(RECORDED_VERSION)
     expect(result.generatedPackageVersion).toBe(RECORDED_VERSION)
     expect(result.generatedDependencyNames).toContain('@prisma-lossless/client-runtime-utils')
-    expect(result.generatedDependencyNames).not.toContain('@prisma-lossless/client-runtime-utils')
+    expect(result.generatedDependencyNames).not.toContain('@prisma/client-runtime-utils')
     expect(result.generatedOutput).toContain(`Generated Prisma Client (v${RECORDED_VERSION})`)
     expect(result.generatedOutput).not.toContain('0.0.0')
     expect(result.generatedOutput).not.toMatch(/Versions of .*don't match/)
@@ -228,7 +228,7 @@ describe.skipIf(!RUN_INTEGRATION)('ephemeral private registry integration', () =
         consumerDir,
         builtDependencies(unavailableRoots),
       ),
-    ).rejects.toThrow(/Use 7\.8\.0-lossless\.10/)
+    ).rejects.toThrow(/Use 7\.8\.0-lossless\.11/)
     expectRootsRemoved(unavailableRoots)
 
     const manifest = prepareBuiltPrivateReleaseCandidates(RECORDED_VERSION, repoLocalReleaseRoot(root, 'mismatch'))
@@ -397,7 +397,6 @@ function createFixtureRelease(root: string): PrivateReleaseManifest {
       JSON.stringify({
         name: releasePackage.name,
         version: VERSION,
-        prismaLosslessRelease: { version: VERSION, sourceCommit: SOURCE_COMMIT },
       }),
     )
 

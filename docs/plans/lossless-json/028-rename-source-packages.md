@@ -35,21 +35,28 @@ identity plus a mutation step.
 
 Owning layer: workspace package metadata, workspace dependency
 specifiers, source imports, generated package metadata, and the
-private release builder own package identity. The release builder may
-stamp version and provenance, but it must not translate package names
-or dependency names between stock and fork namespaces.
+private release builder own package identity. Source package manifests
+must also own the release package version and runtime dependency
+specifiers. The release builder may record provenance in the immutable
+release identity and manifest, but it must not mutate staged artifact
+contents to stamp names, versions, dependency specifiers, or generated
+runtime version strings.
 
 Intended solution: rename every fork-owned workspace package from
 `@prisma/*` to `@prisma-lossless/*`, update internal dependency and
-import specifiers to the renamed packages, remove source-name to
-release-name mappings from `scripts/lossless-private-release.ts`, and
-make release validation fail if a published fork-owned package relies
-on namespace rewriting.
+import specifiers to the renamed packages, record the next immutable
+release version and exact release dependency specifiers in the ten
+shipped source package manifests, remove source-name to release-name
+mappings and package-json/generated-file rewriting from
+`scripts/lossless-private-release.ts`, and make release validation fail
+if a published fork-owned package relies on namespace or metadata
+rewriting.
 
-Rejected solution: do not keep source packages under `@prisma/*` and
-hide that fact with staging rewrites, npm aliases, lockfile overrides,
-or generated-client normalization. Those approaches move package
-identity out of source control and preserve the same trust defect.
+Rejected solution: do not keep source packages under `@prisma/*`, do
+not keep `0.0.0` source package versions, and do not hide either fact
+with staging rewrites, npm aliases, lockfile overrides, or
+generated-client normalization. Those approaches move package identity
+out of source control and preserve the same trust defect.
 
 Validation that proves the fix: add focused release-tooling tests that
 fail if package names or dependency keys are rewritten from stock
@@ -65,9 +72,11 @@ immutable private release, and pass repo-root `pnpm build`.
 2. Update workspace dependency keys, source imports, generated
    dependency metadata, test fixtures, package filters, and scripts to
    resolve the new source identities.
-3. Remove release-time package-name and dependency-name rewriting from
-   the private release builder. Version and provenance stamping may
-   remain.
+3. Remove release-time package-name, package-version,
+   dependency-specifier, and generated-file rewriting from the private
+   release builder. The release identity fixture and generated release
+   manifest record source provenance; package artifacts do not receive
+   self-referential commit metadata through a staging mutation.
 4. Add tests that prove the private release builder rejects stock
    `@prisma/*` package identities for fork-owned packages and does not
    publish alias dependencies for fork-owned packages.

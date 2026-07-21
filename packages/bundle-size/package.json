@@ -12,17 +12,17 @@
     "@libsql/client": "0.8.1",
     "@neondatabase/serverless": "0.10.2",
     "@planetscale/database": "1.19.0",
-    "@prisma-lossless/adapter-d1": "workspace:*",
-    "@prisma-lossless/adapter-libsql": "workspace:*",
-    "@prisma-lossless/adapter-mariadb": "workspace:*",
-    "@prisma-lossless/adapter-mssql": "workspace:*",
-    "@prisma-lossless/adapter-neon": "workspace:*",
-    "@prisma-lossless/adapter-pg": "workspace:*",
-    "@prisma-lossless/adapter-planetscale": "workspace:*",
-    "@prisma-lossless/client": "workspace:*",
-    "@prisma-lossless/client-runtime-utils": "workspace:*",
+    "@prisma-lossless/adapter-d1": "7.8.0-lossless.11",
+    "@prisma-lossless/adapter-libsql": "7.8.0-lossless.11",
+    "@prisma-lossless/adapter-mariadb": "7.8.0-lossless.11",
+    "@prisma-lossless/adapter-mssql": "7.8.0-lossless.11",
+    "@prisma-lossless/adapter-neon": "7.8.0-lossless.11",
+    "@prisma-lossless/adapter-pg": "7.8.0-lossless.11",
+    "@prisma-lossless/adapter-planetscale": "7.8.0-lossless.11",
+    "@prisma-lossless/client": "7.8.0-lossless.11",
+    "@prisma-lossless/client-runtime-utils": "7.8.0-lossless.11",
     "pg": "8.14.1",
-    "prisma-lossless": "workspace:*"
+    "prisma-lossless": "7.8.0-lossless.11"
   },
   "devDependencies": {
     "wrangler": "4.45.0"

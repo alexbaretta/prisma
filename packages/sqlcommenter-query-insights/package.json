@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/sqlcommenter-query-insights",
-  "version": "0.0.0",
+  "version": "7.8.0-lossless.11",
   "description": "Query insights plugin for Prisma SQL commenter",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -36,7 +36,7 @@
   ],
   "sideEffects": false,
   "devDependencies": {
-    "@prisma-lossless/sqlcommenter": "workspace:*",
+    "@prisma-lossless/sqlcommenter": "7.8.0-lossless.11",
     "fast-check": "4.3.0"
   }
 }

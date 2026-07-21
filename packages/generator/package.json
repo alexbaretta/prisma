@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/generator",
-  "version": "0.0.0",
+  "version": "7.8.0-lossless.11",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -24,7 +24,7 @@
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "@prisma-lossless/dmmf": "workspace:*"
+    "@prisma-lossless/dmmf": "7.8.0-lossless.11"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

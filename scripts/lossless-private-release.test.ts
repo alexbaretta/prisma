@@ -10,7 +10,6 @@ import {
   assertPinnedReleaseVersion,
   assertReleaseGraphDependencyOrder,
   assertReleaseSourcesMatchCommit,
-  buildPrivateReleasePackageJsons,
   calculateTarballIntegrity,
   prepareBuiltPrivateReleaseCandidates,
   preparePinnedPrivateReleaseCandidates,
@@ -18,8 +17,6 @@ import {
   PRIVATE_RELEASE_VERSION_PREFIX,
   readPrivateReleaseIdentity,
   RELEASE_PACKAGES,
-  rewritePackageJsonForPrivateRelease,
-  rewriteStagedPrivateReleaseArtifacts,
   selectNextReleaseVersion,
   validatePrivateReleaseIdentity,
   validateReleaseManifestIntegrity,
@@ -263,50 +260,77 @@ describe('lossless private release graph', () => {
     expect(PRIVATE_RELEASE_SOURCE_DIRS).toContain('helpers/compile')
   })
 
-  test('stamps workspace metadata with an exact private version', () => {
-    const rewritten = rewritePackageJsonForPrivateRelease(
-      {
-        name: '@prisma-lossless/get-platform',
-        version: '0.0.0',
-        dependencies: {
-          '@prisma-lossless/debug': 'workspace:*',
-          kleur: '4.1.5',
-        },
-        devDependencies: {
-          typescript: '5.4.5',
-        },
-      },
-      releaseVersion,
-      sourceCommit,
-    )
-
-    expect(rewritten).toMatchObject({
+  test('validates source-authored private release metadata', () => {
+    const packageJson = {
       name: '@prisma-lossless/get-platform',
       version: releaseVersion,
       dependencies: {
         '@prisma-lossless/debug': releaseVersion,
         kleur: '4.1.5',
       },
-      prismaLosslessRelease: {
-        version: releaseVersion,
-        sourceCommit,
+      devDependencies: {
+        typescript: '5.4.5',
       },
-    })
-    expect(rewritten).not.toHaveProperty('devDependencies')
-    expect(() => validateReleasePackageMetadata(rewritten, releaseVersion, sourceCommit)).not.toThrow()
+    }
+
+    expect(() => validateReleasePackageMetadata(packageJson, releaseVersion, sourceCommit)).not.toThrow()
   })
 
-  test('rejects stock source package identities', () => {
+  test('rejects source metadata that requires release-time rewriting', () => {
     expect(() =>
-      rewritePackageJsonForPrivateRelease(
+      validateReleasePackageMetadata(
         {
-          name: '@prisma/get-platform',
+          name: '@prisma-lossless/get-platform',
           version: '0.0.0',
+          dependencies: {
+            '@prisma-lossless/debug': releaseVersion,
+          },
         },
         releaseVersion,
         sourceCommit,
       ),
-    ).toThrow(/not in the private release graph/)
+    ).toThrow(/does not record release version/)
+
+    expect(() =>
+      validateReleasePackageMetadata(
+        {
+          name: '@prisma-lossless/get-platform',
+          version: releaseVersion,
+          dependencies: {
+            '@prisma-lossless/debug': 'workspace:*',
+          },
+        },
+        releaseVersion,
+        sourceCommit,
+      ),
+    ).toThrow(/expected exact private release/)
+
+    expect(() =>
+      validateReleasePackageMetadata(
+        {
+          name: '@prisma-lossless/get-platform',
+          version: releaseVersion,
+          dependencies: {
+            '@prisma-lossless/debug': '0.0.0',
+          },
+        },
+        releaseVersion,
+        sourceCommit,
+      ),
+    ).toThrow(/expected exact private release/)
+  })
+
+  test('rejects stock source package identities', () => {
+    expect(() =>
+      validateReleasePackageMetadata(
+        {
+          name: '@prisma/get-platform',
+          version: releaseVersion,
+        },
+        releaseVersion,
+        sourceCommit,
+      ),
+    ).toThrow(/Unexpected release package/)
   })
 
   test('rejects forbidden release dependency specifiers', () => {
@@ -330,10 +354,6 @@ describe('lossless private release graph', () => {
             dependencies: {
               bad: specifier,
             },
-            prismaLosslessRelease: {
-              version: releaseVersion,
-              sourceCommit,
-            },
           },
           releaseVersion,
           sourceCommit,
@@ -351,87 +371,51 @@ describe('lossless private release graph', () => {
           dependencies: {
             '@prisma-lossless/debug': `npm:@prisma-lossless/debug@${releaseVersion}`,
           },
-          prismaLosslessRelease: {
-            version: releaseVersion,
-            sourceCommit,
-          },
         },
         releaseVersion,
         sourceCommit,
       ),
-    ).toThrow(/forbidden npm alias specifier/)
+    ).toThrow(/expected exact private release/)
   })
 
-  test('stamps the lossless client dependency on the runtime closure', () => {
-    const packageJsons = buildPrivateReleasePackageJsons(releaseVersion, sourceCommit)
-    const clientPackageJson = packageJsons.get('@prisma-lossless/client')
-    const cliPackageJson = packageJsons.get('prisma-lossless')
+  test('validates current source manifests without mutation', () => {
+    const manifests = new Map(
+      RELEASE_PACKAGES.map((releasePackage) => {
+        const packageJson = JSON.parse(
+          fs.readFileSync(path.join(process.cwd(), releasePackage.sourceDir, 'package.json'), 'utf-8'),
+        )
+
+        validateReleasePackageMetadata(packageJson, '7.8.0-lossless.11', sourceCommit)
+        return [releasePackage.name, packageJson]
+      }),
+    )
+    const clientPackageJson = manifests.get('@prisma-lossless/client')
+    const cliPackageJson = manifests.get('prisma-lossless')
 
     expect(clientPackageJson).toMatchObject({
-      version: releaseVersion,
+      version: '7.8.0-lossless.11',
       dependencies: {
-        '@prisma-lossless/client-runtime-utils': releaseVersion,
+        '@prisma-lossless/client-runtime-utils': '7.8.0-lossless.11',
       },
       peerDependencies: {
-        'prisma-lossless': releaseVersion,
-      },
-      prismaLosslessRelease: {
-        version: releaseVersion,
-        sourceCommit,
+        'prisma-lossless': '7.8.0-lossless.11',
       },
     })
     expect(cliPackageJson).toMatchObject({
-      version: releaseVersion,
+      version: '7.8.0-lossless.11',
       dependencies: {
-        '@prisma-lossless/config': releaseVersion,
-        '@prisma-lossless/engines': releaseVersion,
-      },
-      prisma: {
-        prismaCommit: sourceCommit,
-      },
-      prismaLosslessRelease: {
-        version: releaseVersion,
-        sourceCommit,
+        '@prisma-lossless/config': '7.8.0-lossless.11',
+        '@prisma-lossless/engines': '7.8.0-lossless.11',
       },
     })
 
-    expect(packageJsons.get('@prisma-lossless/adapter-pg')).toMatchObject({
+    expect(manifests.get('@prisma-lossless/adapter-pg')).toMatchObject({
       name: '@prisma-lossless/adapter-pg',
-      version: releaseVersion,
+      version: '7.8.0-lossless.11',
       dependencies: {
-        '@prisma-lossless/driver-adapter-utils': releaseVersion,
-      },
-      prismaLosslessRelease: {
-        version: releaseVersion,
-        sourceCommit,
+        '@prisma-lossless/driver-adapter-utils': '7.8.0-lossless.11',
       },
     })
-  })
-
-  test('stamps staged generated client version artifacts', () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-lossless-staged-artifacts-'))
-
-    try {
-      const clientDir = path.join(root, 'client')
-      const cliDir = path.join(root, 'cli')
-      fs.mkdirSync(path.join(clientDir, 'runtime'), { recursive: true })
-      fs.mkdirSync(path.join(clientDir, 'scripts'), { recursive: true })
-      fs.mkdirSync(path.join(cliDir, 'build'), { recursive: true })
-      fs.writeFileSync(path.join(clientDir, 'runtime/client.js'), 'var clientVersion = "0.0.0";\n')
-      fs.writeFileSync(path.join(clientDir, 'runtime/client.mjs'), 'var clientVersion = "0.0.0";\n')
-      fs.writeFileSync(path.join(clientDir, 'scripts/default-index.js'), 'client: "0.0.0"\n')
-      fs.writeFileSync(path.join(cliDir, 'build/index.js'), 'dependencies:{}\n')
-
-      rewriteStagedPrivateReleaseArtifacts(clientDir, '@prisma-lossless/client', releaseVersion)
-      rewriteStagedPrivateReleaseArtifacts(cliDir, 'prisma-lossless', releaseVersion)
-
-      expect(fs.readFileSync(path.join(clientDir, 'runtime/client.js'), 'utf-8')).toContain(releaseVersion)
-      expect(fs.readFileSync(path.join(clientDir, 'runtime/client.mjs'), 'utf-8')).toContain(releaseVersion)
-      expect(fs.readFileSync(path.join(clientDir, 'scripts/default-index.js'), 'utf-8')).toContain(releaseVersion)
-      expect(fs.readFileSync(path.join(cliDir, 'build/index.js'), 'utf-8')).toBe('dependencies:{}\n')
-    } finally {
-      fs.rmSync(root, { recursive: true, force: true })
-    }
   })
 })
 
