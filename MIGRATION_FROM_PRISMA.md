@@ -10,11 +10,11 @@ Replace stock Prisma packages in your application:
 ```json
 {
   "dependencies": {
-    "@prisma-lossless/client": "7.8.0-lossless.15",
-    "@prisma-lossless/adapter-pg": "7.8.0-lossless.15"
+    "@prisma-lossless/client": "7.8.0-lossless.16",
+    "@prisma-lossless/adapter-pg": "7.8.0-lossless.16"
   },
   "devDependencies": {
-    "@prisma-lossless/cli": "7.8.0-lossless.15"
+    "@prisma-lossless/cli": "7.8.0-lossless.16"
   }
 }
 ```
@@ -42,13 +42,13 @@ onlyBuiltDependencies:
   - '@prisma-lossless/cli'
 ```
 
-Use `7.8.0-lossless.15` or newer from the public npm registry with
+Use `7.8.0-lossless.16` or newer from the public npm registry with
 normal package-manager commands:
 
 ```sh
-pnpm add @prisma-lossless/client@7.8.0-lossless.15 \
-  @prisma-lossless/adapter-pg@7.8.0-lossless.15
-pnpm add -D @prisma-lossless/cli@7.8.0-lossless.15
+pnpm add @prisma-lossless/client@7.8.0-lossless.16 \
+  @prisma-lossless/adapter-pg@7.8.0-lossless.16
+pnpm add -D @prisma-lossless/cli@7.8.0-lossless.16
 ```
 
 ## Import Changes

@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/management-api-sdk",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "TypeScript SDK for the Prisma Developer Platform Management API",
   "license": "Apache-2.0",
   "repository": {

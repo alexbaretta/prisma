@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/json-protocol",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "JSON protocol types for Prisma",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/instrumentation-contract",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "Shared types and utilities for Prisma instrumentation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/instrumentation",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "OpenTelemetry compliant instrumentation for Prisma Client",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -27,7 +27,7 @@
   "bugs": "https://github.com/prisma/prisma/issues",
   "devDependencies": {
     "@opentelemetry/api": "1.9.0",
-    "@prisma-lossless/instrumentation-contract": "7.8.0-lossless.15",
+    "@prisma-lossless/instrumentation-contract": "7.8.0-lossless.16",
     "@types/node": "~20.19.24",
     "typescript": "5.4.5"
   },

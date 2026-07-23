@@ -99,10 +99,10 @@ it('should allow lossless-only consumer package metadata', () => {
   expect(
     findStockPrismaDependencies({
       dependencies: {
-        '@prisma-lossless/client': '7.8.0-lossless.15',
+        '@prisma-lossless/client': '7.8.0-lossless.16',
       },
       devDependencies: {
-        '@prisma-lossless/cli': '7.8.0-lossless.15',
+        '@prisma-lossless/cli': '7.8.0-lossless.16',
       },
     }),
   ).toEqual([])

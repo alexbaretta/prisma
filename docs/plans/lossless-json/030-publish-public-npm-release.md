@@ -1028,3 +1028,67 @@ src/__tests__/Init.vitest.ts src/utils/ppgInfo.test.ts` passed with
   validation path before publication.
 - `@prisma-lossless/cli` rejects direct consumer dependencies on
   `prisma` or `@prisma/*` during installation.
+
+### [ ] Tasklet 034: Publish Public Version 16
+
+Status: approved for implementation by the user prompt to keep going
+after confirming that the public npm release must contain the
+Tasklet 033 purge and install guard.
+
+## Pre-Implementation Review
+
+Observed problem: Tasklet 033 changed the public package graph and CLI
+install behavior after the current source version had already been
+prepared as `7.8.0-lossless.15`. This shell cannot verify npmjs.org
+state because sandbox DNS fails and escalation is currently blocked by
+the environment usage limit.
+
+Violated contract or invariant: npm package identities are immutable.
+The release process must not attempt to publish different bytes under
+an already-used `name@version` identity.
+
+Owning layer: source package metadata, root publish scripts, migration
+documentation, lockfile metadata, public publish validation, and the
+public npm registry own the release identity.
+
+Intended solution: mint `7.8.0-lossless.16` as the next public release
+target, update the source package graph and public publish commands to
+that exact version, run focused publish validation and repo build,
+then run the existing `pnpm run publish-lossless-public` command.
+
+Rejected solution: do not retry `.15` without registry proof that it
+is absent, and do not resurrect a local registry or tarball path to
+stand in for public npm publication.
+
+Validation that proves the fix: all public release package manifests
+and owned dependency specifiers must record `7.8.0-lossless.16`.
+Focused publish tests, formatting, focused lint, and repo-root
+`pnpm build` must pass. The public publish command must either publish
+the graph to npmjs.org or fail with a concrete external blocker.
+
+## Preparation Evidence
+
+- `pnpm install --lockfile-only` passed and normalized the lockfile
+  for the `7.8.0-lossless.16` graph.
+- `rg` found no `7.8.0-lossless.15` references in package manifests,
+  root publish scripts, lockfile metadata, migration documentation, or
+  release tests. The only remaining `.15` reference is this tasklet's
+  rationale for minting `.16`.
+- `pnpm exec vitest run scripts/ci/publish.test.ts` passed with 16
+  tests.
+- `pnpm --filter @prisma-lossless/cli test
+src/__tests__/preinstall.test.ts` passed with 14 Jest tests and 12
+  snapshots.
+- `pnpm exec prettier --check` passed for the touched package
+  metadata, lockfile, migration guide, plan, and tests.
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm exec eslint
+scripts/ci/publish.test.ts
+packages/cli/src/__tests__/preinstall.test.ts` passed.
+- `pnpm --filter @prisma-lossless/cli build` passed.
+- Sandboxed `pnpm run publish-lossless-public-dryrun` failed before
+  script startup with `tsx` IPC `EPERM`. The same command rerun
+  outside the sandbox passed for all 15 public packages and printed
+  dry `latest` dist-tag promotions.
+- The dry-run `@prisma-lossless/engines` tarball contained
+  `dist/scripts/postinstall.js` and `dist/scripts/localinstall.js`.
+- `pnpm build` passed outside the sandbox with 44 successful tasks.

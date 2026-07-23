@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/streams-local",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "Node and Bun local Prisma Streams runtime for trusted development workflows.",
   "repository": {
     "type": "git",

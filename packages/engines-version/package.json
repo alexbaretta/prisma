@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/engines-version",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "main": "index.js",
   "types": "index.d.ts",
   "exports": {

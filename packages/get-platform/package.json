@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/get-platform",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -27,7 +27,7 @@
     "typescript": "5.4.5"
   },
   "dependencies": {
-    "@prisma-lossless/debug": "7.8.0-lossless.15"
+    "@prisma-lossless/debug": "7.8.0-lossless.16"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

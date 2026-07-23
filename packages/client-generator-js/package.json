@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/client-generator-js",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -25,22 +25,22 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@antfu/ni": "0.21.12",
-    "@prisma-lossless/client-common": "7.8.0-lossless.15",
-    "@prisma-lossless/debug": "7.8.0-lossless.15",
-    "@prisma-lossless/dmmf": "7.8.0-lossless.15",
-    "@prisma-lossless/fetch-engine": "7.8.0-lossless.15",
-    "@prisma-lossless/generator": "7.8.0-lossless.15",
-    "@prisma-lossless/get-platform": "7.8.0-lossless.15",
-    "@prisma-lossless/internals": "7.8.0-lossless.15",
-    "@prisma-lossless/param-graph-builder": "7.8.0-lossless.15",
-    "@prisma-lossless/ts-builders": "7.8.0-lossless.15",
+    "@prisma-lossless/client-common": "7.8.0-lossless.16",
+    "@prisma-lossless/debug": "7.8.0-lossless.16",
+    "@prisma-lossless/dmmf": "7.8.0-lossless.16",
+    "@prisma-lossless/fetch-engine": "7.8.0-lossless.16",
+    "@prisma-lossless/generator": "7.8.0-lossless.16",
+    "@prisma-lossless/get-platform": "7.8.0-lossless.16",
+    "@prisma-lossless/internals": "7.8.0-lossless.16",
+    "@prisma-lossless/param-graph-builder": "7.8.0-lossless.16",
+    "@prisma-lossless/ts-builders": "7.8.0-lossless.16",
     "env-paths": "2.2.1",
     "indent-string": "4.0.0",
     "klona": "2.0.6",
     "package-up": "5.0.0",
     "pluralize": "8.0.0",
     "ts-pattern": "5.6.2",
-    "@prisma-lossless/engines-version": "7.8.0-lossless.15"
+    "@prisma-lossless/engines-version": "7.8.0-lossless.16"
   },
   "devDependencies": {
     "@types/pluralize": "0.0.33"

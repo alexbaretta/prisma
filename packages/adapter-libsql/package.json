@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/adapter-libsql",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "Prisma's driver adapter for libSQL and Turso",
   "main": "dist/index-node.js",
   "module": "dist/index-node.mjs",
@@ -47,7 +47,7 @@
   "sideEffects": false,
   "dependencies": {
     "@libsql/client": "^0.17.0",
-    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.15",
+    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.16",
     "async-mutex": "0.5.0"
   }
 }

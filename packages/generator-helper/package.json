@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/generator-helper",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,9 +15,9 @@
   "homepage": "https://www.prisma.io",
   "bugs": "https://github.com/prisma/prisma/issues",
   "dependencies": {
-    "@prisma-lossless/debug": "7.8.0-lossless.15",
-    "@prisma-lossless/dmmf": "7.8.0-lossless.15",
-    "@prisma-lossless/generator": "7.8.0-lossless.15"
+    "@prisma-lossless/debug": "7.8.0-lossless.16",
+    "@prisma-lossless/dmmf": "7.8.0-lossless.16",
+    "@prisma-lossless/generator": "7.8.0-lossless.16"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

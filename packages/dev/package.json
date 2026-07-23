@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/dev",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "A local Prisma Postgres server for development and testing",
   "type": "module",
   "author": "Igal Klebanov <igalklebanov@gmail.com> (https://github.com/igalklebanov)",
@@ -75,9 +75,9 @@
     "std-env": "3.10.0",
     "valibot": "1.2.0",
     "zeptomatch": "2.1.0",
-    "@prisma-lossless/get-platform": "7.8.0-lossless.15",
-    "@prisma-lossless/query-plan-executor": "7.8.0-lossless.15",
-    "@prisma-lossless/streams-local": "7.8.0-lossless.15"
+    "@prisma-lossless/get-platform": "7.8.0-lossless.16",
+    "@prisma-lossless/query-plan-executor": "7.8.0-lossless.16",
+    "@prisma-lossless/streams-local": "7.8.0-lossless.16"
   },
   "repository": {
     "type": "git",

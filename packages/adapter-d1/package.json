@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/adapter-d1",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "Prisma's driver adapter for Cloudflare D1",
   "main": "dist/index-node.js",
   "module": "dist/index-node.mjs",
@@ -54,7 +54,7 @@
   "sideEffects": false,
   "dependencies": {
     "@cloudflare/workers-types": "^4.20251014.0",
-    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.15",
+    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.16",
     "ky": "1.7.5"
   }
 }

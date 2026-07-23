@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/studio-core",
-  "version": "7.8.0-lossless.15",
+  "version": "7.8.0-lossless.16",
   "description": "Modular Prisma Studio components",
   "type": "module",
   "sideEffects": false,
