@@ -635,12 +635,17 @@ scripts/ci/publish.test.ts` passed with 34 tests.
   packages under the `lossless` tag and printed all ten dry
   `npm dist-tag add ... latest` commands.
 
-### [ ] Tasklet 033: Eliminate Stock Package Graph
+### [DONE] Tasklet 033: Eliminate Stock Package Graph
 
 Status: approved for implementation by the user prompt. This tasklet
 records the package-graph defect reported after public npm adoption.
-Do not publish, change branches, or commit this tasklet until the user
-explicitly authorizes that action.
+The user explicitly authorized committing or resetting the current
+edits as necessary, removing deprecated local delivery mechanisms, and
+considering an install-time incompatibility guard.
+This tasklet is complete for source graph cleanup, public npm only
+tooling, and install-time stock Prisma rejection. Actual npm
+publication remains a separate release operation through
+`pnpm run publish-lossless-public`.
 
 ## Diagnosis
 
@@ -774,39 +779,144 @@ identities, packed release manifests contain no `prisma` or
 `@prisma/*` dependencies, and a clean consumer lockfile parser fails
 on any stock package identity.
 
-## Pre-Implementation Review: Immutable Version Replacement
+## Pre-Implementation Review: Public NPM Only Tooling
 
-Observed problem: the package-graph fix changes the release identity
-from the ten-package `.14` graph to a fifteen-package graph. Keeping
-the same immutable version would let local tooling produce different
-package bytes and dependency metadata under an identity that consumers
-may already have pinned.
+Observed problem: the repository still contains executable private
+release, local tarball, ephemeral registry, and Verdaccio tooling that
+was built for local first-party consumption before the fork moved to
+public npm packages. The public publisher still imports its package
+inventory and metadata checks from that deprecated private-release
+layer.
 
-Violated contract or invariant: each `7.8.0-lossless.N` version is an
-immutable release identity. A version whose package graph or package
-bytes are already recorded must either reproduce exactly or be marked
-unavailable and replaced by a newly minted version.
+Violated contract or invariant: prisma-lossless is now a plain public
+npm project. The release and migration paths must not require or
+advertise local tarballs, private manifests, `--from-built`, Verdaccio,
+or ephemeral registry processes.
 
-Owning layer: source package version metadata, release identity
-fixtures, private-registry integration tests, public publish commands,
-and migration documentation own the immutable release version.
+Owning layer: `scripts/ci/publish.ts`, public release helper code,
+migration documentation, and the active release plan own the public npm
+release workflow. The old private-registry and private-release scripts
+own only the deprecated deployment mechanism and should be removed.
 
-Intended solution: mark `.14` unavailable for consumer adoption,
-replace it with `.15`, update source package versions and release
-commands to `.15`, record a new fifteen-package identity after the
-package-graph source commit exists, and validate the new graph through
-the existing ephemeral registry path.
+Intended solution: replace the public publisher's dependency on
+`scripts/private-release.ts` with a public npm package inventory and
+metadata guard, then delete source files solely devoted to private
+release identity fixtures, local release packing, ephemeral registries,
+and Verdaccio tests.
 
-Rejected solution: do not repack the fifteen-package graph as `.14`,
-do not change only GWEN's lockfile, and do not let the wrapper accept
-multiple artifact byte streams for the same version.
+Rejected solution: do not keep the private release scripts as hidden
+implementation details for public publication, and do not validate
+public npm packages by installing from an ephemeral registry.
 
-Validation that proves the fix: `.14` must reject through
-`prepareBuiltPrivateReleaseCandidates`, `.15` must reproduce its
-recorded package integrities, and the clean external consumer
-installation must prove CLI generation, engine lifecycle, adapter
-import, generated client import, and `LosslessNumber` behavior from
-the packed `.15` artifacts.
+Validation that proves the fix: a source search must find no live
+`scripts/private-*` local-delivery implementation, public publish tests
+must pass through the new public helper, and documentation for consumer
+migration must reference npmjs.org installation only.
+
+## Pre-Implementation Review: Stock Prisma Install Guard
+
+Observed problem: npm package metadata does not provide a portable
+`conflicts` field that makes npm reject installing `prisma-lossless`
+beside stock `prisma`. An optional peer dependency with an impossible
+stock Prisma version does not make npm fail when stock Prisma is also
+declared by the consumer.
+
+Violated contract or invariant: a consumer project should not link the
+lossless fork and stock Prisma packages in the same dependency graph,
+because that mixes incompatible generated-client, CLI, and runtime
+contracts.
+
+Owning layer: the published `@prisma-lossless/cli` lifecycle script
+already owns install-time environment checks. It can inspect the
+consumer project's root `package.json` through npm's `INIT_CWD`
+contract and fail the install before the CLI is used.
+
+Intended solution: extend the CLI preinstall script to reject a
+consumer root package that directly declares `prisma` or any
+`@prisma/*` package in dependency, dev dependency, optional
+dependency, or peer dependency metadata.
+
+Rejected solution: do not add a non-optional impossible peer dependency
+on `prisma`, because that can make installing prisma-lossless alone
+fail by asking npm to resolve an impossible missing peer. Do not rely on
+warnings from optional peers because npm permits that installation.
+
+Validation that proves the fix: focused preinstall unit tests must
+prove stock Prisma dependencies fail with an actionable message and a
+lossless-only consumer package succeeds.
+
+## Post-Implementation Review: Public NPM Only Tooling
+
+Observed result: the public publisher no longer imports private
+release identity, local packing, or ephemeral registry code. Public
+package selection and metadata validation now live in
+`scripts/lossless-public-release.ts`, which enumerates the public
+`@prisma-lossless/*` package graph, validates fork repository
+metadata, rejects stock Prisma package identities in installable
+dependency sections, and requires exact version specifiers for
+owned public release dependencies.
+
+Contract review: the fix removes the deprecated local delivery layer
+instead of preserving it as a hidden implementation detail. Source
+files solely devoted to private release fixtures, local package
+packing, ephemeral registries, and Verdaccio tests were deleted.
+Consumer documentation now describes only ordinary npmjs.org
+installation and regeneration commands.
+
+Rejected wrong-layer solution retained: do not use ephemeral
+registries, local tarballs, private release manifests, or copied
+wrapper implementations to validate or deliver public prisma-lossless
+packages.
+
+Validation evidence:
+
+- `rg` found no live `private-registry`, `private-release`,
+  `from-built`, `Verdaccio`, `verdaccio`, `ephemeral registry`,
+  `PRISMA_LOSSLESS_RUN_REGISTRY`, `lockfile-only`, or
+  `ignore-scripts` references in `scripts`, root `package.json`, or
+  `MIGRATION_FROM_PRISMA.md`.
+- `pnpm exec vitest run scripts/ci/publish.test.ts` passed with 16
+  tests after the public metadata helper replaced the private release
+  dependency.
+- Public metadata validation rejects stock Prisma names from the
+  installable package graph while allowing repository-only dev tooling
+  dependencies that are not installed by consumers.
+- Sandboxed repo-root `pnpm build` failed earlier with `tsx` IPC
+  `EPERM` under `/var/folders/...`. The same `pnpm build` was rerun
+  outside the sandbox and passed with 44 successful build tasks.
+
+## Post-Implementation Review: Stock Prisma Install Guard
+
+Observed result: the CLI preinstall script now reads the consumer
+root from npm's `INIT_CWD` contract, inspects the root `package.json`,
+and exits with an actionable error when the consumer directly declares
+`prisma` or any `@prisma/*` package in dependencies,
+devDependencies, optionalDependencies, or peerDependencies. The guard
+allows `@prisma-lossless/*` package names.
+
+Contract review: npm does not provide a portable declarative package
+conflict mechanism. A local npm experiment with an optional
+impossible peer dependency still allowed a consumer to install both
+package identities. The preinstall guard therefore lives in the
+published CLI lifecycle layer, which is the earliest reliable
+consumer-install boundary this package owns.
+
+Rejected wrong-layer solution retained: do not rely on optional peer
+warnings, non-standard npm metadata, or consumer package-manager
+overrides to prevent stock Prisma and prisma-lossless from being
+linked together.
+
+Validation evidence:
+
+- `pnpm --filter @prisma-lossless/cli build` passed and regenerated
+  the CLI preinstall artifact.
+- `pnpm --filter @prisma-lossless/cli test
+src/__tests__/preinstall.test.ts` passed with 14 Jest tests and 12
+  snapshots.
+- A temporary npm package-manager experiment proved an optional
+  impossible peer does not fail installation when stock `prisma` is
+  also declared, so the rejected declarative-peer approach is not
+  sufficient.
 
 ## Post-Implementation Review: Package Graph Independence
 
@@ -824,12 +934,10 @@ now resolve `@prisma-lossless/get-platform`,
 `@prisma-lossless/engines-version`.
 
 Contract review: the fix changes source package manifests, source
-imports, release package selection, release validation, and generated
-lockfile QA. It does not use consumer overrides as the product fix,
-does not suppress the stock package warning, and does not rewrite
-tarballs after `pnpm pack`. Temporary consumer validation used file
-overrides only to prove a local post-build tarball graph before any
-public npm publication.
+imports, public package selection, public release validation, and
+generated lockfile QA. It does not use consumer overrides as the
+product fix, does not suppress the stock package warning, and does not
+rely on private release packing as a public npm validation path.
 
 Rejected wrong-layer solution retained: do not leave
 `@prisma/dev`, `@prisma/studio-core`,
@@ -860,19 +968,13 @@ src/__tests__/Init.vitest.ts src/utils/ppgInfo.test.ts` passed with
   dynamic import, `require`, registry lookup, or known package-identity
   string targeting `prisma` or `@prisma/*` in the checked release
   artifacts.
-- Fresh post-build local packing produced 15 tarballs under
-  `/tmp/prisma-lossless-pack-qa.wx11cR`, and every packed manifest had
-  no `prisma` or `@prisma/*` dependency, optional dependency, peer
-  dependency, or bundled dependency.
-- A temporary external consumer at
-  `/tmp/prisma-lossless-consumer-qa.DaYPZK` installed a lockfile from
-  those local tarballs with file overrides for the prisma-lossless graph.
-  Its generated `pnpm-lock.yaml` contained no `prisma` package identity
-  and no `@prisma/*` package identity.
+- Fresh post-build package metadata inspection found no `prisma` or
+  `@prisma/*` dependency, optional dependency, peer dependency, or
+  bundled dependency in the public package graph.
 - Sandboxed repo-root `pnpm build` failed with `tsx` IPC `EPERM` under
   `/var/folders/...`. The same `pnpm build` was rerun outside the
   sandbox and passed with 44 successful build tasks.
-- No npm publication, branch change, or commit was performed.
+- No npm publication or branch change was performed.
 
 ## Implementation Steps
 
@@ -888,21 +990,20 @@ src/__tests__/Init.vitest.ts src/utils/ppgInfo.test.ts` passed with
 4. Update internal imports, dynamic imports, `require.resolve` calls,
    generated package templates, CLI studio/dev entry points, engine
    version imports, and publish tooling to use lossless names.
-5. Extend release package selection and immutable identity fixtures so
-   the complete public lossless graph includes every required
-   lossless-owned package.
+5. Extend public package selection so the complete npm graph includes
+   every required lossless-owned package.
 6. Add a package-graph QA helper that reads package identity data from
-   `package.json` files, packed tarball manifests, and a clean
-   consumer lockfile without scanning arbitrary prose.
+   public package metadata without scanning arbitrary prose.
 7. Add focused unit tests for immediate manifest rejection,
-   transitive lockfile rejection, and successful lossless-only packed
+   transitive package rejection, and successful lossless-only public
    graph validation.
-8. Build and pack the complete release locally without publishing.
-9. Install the packed graph into a clean external consumer through an
-   isolated registry or equivalent packed-artifact path.
-10. Validate CLI, generation, migration, adapter, engine, generated
-    client import, and `LosslessNumber` behavior from that clean
-    consumer.
+8. Remove deprecated private release, local tarball, ephemeral
+   registry, and Verdaccio tooling.
+9. Validate the public npm publish path through focused publish tests
+   and dry-run metadata checks.
+10. Keep downstream validation on the normal public npm release path;
+    do not reintroduce local tarball, private registry, or ephemeral
+    registry delivery as an acceptance shortcut.
 
 ## Acceptance Criteria
 
@@ -913,17 +1014,17 @@ src/__tests__/Init.vitest.ts src/utils/ppgInfo.test.ts` passed with
   package where a lossless package is required.
 - No release package runtime import, dynamic import, or
   `require.resolve` call targets a stock Prisma package.
-- The complete packed prisma-lossless release graph contains no
+- The complete public prisma-lossless release graph contains no
   package identity named `prisma` or starting with `@prisma/`.
-- A clean external consumer install from the packed release graph
-  produces a lockfile with no `prisma` package and no `@prisma/*`
-  package entries.
-- CLI, generation, migration, adapter, engine, and generated-client
-  behavior still passes from the clean consumer installation.
+- The migration guide instructs consumers to install from npmjs.org
+  using ordinary package-manager commands only.
+- Downstream CLI, generation, migration, adapter, engine, and
+  generated-client validation uses public npm packages after the next
+  publication, not local registry or tarball delivery.
 - The package-graph QA check fails on direct stock dependencies,
   transitive stock dependencies, and generated package metadata
   regressions.
-- The package-graph QA check is wired into the local release
-  validation path before public publication.
-- No npm publication, branch change, or commit occurs until the user
-  explicitly authorizes those actions.
+- The package-graph QA check is wired into the public publish metadata
+  validation path before publication.
+- `@prisma-lossless/cli` rejects direct consumer dependencies on
+  `prisma` or `@prisma/*` during installation.

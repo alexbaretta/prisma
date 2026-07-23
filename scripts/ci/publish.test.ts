@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { RELEASE_PACKAGE_REPOSITORY_URL } from '../private-release'
+import { LOSSLESS_PUBLIC_PACKAGE_REPOSITORY_URL } from '../lossless-public-release'
 import {
   assertLosslessPublicPackageMetadata,
   filterPublishOrderToPackages,
@@ -30,7 +30,7 @@ function packageFixture(name: string, version = '7.8.0-lossless.15'): Package {
       version,
       repository: {
         type: 'git',
-        url: RELEASE_PACKAGE_REPOSITORY_URL,
+        url: LOSSLESS_PUBLIC_PACKAGE_REPOSITORY_URL,
       },
     },
   }
@@ -124,13 +124,27 @@ describe('lossless public publish mode', () => {
     ).toThrow(/marked private/)
   })
 
-  test('validates source metadata against the immutable release identity', () => {
+  test('validates source metadata for public npm release packages', () => {
     expect(() =>
       assertLosslessPublicPackageMetadata(losslessPublicPackageFixtures(), '7.8.0-lossless.15'),
     ).not.toThrow()
     expect(() =>
-      assertLosslessPublicPackageMetadata(losslessPublicPackageFixtures('7.8.0-lossless.10'), '7.8.0-lossless.10'),
-    ).toThrow(/recorded as unavailable/)
+      assertLosslessPublicPackageMetadata(
+        {
+          ...losslessPublicPackageFixtures(),
+          '@prisma-lossless/client': {
+            ...packageFixture('@prisma-lossless/client'),
+            packageJson: {
+              ...packageFixture('@prisma-lossless/client').packageJson,
+              devDependencies: {
+                '@prisma/query-compiler-wasm': '7.8.0',
+              },
+            },
+          },
+        },
+        '7.8.0-lossless.15',
+      ),
+    ).not.toThrow()
     expect(() =>
       assertLosslessPublicPackageMetadata(
         {
@@ -140,6 +154,23 @@ describe('lossless public publish mode', () => {
         '7.8.0-lossless.15',
       ),
     ).toThrow(/does not record release version/)
+    expect(() =>
+      assertLosslessPublicPackageMetadata(
+        {
+          ...losslessPublicPackageFixtures(),
+          '@prisma-lossless/client': {
+            ...packageFixture('@prisma-lossless/client'),
+            packageJson: {
+              ...packageFixture('@prisma-lossless/client').packageJson,
+              dependencies: {
+                '@prisma/client': '7.8.0',
+              },
+            },
+          },
+        },
+        '7.8.0-lossless.15',
+      ),
+    ).toThrow(/forbidden stock Prisma package identity/)
   })
 
   test('filters publish order to the lossless public graph', () => {

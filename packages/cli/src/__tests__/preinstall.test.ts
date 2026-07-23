@@ -1,6 +1,14 @@
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+
 import { jestConsoleContext, jestContext } from '@prisma-lossless/get-platform'
 
-import { printMessageAndExitIfUnsupportedNodeVersion } from '../../scripts/preinstall'
+import {
+  findStockPrismaDependencies,
+  printMessageAndExitIfStockPrismaIsDeclared,
+  printMessageAndExitIfUnsupportedNodeVersion,
+} from '../../scripts/preinstall'
 
 const ctx = jestContext.new().add(jestConsoleContext()).assemble()
 
@@ -55,4 +63,47 @@ it('should do nothing when Node.js version is supported - current', () => {
   printMessageAndExitIfUnsupportedNodeVersion(process.versions.node as `${number}.${number}.${number}`)
 
   expect(ctx.mocked['console.error'].mock.calls.join('\n')).toMatchInlineSnapshot(`""`)
+})
+
+it('should exit 1 when the consumer declares stock Prisma packages', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-lossless-preinstall-'))
+  const mockExit = jest.spyOn(process, 'exit').mockImplementation()
+
+  try {
+    fs.writeFileSync(
+      path.join(root, 'package.json'),
+      JSON.stringify({
+        dependencies: {
+          '@prisma/client': '7.8.0',
+        },
+        devDependencies: {
+          prisma: '7.8.0',
+        },
+      }),
+    )
+
+    printMessageAndExitIfStockPrismaIsDeclared(root)
+
+    expect(ctx.mocked['console.error'].mock.calls.join('\n')).toContain(
+      'prisma-lossless cannot be installed with stock Prisma packages.',
+    )
+    expect(ctx.mocked['console.error'].mock.calls.join('\n')).toContain('@prisma/client, prisma')
+    expect(mockExit).toHaveBeenCalledWith(1)
+  } finally {
+    mockExit.mockRestore()
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+it('should allow lossless-only consumer package metadata', () => {
+  expect(
+    findStockPrismaDependencies({
+      dependencies: {
+        '@prisma-lossless/client': '7.8.0-lossless.15',
+      },
+      devDependencies: {
+        '@prisma-lossless/cli': '7.8.0-lossless.15',
+      },
+    }),
+  ).toEqual([])
 })

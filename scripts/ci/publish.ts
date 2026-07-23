@@ -12,18 +12,15 @@ import pRetry from 'p-retry'
 import semver from 'semver'
 
 import { prisma as enginesVersionMetadata } from '../../packages/engines-version/package.json'
-import {
-  assertAvailablePrivateReleaseIdentity,
-  readPrivateReleaseIdentity,
-  RELEASE_PACKAGES,
-  validateReleasePackageMetadata,
-} from '../private-release'
+import { LOSSLESS_PUBLIC_RELEASE_PACKAGES, validateLosslessPublicPackageMetadata } from '../lossless-public-release'
 
 const onlyPackages = process.env.ONLY_PACKAGES ? process.env.ONLY_PACKAGES.split(',') : null
 const skipPackages = process.env.SKIP_PACKAGES ? process.env.SKIP_PACKAGES.split(',') : null
 const LOSSLESS_PUBLIC_DIST_TAG = 'lossless'
 const LOSSLESS_PUBLIC_DEFAULT_DIST_TAG = 'latest'
-export const LOSSLESS_PUBLIC_PACKAGE_NAMES = RELEASE_PACKAGES.map((releasePackage) => releasePackage.name)
+export const LOSSLESS_PUBLIC_PACKAGE_NAMES = LOSSLESS_PUBLIC_RELEASE_PACKAGES.map(
+  (releasePackage) => releasePackage.name,
+)
 
 async function getLatestCommitHash(dir: string): Promise<string> {
   if (process.env.GITHUB_CONTEXT) {
@@ -171,15 +168,8 @@ export function getLosslessPublicPackages(packages: Packages): Package[] {
 }
 
 export function assertLosslessPublicPackageMetadata(packages: Packages, version: string): void {
-  const releaseIdentity = readPrivateReleaseIdentity(version)
-  assertAvailablePrivateReleaseIdentity(releaseIdentity)
-
   for (const releasePackage of getLosslessPublicPackages(packages)) {
-    validateReleasePackageMetadata(
-      releasePackage.packageJson as Record<string, unknown>,
-      version,
-      releaseIdentity.sourceCommit,
-    )
+    validateLosslessPublicPackageMetadata(releasePackage.packageJson as Record<string, unknown>, version)
   }
 }
 

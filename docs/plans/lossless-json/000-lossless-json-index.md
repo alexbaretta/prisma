@@ -2,10 +2,11 @@
 
 Branch: `target-7.8.0-lossless`
 
-Status: Lossless JSON implementation, local tarball adoption, private
-registry release validation, lossless package naming consistency, raw
-JSON parameter handling, and prebuilt ephemeral consumption are
-complete.
+Status: Lossless JSON implementation, public npm packaging, lossless
+package naming consistency, and raw JSON parameter handling are
+complete. Local tarball, private registry, and ephemeral-registry
+delivery mechanisms are deprecated and must not be used for consumer
+adoption.
 
 ## Purpose
 
@@ -293,12 +294,12 @@ Sprint 16 adapts Prisma's existing npm publish tooling for the
 prisma-lossless public package graph and publishes the validated
 lossless release to npmjs.org.
 
-| ID  | Tasklet                                                           | Priority | Status | Dependencies |
-| --- | ----------------------------------------------------------------- | -------- | ------ | ------------ |
-| 030 | [Publish public npm release](./030-publish-public-npm-release.md) | High     | [DONE] | 029          |
-| 031 | [Promote latest dist tag](./030-publish-public-npm-release.md#done-tasklet-031-promote-latest-dist-tag) | High | [DONE] | 030 |
-| 032 | [Correct public repository metadata](./030-publish-public-npm-release.md#done-tasklet-032-correct-public-repository-metadata) | High | [DONE] | 031 |
-| 033 | [Eliminate stock package graph](./030-publish-public-npm-release.md#tasklet-033-eliminate-stock-package-graph) | High | [ ] | 032 |
+| ID  | Tasklet                                                                                                                       | Priority | Status | Dependencies |
+| --- | ----------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 030 | [Publish public npm release](./030-publish-public-npm-release.md)                                                             | High     | [DONE] | 029          |
+| 031 | [Promote latest dist tag](./030-publish-public-npm-release.md#done-tasklet-031-promote-latest-dist-tag)                       | High     | [DONE] | 030          |
+| 032 | [Correct public repository metadata](./030-publish-public-npm-release.md#done-tasklet-032-correct-public-repository-metadata) | High     | [DONE] | 031          |
+| 033 | [Eliminate stock package graph](./030-publish-public-npm-release.md#tasklet-033-eliminate-stock-package-graph)                | High     | [ ]    | 032          |
 
 ## Execution Order
 
