@@ -1092,3 +1092,34 @@ packages/cli/src/__tests__/preinstall.test.ts` passed.
 - The dry-run `@prisma-lossless/engines` tarball contained
   `dist/scripts/postinstall.js` and `dist/scripts/localinstall.js`.
 - `pnpm build` passed outside the sandbox with 44 successful tasks.
+
+## Publish Attempt Evidence
+
+- `pnpm run publish-lossless-public` passed its built-in dry-run
+  phase for the 15 public packages and started the real npmjs.org
+  upload phase.
+- The real upload failed on the first package,
+  `@prisma-lossless/client-runtime-utils@7.8.0-lossless.16`.
+  npm returned `E404 Not Found - PUT
+https://registry.npmjs.org/@prisma-lossless%2fclient-runtime-utils`,
+  with the standard "not found or you do not have permission" message.
+- The publish process also warned that `/Users/alex/.npmrc` could not
+  replace `${NPM_TOKEN}`. A direct `npm whoami
+--registry=https://registry.npmjs.org/` from the same Codex process
+  returned `E401 Unauthorized`.
+- `npm view
+@prisma-lossless/client-runtime-utils@7.8.0-lossless.16 version
+--registry=https://registry.npmjs.org/` returned `E404 No match
+found for version 7.8.0-lossless.16`, so the first package was not
+  published by this failed attempt.
+- This is an external npm authentication or authorization blocker for
+  the Codex process, not a source, build, packaging, or validation
+  failure in the committed `7.8.0-lossless.16` release candidate.
+
+## Current Blocker
+
+The source tree is prepared and validated for public release
+`7.8.0-lossless.16`, but Tasklet 034 cannot be marked `[DONE]`
+until the public npm publish command runs in an authenticated process
+that can publish to the `@prisma-lossless` organization and the
+result is verified with public `npm view` queries.
