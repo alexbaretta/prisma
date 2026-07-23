@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { Link } from '../Link'
 
-vi.mock('@prisma/management-api-sdk', () => {
+vi.mock('@prisma-lossless/management-api-sdk', () => {
   class AuthErrorMock extends Error {
     name = 'AuthError'
     constructor(
@@ -128,7 +128,7 @@ describe('Link command — non-interactive mode (--api-key + --database)', () =>
 
     expect(result).not.toBeInstanceOf(Error)
 
-    const { createManagementApiClient } = await import('@prisma/management-api-sdk')
+    const { createManagementApiClient } = await import('@prisma-lossless/management-api-sdk')
     expect(createManagementApiClient).toHaveBeenCalledWith(expect.objectContaining({ token: 'env_api_key' }))
   })
 
@@ -235,7 +235,7 @@ describe('Link command — idempotency', () => {
 
 describe('Link command — interactive mode (no --api-key, no --database)', () => {
   test('ignores PRISMA_API_KEY env var when --database is not provided', async () => {
-    const { createManagementApiClient } = await import('@prisma/management-api-sdk')
+    const { createManagementApiClient } = await import('@prisma-lossless/management-api-sdk')
     const { createAuthenticatedManagementAPI } = await import('../../../management-api/auth-client')
     vi.mocked(createManagementApiClient).mockClear()
     vi.mocked(createAuthenticatedManagementAPI).mockClear()
@@ -386,7 +386,7 @@ describe('Link command — expired session retry', () => {
     const { login } = await import('../../../management-api/auth')
     const mockLogin = vi.mocked(login)
 
-    const { AuthError } = await import('@prisma/management-api-sdk')
+    const { AuthError } = await import('@prisma-lossless/management-api-sdk')
     mockSdkClient.POST.mockRejectedValueOnce(new AuthError('invalid_grant: Invalid grant', true))
 
     setupMockApiSuccess()

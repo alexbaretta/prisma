@@ -1,0 +1,32 @@
+{
+  "name": "@prisma-lossless/engines-version",
+  "version": "7.8.0-lossless.15",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "description": "This package exports the Prisma Lossless engines version.",
+  "license": "Apache-2.0",
+  "author": "Tim Suchanek <suchanek@prisma.io>",
+  "homepage": "https://github.com/alexbaretta/prisma#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexbaretta/prisma.git",
+    "directory": "packages/engines-version"
+  },
+  "bugs": "https://github.com/alexbaretta/prisma/issues",
+  "prisma": {
+    "enginesVersion": "3c6e192761c0362d496ed980de936e2f3cebcd3a"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md"
+  ],
+  "sideEffects": false
+}

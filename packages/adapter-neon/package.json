@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/adapter-neon",
-  "version": "7.8.0-lossless.14",
+  "version": "7.8.0-lossless.15",
   "description": "Prisma's driver adapter for \"@neondatabase/serverless\"",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -36,11 +36,11 @@
   "license": "Apache-2.0",
   "sideEffects": false,
   "dependencies": {
-    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.14",
+    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.15",
     "postgres-array": "3.0.4",
     "@neondatabase/serverless": ">0.6.0 <2"
   },
   "devDependencies": {
-    "@prisma-lossless/debug": "7.8.0-lossless.14"
+    "@prisma-lossless/debug": "7.8.0-lossless.15"
   }
 }

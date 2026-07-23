@@ -92,7 +92,7 @@ async function buildStudioFrontend() {
     tsconfig: 'tsconfig.build.json',
   })
 
-  await fs.promises.copyFile(require.resolve('@prisma/studio-core/ui/index.css'), './build/studio.css')
+  await fs.promises.copyFile(require.resolve('@prisma-lossless/studio-core/ui/index.css'), './build/studio.css')
 }
 
 /**

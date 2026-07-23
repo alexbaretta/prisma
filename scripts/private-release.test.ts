@@ -7,6 +7,7 @@ import { describe, expect, test } from 'vitest'
 
 import {
   assertAvailablePrivateReleaseIdentity,
+  assertNoStockPrismaPackageIdentitiesInPnpmLock,
   assertPinnedReleaseVersion,
   assertReleaseGraphDependencyOrder,
   assertReleaseSourcesMatchCommit,
@@ -15,6 +16,7 @@ import {
   preparePinnedPrivateReleaseCandidates,
   PRIVATE_RELEASE_SOURCE_DIRS,
   PRIVATE_RELEASE_VERSION_PREFIX,
+  readPnpmLockPackageIdentities,
   readPrivateReleaseIdentity,
   RELEASE_PACKAGE_BUGS_URL,
   RELEASE_PACKAGE_HOMEPAGE_URL,
@@ -61,23 +63,23 @@ describe('lossless private release graph', () => {
     const unscopedPublicIdentity = readPrivateReleaseIdentity('7.8.0-lossless.11')
     const stockMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.12')
     const latestStockMetadataIdentity = readPrivateReleaseIdentity('7.8.0-lossless.13')
-    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.14')
+    const currentIdentity = readPrivateReleaseIdentity('7.8.0-lossless.15')
     const historicalFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.5')
-    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.14')
+    const currentFixture = readIndependentPrivateReleaseFixture('7.8.0-lossless.15')
 
     expect(identity.sourceCommit).toBe('f98f2e0f42cd7d9d9556567f9236c98eed00da16')
     expect(identity.status).toBe('unavailable')
-    expect(identity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(identity.replacementVersion).toBe('7.8.0-lossless.15')
     expect(retiredIdentity.status).toBe('unavailable')
-    expect(retiredIdentity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(retiredIdentity.replacementVersion).toBe('7.8.0-lossless.15')
     expect(randomMapIdentity.status).toBe('unavailable')
-    expect(randomMapIdentity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(randomMapIdentity.replacementVersion).toBe('7.8.0-lossless.15')
     expect(staleChunkIdentity.status).toBe('unavailable')
-    expect(staleChunkIdentity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(staleChunkIdentity.replacementVersion).toBe('7.8.0-lossless.15')
     expect(missingLifecycleIdentity.status).toBe('unavailable')
-    expect(missingLifecycleIdentity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(missingLifecycleIdentity.replacementVersion).toBe('7.8.0-lossless.15')
     expect(stagedMetadataIdentity.status).toBe('unavailable')
-    expect(stagedMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(stagedMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.15')
     expect(identity.packages).toEqual(
       historicalFixture.packages.map(({ name, integrity }) => ({
         name,
@@ -85,13 +87,13 @@ describe('lossless private release graph', () => {
       })),
     )
     expect(unscopedPublicIdentity.status).toBe('unavailable')
-    expect(unscopedPublicIdentity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(unscopedPublicIdentity.replacementVersion).toBe('7.8.0-lossless.15')
     expect(stockMetadataIdentity.status).toBe('unavailable')
-    expect(stockMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(stockMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.15')
     expect(latestStockMetadataIdentity.status).toBe('unavailable')
-    expect(latestStockMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.14')
+    expect(latestStockMetadataIdentity.replacementVersion).toBe('7.8.0-lossless.15')
     expect(currentIdentity.status).toBe('available')
-    expect(identity.packages).toHaveLength(RELEASE_PACKAGES.length)
+    expect(identity.packages).toHaveLength(historicalFixture.packages.length)
     expect(identity.packages[1]).toEqual({
       name: '@prisma-lossless/driver-adapter-utils',
       integrity: 'sha512-Ow22QHvHic7XNSozhTgreG6/KO5ZT4PO5NjOyxQP9Es/dgbeU9QXrPWFHJgCgn1FMv1zkISBZQqU+Iw01o4XAQ==',
@@ -143,15 +145,15 @@ describe('lossless private release graph', () => {
     expect(() => assertAvailablePrivateReleaseIdentity(latestStockMetadataIdentity)).toThrow(
       /Private release 7\.8\.0-lossless\.13 is recorded as unavailable/,
     )
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7.8.0-lossless.14/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.6')).toThrow(/Use 7.8.0-lossless.14/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.7')).toThrow(/Use 7.8.0-lossless.14/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.8')).toThrow(/Use 7.8.0-lossless.14/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.9')).toThrow(/Use 7.8.0-lossless.14/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.10')).toThrow(/Use 7.8.0-lossless.14/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.11')).toThrow(/Use 7.8.0-lossless.14/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.12')).toThrow(/Use 7.8.0-lossless.14/)
-    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.13')).toThrow(/Use 7.8.0-lossless.14/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.5')).toThrow(/Use 7.8.0-lossless.15/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.6')).toThrow(/Use 7.8.0-lossless.15/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.7')).toThrow(/Use 7.8.0-lossless.15/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.8')).toThrow(/Use 7.8.0-lossless.15/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.9')).toThrow(/Use 7.8.0-lossless.15/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.10')).toThrow(/Use 7.8.0-lossless.15/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.11')).toThrow(/Use 7.8.0-lossless.15/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.12')).toThrow(/Use 7.8.0-lossless.15/)
+    expect(() => prepareBuiltPrivateReleaseCandidates('7.8.0-lossless.13')).toThrow(/Use 7.8.0-lossless.15/)
   })
 
   test('rejects incomplete or mismatched release identities', () => {
@@ -280,6 +282,11 @@ describe('lossless private release graph', () => {
       '@prisma-lossless/debug',
       '@prisma-lossless/driver-adapter-utils',
       '@prisma-lossless/get-platform',
+      '@prisma-lossless/query-plan-executor',
+      '@prisma-lossless/streams-local',
+      '@prisma-lossless/dev',
+      '@prisma-lossless/studio-core',
+      '@prisma-lossless/engines-version',
       '@prisma-lossless/fetch-engine',
       '@prisma-lossless/engines',
       '@prisma-lossless/config',
@@ -400,6 +407,132 @@ describe('lossless private release graph', () => {
     }
   })
 
+  test('rejects stock Prisma identities in package graph metadata', () => {
+    for (const section of ['dependencies', 'optionalDependencies', 'peerDependencies'] as const) {
+      expect(() =>
+        validateReleasePackageMetadata(
+          {
+            ...releaseMetadataFixture('packages/debug'),
+            name: '@prisma-lossless/debug',
+            version: releaseVersion,
+            [section]: {
+              '@prisma/debug': '7.2.0',
+            },
+          },
+          releaseVersion,
+          sourceCommit,
+        ),
+      ).toThrow(/forbidden stock Prisma package identity @prisma\/debug/)
+    }
+
+    for (const section of ['bundledDependencies', 'bundleDependencies'] as const) {
+      expect(() =>
+        validateReleasePackageMetadata(
+          {
+            ...releaseMetadataFixture('packages/debug'),
+            name: '@prisma-lossless/debug',
+            version: releaseVersion,
+            [section]: ['@prisma/debug'],
+          },
+          releaseVersion,
+          sourceCommit,
+        ),
+      ).toThrow(/forbidden stock Prisma package identity @prisma\/debug/)
+    }
+
+    expect(() =>
+      validateReleasePackageMetadata(
+        {
+          ...releaseMetadataFixture('packages/debug'),
+          name: '@prisma-lossless/debug',
+          version: releaseVersion,
+          dependencies: {
+            prisma: '7.8.0',
+          },
+        },
+        releaseVersion,
+        sourceCommit,
+      ),
+    ).toThrow(/forbidden stock Prisma package identity prisma/)
+  })
+
+  test('rejects stock Prisma identities in resolved pnpm lockfiles', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-lossless-lock-proof-'))
+    const lockfilePath = path.join(root, 'pnpm-lock.yaml')
+
+    try {
+      fs.writeFileSync(
+        lockfilePath,
+        `lockfileVersion: '9.0'
+packages:
+  '@prisma/dev@0.24.14(typescript@5.4.5)':
+    resolution: {integrity: sha512-test}
+  '@prisma/get-platform@7.2.0':
+    resolution: {integrity: sha512-test}
+  '@prisma/query-plan-executor@7.2.0':
+    resolution: {integrity: sha512-test}
+  '@prisma/streams-local@0.1.11':
+    resolution: {integrity: sha512-test}
+  '@prisma/studio-core@0.27.3(@types/react@19.2.14)':
+    resolution: {integrity: sha512-test}
+snapshots:
+  '@prisma/get-platform@7.2.0':
+    dependencies:
+      '@prisma/debug': 7.2.0
+  prisma@7.8.0:
+    resolution: {integrity: sha512-test}
+`,
+      )
+
+      expect(Array.from(readPnpmLockPackageIdentities(lockfilePath)).sort()).toEqual([
+        '@prisma/debug',
+        '@prisma/dev',
+        '@prisma/get-platform',
+        '@prisma/query-plan-executor',
+        '@prisma/streams-local',
+        '@prisma/studio-core',
+        'prisma',
+      ])
+      expect(() => assertNoStockPrismaPackageIdentitiesInPnpmLock(lockfilePath)).toThrow(
+        /forbidden stock Prisma package identities/,
+      )
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('allows lossless package identities and ignores lockfile prose', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'prisma-lossless-lock-proof-'))
+    const lockfilePath = path.join(root, 'pnpm-lock.yaml')
+
+    try {
+      fs.writeFileSync(
+        lockfilePath,
+        `lockfileVersion: '9.0'
+packages:
+  '@prisma-lossless/cli@7.8.0-lossless.15':
+    resolution: {integrity: sha512-test}
+  '@prisma-lossless/engines-version@7.8.0-lossless.15':
+    resolution: {integrity: sha512-test}
+snapshots:
+  '@prisma-lossless/cli@7.8.0-lossless.15':
+    dependencies:
+      '@prisma-lossless/engines': 7.8.0-lossless.15
+    description: 'Historical text may mention @prisma/debug.'
+`,
+      )
+
+      expect(Array.from(readPnpmLockPackageIdentities(lockfilePath)).sort()).toEqual([
+        '@prisma-lossless/cli',
+        '@prisma-lossless/engines',
+        '@prisma-lossless/engines-version',
+      ])
+      expect(() => assertNoStockPrismaPackageIdentitiesInPnpmLock(lockfilePath)).not.toThrow()
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true })
+    }
+  })
+
   test('rejects npm aliases for fork-owned dependencies', () => {
     expect(() =>
       validateReleasePackageMetadata(
@@ -474,39 +607,74 @@ describe('lossless private release graph', () => {
           fs.readFileSync(path.join(process.cwd(), releasePackage.sourceDir, 'package.json'), 'utf-8'),
         )
 
-        validateReleasePackageMetadata(packageJson, '7.8.0-lossless.14', sourceCommit)
+        validateReleasePackageMetadata(packageJson, '7.8.0-lossless.15', sourceCommit)
         return [releasePackage.name, packageJson]
       }),
     )
     const clientPackageJson = manifests.get('@prisma-lossless/client')
     const cliPackageJson = manifests.get('@prisma-lossless/cli')
+    const devPackageJson = manifests.get('@prisma-lossless/dev')
+    const enginesVersionPackageJson = manifests.get('@prisma-lossless/engines-version')
+    const fetchEnginePackageJson = manifests.get('@prisma-lossless/fetch-engine')
+    const studioCorePackageJson = manifests.get('@prisma-lossless/studio-core')
 
     expect(clientPackageJson).toMatchObject({
-      version: '7.8.0-lossless.14',
+      version: '7.8.0-lossless.15',
       dependencies: {
-        '@prisma-lossless/client-runtime-utils': '7.8.0-lossless.14',
+        '@prisma-lossless/client-runtime-utils': '7.8.0-lossless.15',
       },
       peerDependencies: {
-        '@prisma-lossless/cli': '7.8.0-lossless.14',
+        '@prisma-lossless/cli': '7.8.0-lossless.15',
       },
     })
     expect(cliPackageJson).toMatchObject({
       name: '@prisma-lossless/cli',
-      version: '7.8.0-lossless.14',
+      version: '7.8.0-lossless.15',
       dependencies: {
-        '@prisma-lossless/config': '7.8.0-lossless.14',
-        '@prisma-lossless/engines': '7.8.0-lossless.14',
+        '@prisma-lossless/config': '7.8.0-lossless.15',
+        '@prisma-lossless/dev': '7.8.0-lossless.15',
+        '@prisma-lossless/engines': '7.8.0-lossless.15',
+        '@prisma-lossless/studio-core': '7.8.0-lossless.15',
       },
       bin: {
         'prisma-lossless': 'build/index.js',
       },
     })
+    expect(devPackageJson).toMatchObject({
+      name: '@prisma-lossless/dev',
+      version: '7.8.0-lossless.15',
+      dependencies: {
+        '@prisma-lossless/get-platform': '7.8.0-lossless.15',
+        '@prisma-lossless/query-plan-executor': '7.8.0-lossless.15',
+        '@prisma-lossless/streams-local': '7.8.0-lossless.15',
+      },
+    })
+    expect(enginesVersionPackageJson).toMatchObject({
+      name: '@prisma-lossless/engines-version',
+      version: '7.8.0-lossless.15',
+      prisma: {
+        enginesVersion: '3c6e192761c0362d496ed980de936e2f3cebcd3a',
+      },
+    })
+    expect(fetchEnginePackageJson).toMatchObject({
+      dependencies: {
+        '@prisma-lossless/engines-version': '7.8.0-lossless.15',
+      },
+    })
+    expect(studioCorePackageJson).toMatchObject({
+      name: '@prisma-lossless/studio-core',
+      version: '7.8.0-lossless.15',
+      dependencies: {
+        '@radix-ui/react-toggle': '1.1.10',
+        'chart.js': '4.5.1',
+      },
+    })
 
     expect(manifests.get('@prisma-lossless/adapter-pg')).toMatchObject({
       name: '@prisma-lossless/adapter-pg',
-      version: '7.8.0-lossless.14',
+      version: '7.8.0-lossless.15',
       dependencies: {
-        '@prisma-lossless/driver-adapter-utils': '7.8.0-lossless.14',
+        '@prisma-lossless/driver-adapter-utils': '7.8.0-lossless.15',
       },
     })
   })

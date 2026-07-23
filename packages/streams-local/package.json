@@ -1,0 +1,48 @@
+{
+  "name": "@prisma-lossless/streams-local",
+  "version": "7.8.0-lossless.15",
+  "description": "Node and Bun local Prisma Streams runtime for trusted development workflows.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexbaretta/prisma.git",
+    "directory": "packages/streams-local"
+  },
+  "bugs": {
+    "url": "https://github.com/alexbaretta/prisma/issues"
+  },
+  "homepage": "https://github.com/alexbaretta/prisma#readme",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "bun": ">=1.2.0",
+    "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "better-result": "^2.7.0",
+    "env-paths": "^3.0.0",
+    "proper-lockfile": "^4.1.2"
+  },
+  "files": [
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "dist/"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/local/index.d.ts",
+      "default": "./dist/local/index.js"
+    },
+    "./internal/daemon": {
+      "types": "./dist/types/local/daemon.d.ts",
+      "default": "./dist/local/daemon.js"
+    },
+    "./package.json": "./package.json"
+  }
+}

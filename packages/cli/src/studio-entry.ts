@@ -1,8 +1,8 @@
-import { createStudioBFFClient } from '@prisma/studio-core/data/bff'
-import { createMySQLAdapter } from '@prisma/studio-core/data/mysql-core'
-import { createPostgresAdapter } from '@prisma/studio-core/data/postgres-core'
-import { createSQLiteAdapter } from '@prisma/studio-core/data/sqlite-core'
-import { Studio, type StudioProps } from '@prisma/studio-core/ui'
+import { createStudioBFFClient } from '@prisma-lossless/studio-core/data/bff'
+import { createMySQLAdapter } from '@prisma-lossless/studio-core/data/mysql-core'
+import { createPostgresAdapter } from '@prisma-lossless/studio-core/data/postgres-core'
+import { createSQLiteAdapter } from '@prisma-lossless/studio-core/data/sqlite-core'
+import { Studio, type StudioProps } from '@prisma-lossless/studio-core/ui'
 import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 

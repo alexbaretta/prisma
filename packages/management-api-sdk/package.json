@@ -1,0 +1,43 @@
+{
+  "name": "@prisma-lossless/management-api-sdk",
+  "version": "7.8.0-lossless.15",
+  "description": "TypeScript SDK for the Prisma Developer Platform Management API",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexbaretta/prisma.git",
+    "directory": "packages/management-api-sdk"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "default": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "openapi-fetch": "0.14.0"
+  },
+  "keywords": [
+    "prisma",
+    "api",
+    "sdk",
+    "management",
+    "typescript"
+  ],
+  "bugs": {
+    "url": "https://github.com/alexbaretta/prisma/issues"
+  },
+  "homepage": "https://github.com/alexbaretta/prisma#readme"
+}

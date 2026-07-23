@@ -1,13 +1,13 @@
 import { access, constants, readFile } from 'node:fs/promises'
 
-import type { Executor, SequenceExecutor } from '@prisma/studio-core/data'
-import { type SerializedError, serializeError, type StudioBFFRequest } from '@prisma/studio-core/data/bff'
-import { createMySQL2Executor } from '@prisma/studio-core/data/mysql2'
-import { createNodeSQLiteExecutor } from '@prisma/studio-core/data/node-sqlite'
-import { createPostgresJSExecutor } from '@prisma/studio-core/data/postgresjs'
-import type { StudioProps } from '@prisma/studio-core/ui'
 import type { PrismaConfigInternal } from '@prisma-lossless/config'
 import { arg, type Command, format, HelpError, isError } from '@prisma-lossless/internals'
+import type { Executor, SequenceExecutor } from '@prisma-lossless/studio-core/data'
+import { type SerializedError, serializeError, type StudioBFFRequest } from '@prisma-lossless/studio-core/data/bff'
+import { createMySQL2Executor } from '@prisma-lossless/studio-core/data/mysql2'
+import { createNodeSQLiteExecutor } from '@prisma-lossless/studio-core/data/node-sqlite'
+import { createPostgresJSExecutor } from '@prisma-lossless/studio-core/data/postgresjs'
+import type { StudioProps } from '@prisma-lossless/studio-core/ui'
 import { type Check, check as sendEvent } from 'checkpoint-client'
 import { getPort } from 'get-port-please'
 import { bold, dim, red, yellow } from 'kleur/colors'
@@ -28,6 +28,16 @@ import { getPpgInfo } from './utils/ppgInfo'
 const DEFAULT_PORT = 51_212
 
 const MIN_PORT = 49_152
+
+const STUDIO_CORE_PACKAGE_NAME = '@prisma-lossless/studio-core'
+
+function getStudioCoreVersion(): string {
+  return (
+    packageJson.dependencies?.[STUDIO_CORE_PACKAGE_NAME] ??
+    packageJson.devDependencies?.[STUDIO_CORE_PACKAGE_NAME] ??
+    'unknown'
+  )
+}
 
 const FILE_EXTENSION_TO_CONTENT_TYPE: Record<string, string> = {
   '.css': 'text/css',
@@ -298,7 +308,7 @@ ${bold('Examples')}
       connectionString,
       getUrlBasePath(args['--url'], config.loadedFromFile),
     )
-    const version = packageJson.dependencies['@prisma/studio-core']
+    const version = getStudioCoreVersion()
     const ppgDbInfo = await getPpgInfo(connectionString)
     const handler = createStudioRequestHandler({
       adapter: studioStuff.adapter,

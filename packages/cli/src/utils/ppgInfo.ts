@@ -1,4 +1,4 @@
-import { ServerState } from '@prisma/dev/internal/state'
+import { ServerState } from '@prisma-lossless/dev/internal/state'
 
 /**
  * Collects information about whether the given url connects to a Prisma Postgres remote or local database.

@@ -54,7 +54,7 @@ vi.mock('../studio-server', () => {
   }
 })
 
-vi.mock('@prisma/studio-core/data/mysql2', () => {
+vi.mock('@prisma-lossless/studio-core/data/mysql2', () => {
   return {
     createMySQL2Executor: vi.fn(() => ({
       execute: vi.fn(),
@@ -62,13 +62,13 @@ vi.mock('@prisma/studio-core/data/mysql2', () => {
   }
 })
 
-vi.mock('@prisma/studio-core/data/bff', () => {
+vi.mock('@prisma-lossless/studio-core/data/bff', () => {
   return {
     serializeError: serializeErrorMock,
   }
 })
 
-vi.mock('@prisma/studio-core/data/node-sqlite', () => {
+vi.mock('@prisma-lossless/studio-core/data/node-sqlite', () => {
   return {
     createNodeSQLiteExecutor: vi.fn(() => ({
       execute: vi.fn(),
@@ -76,7 +76,7 @@ vi.mock('@prisma/studio-core/data/node-sqlite', () => {
   }
 })
 
-vi.mock('@prisma/studio-core/data/postgresjs', () => {
+vi.mock('@prisma-lossless/studio-core/data/postgresjs', () => {
   return {
     createPostgresJSExecutor: createPostgresJSExecutorMock,
   }

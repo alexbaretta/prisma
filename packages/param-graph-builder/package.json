@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/param-graph-builder",
-  "version": "7.8.0-lossless.14",
+  "version": "7.8.0-lossless.15",
   "description": "This package is intended for Prisma's internal use",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -24,8 +24,8 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@prisma-lossless/dmmf": "7.8.0-lossless.14",
-    "@prisma-lossless/param-graph": "7.8.0-lossless.14"
+    "@prisma-lossless/dmmf": "7.8.0-lossless.15",
+    "@prisma-lossless/param-graph": "7.8.0-lossless.15"
   },
   "scripts": {
     "dev": "DEV=true tsx helpers/build.ts",

@@ -1,4 +1,4 @@
-import { enginesVersion } from '@prisma/engines-version'
+import { enginesVersion } from '@prisma-lossless/engines-version'
 import { Debug } from '@prisma-lossless/debug'
 import type { BinaryPaths, DownloadOptions } from '@prisma-lossless/fetch-engine'
 import { BinaryType } from '@prisma-lossless/fetch-engine'
@@ -36,4 +36,4 @@ export async function ensureNeededBinariesExist({ download }: EnsureSomeBinaries
   })
 }
 
-export { enginesVersion } from '@prisma/engines-version'
+export { enginesVersion } from '@prisma-lossless/engines-version'

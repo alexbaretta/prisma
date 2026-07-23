@@ -2,7 +2,6 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { confirm, input, select } from '@inquirer/prompts'
-import type { operations } from '@prisma/management-api-sdk'
 import { PrismaConfigInternal } from '@prisma-lossless/config'
 import type { ConnectorType } from '@prisma-lossless/generator'
 import {
@@ -19,6 +18,7 @@ import {
   PRISMA_POSTGRES_PROVIDER,
   protocolToConnectorType,
 } from '@prisma-lossless/internals'
+import type { operations } from '@prisma-lossless/management-api-sdk'
 import dotenv from 'dotenv'
 import { Schema as Shape } from 'effect'
 import { bold, dim, green, red, yellow } from 'kleur/colors'
@@ -110,8 +110,8 @@ export const defaultEnv = async (url: string | undefined, debug = false, comment
   if (url === undefined) {
     // TODO: bundle the CLI to ESM instead of CommonJS and make these module-level imports
     const [{ startPrismaDevServer }, { ServerState }] = await Promise.all([
-      import('@prisma/dev'),
-      import('@prisma/dev/internal/state'),
+      import('@prisma-lossless/dev'),
+      import('@prisma-lossless/dev/internal/state'),
     ])
 
     let created = false

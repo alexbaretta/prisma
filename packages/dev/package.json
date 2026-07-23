@@ -1,0 +1,91 @@
+{
+  "name": "@prisma-lossless/dev",
+  "version": "7.8.0-lossless.15",
+  "description": "A local Prisma Postgres server for development and testing",
+  "type": "module",
+  "author": "Igal Klebanov <igalklebanov@gmail.com> (https://github.com/igalklebanov)",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./internal/daemon": {
+      "import": {
+        "types": "./dist/daemon.d.ts",
+        "default": "./dist/daemon.js"
+      },
+      "require": {
+        "types": "./dist/daemon.d.cts",
+        "default": "./dist/daemon.cjs"
+      }
+    },
+    "./internal/db": {
+      "import": {
+        "types": "./dist/db.d.ts",
+        "default": "./dist/db.js"
+      },
+      "require": {
+        "types": "./dist/db.d.cts",
+        "default": "./dist/db.cjs"
+      }
+    },
+    "./internal/state": {
+      "import": {
+        "types": "./dist/state.d.ts",
+        "default": "./dist/state.js"
+      },
+      "require": {
+        "types": "./dist/state.d.cts",
+        "default": "./dist/state.cjs"
+      }
+    }
+  },
+  "keywords": [
+    "prisma",
+    "postgres",
+    "accelerate",
+    "local",
+    "development",
+    "dev",
+    "testing"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "@electric-sql/pglite": "0.4.3",
+    "@electric-sql/pglite-socket": "0.1.3",
+    "@electric-sql/pglite-tools": "0.3.3",
+    "find-my-way": "9.6.0",
+    "foreground-child": "3.3.1",
+    "get-port-please": "3.2.0",
+    "pathe": "2.0.3",
+    "proper-lockfile": "4.1.2",
+    "remeda": "2.33.4",
+    "std-env": "3.10.0",
+    "valibot": "1.2.0",
+    "zeptomatch": "2.1.0",
+    "@prisma-lossless/get-platform": "7.8.0-lossless.15",
+    "@prisma-lossless/query-plan-executor": "7.8.0-lossless.15",
+    "@prisma-lossless/streams-local": "7.8.0-lossless.15"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexbaretta/prisma.git",
+    "directory": "packages/dev"
+  },
+  "bugs": {
+    "url": "https://github.com/alexbaretta/prisma/issues"
+  },
+  "homepage": "https://github.com/alexbaretta/prisma#readme"
+}

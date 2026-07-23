@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { enginesVersion } from '@prisma/engines-version'
+import { enginesVersion } from '@prisma-lossless/engines-version'
 import { BinaryTarget, getBinaryTargetForCurrentPlatform } from '@prisma-lossless/get-platform'
 import del from 'del'
 import { default as fetch, type Response } from 'node-fetch'

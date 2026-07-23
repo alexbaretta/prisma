@@ -1,4 +1,4 @@
-import { enginesVersion } from '@prisma/engines-version'
+import { enginesVersion } from '@prisma-lossless/engines-version'
 import type { QueryEngineLogLevel } from '@prisma-lossless/client-common'
 import type { TracingHelper } from '@prisma-lossless/instrumentation-contract'
 

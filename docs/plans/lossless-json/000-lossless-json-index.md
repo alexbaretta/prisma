@@ -295,7 +295,10 @@ lossless release to npmjs.org.
 
 | ID  | Tasklet                                                           | Priority | Status | Dependencies |
 | --- | ----------------------------------------------------------------- | -------- | ------ | ------------ |
-| 030 | [Publish public npm release](./030-publish-public-npm-release.md) | High     | [ ]    | 029          |
+| 030 | [Publish public npm release](./030-publish-public-npm-release.md) | High     | [DONE] | 029          |
+| 031 | [Promote latest dist tag](./030-publish-public-npm-release.md#done-tasklet-031-promote-latest-dist-tag) | High | [DONE] | 030 |
+| 032 | [Correct public repository metadata](./030-publish-public-npm-release.md#done-tasklet-032-correct-public-repository-metadata) | High | [DONE] | 031 |
+| 033 | [Eliminate stock package graph](./030-publish-public-npm-release.md#tasklet-033-eliminate-stock-package-graph) | High | [ ] | 032 |
 
 ## Execution Order
 

@@ -23,6 +23,15 @@ import { getInstalledPrismaClientVersion } from './utils/getClientVersion'
 const packageJson = require('../package.json')
 
 const PRISMA_CLIENT_PACKAGE_NAME = '@prisma-lossless/client'
+const STUDIO_CORE_PACKAGE_NAME = '@prisma-lossless/studio-core'
+
+function getStudioCoreVersion(): string {
+  return (
+    packageJson.dependencies?.[STUDIO_CORE_PACKAGE_NAME] ??
+    packageJson.devDependencies?.[STUDIO_CORE_PACKAGE_NAME] ??
+    'unknown'
+  )
+}
 
 /**
  * $ prisma version
@@ -93,7 +102,7 @@ export class Version implements Command {
       ...schemaEngineRows,
 
       ['Default Engines Hash', enginesVersion],
-      ['Studio', packageJson.dependencies['@prisma/studio-core']],
+      ['Studio', getStudioCoreVersion()],
     ]
 
     /**

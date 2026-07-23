@@ -634,3 +634,296 @@ scripts/ci/publish.test.ts` passed with 34 tests.
 - `pnpm run publish-lossless-public-dryrun` passed for all ten
   packages under the `lossless` tag and printed all ten dry
   `npm dist-tag add ... latest` commands.
+
+### [ ] Tasklet 033: Eliminate Stock Package Graph
+
+Status: approved for implementation by the user prompt. This tasklet
+records the package-graph defect reported after public npm adoption.
+Do not publish, change branches, or commit this tasklet until the user
+explicitly authorizes that action.
+
+## Diagnosis
+
+Published `@prisma-lossless/cli@7.8.0-lossless.13` declares runtime
+dependencies on stock `@prisma/dev@0.24.14` and
+`@prisma/studio-core@0.27.3`. Published
+`@prisma-lossless/engines@7.8.0-lossless.13` declares a runtime
+dependency on stock `@prisma/engines-version`. Published
+`@prisma-lossless/fetch-engine@7.8.0-lossless.13` declares the same
+stock `@prisma/engines-version` dependency.
+
+The stock transitive dependency paths are concrete:
+
+- `@prisma-lossless/cli -> @prisma/dev -> @prisma/get-platform`
+- `@prisma-lossless/cli -> @prisma/dev -> @prisma/query-plan-executor`
+- `@prisma-lossless/cli -> @prisma/dev -> @prisma/streams-local`
+- `@prisma-lossless/cli -> @prisma/dev -> @prisma/get-platform
+-> @prisma/debug`
+- `@prisma-lossless/cli -> @prisma/studio-core`
+- `@prisma-lossless/engines -> @prisma/engines-version`
+- `@prisma-lossless/fetch-engine -> @prisma/engines-version`
+
+The current source manifests still contain the same immediate
+stock identities:
+
+- `packages/cli/package.json` depends on `@prisma/dev` and
+  `@prisma/studio-core`.
+- `packages/engines/package.json` depends on
+  `@prisma/engines-version`.
+- `packages/fetch-engine/package.json` depends on
+  `@prisma/engines-version`.
+- `packages/client/package.json`, `packages/migrate/package.json`,
+  `packages/client-generator-js/package.json`, and
+  `packages/client-generator-ts/package.json` still carry
+  `@prisma/engines-version` in build or runtime package metadata.
+
+The fork already owns local packages named
+`@prisma-lossless/debug`, `@prisma-lossless/get-platform`, and
+`@prisma-lossless/query-plan-executor`. The checkout does not
+currently contain owned packages named
+`@prisma-lossless/dev`, `@prisma-lossless/studio-core`,
+`@prisma-lossless/streams-local`, or
+`@prisma-lossless/engines-version`.
+
+## Pre-Implementation Review: Package Graph Independence
+
+Observed problem: the published prisma-lossless graph can still
+resolve executable stock Prisma package identities from npm. This
+happens through direct package metadata in owned release packages and
+through the stock packages they pull transitively.
+
+Violated contract or invariant: published Prisma Lossless packages may
+depend on `prisma-lossless` and `@prisma-lossless/*` only. A clean
+consumer's resolved package graph must contain no package named
+`prisma` and no package whose name starts with `@prisma/`. This
+invariant applies to runtime, optional, peer, bundled, generated, and
+transitive package identities. Documentation and historical plan text
+do not count as executable package-graph violations.
+
+Owning layer: package source manifests, workspace package ownership,
+runtime imports, generated package templates, release package
+selection, packing validation, and external-consumer QA jointly own
+the package graph. The fix belongs in those layers, not in a
+consumer-side override or a publish-time rewrite.
+
+Intended solution: replace each owned stock Prisma dependency with a
+corresponding owned prisma-lossless package. Publish or otherwise
+include any required internal support package in the lossless release
+graph under `@prisma-lossless/*`. Update internal imports and runtime
+resolution from stock package names to lossless package names. Extend
+release validation so packed manifests reject any dependency,
+optional dependency, peer dependency, bundled dependency, or resolved
+lockfile package identity named `prisma` or starting with `@prisma/`.
+
+Rejected solution: do not keep `@prisma/dev`,
+`@prisma/studio-core`, `@prisma/engines-version`, or any other stock
+identity behind an allowlist, and do not hide the defect with
+consumer `pnpm.overrides`. Do not rewrite staged tarballs during
+packing; the source package graph must already be correct.
+
+Validation that proves the fix: a focused package-graph QA check must
+inspect actual package identities from packed release manifests and a
+clean external consumer lockfile. It must fail on any resolved
+`prisma` or `@prisma/*` package identity. Focused tests must prove the
+complete packed release graph has no stock identities and that CLI,
+generation, migration, adapter, engine, and generated-client behavior
+still works from the packed artifacts.
+
+## Pre-Implementation Review: CLI Support Packages
+
+Observed problem: moving `@prisma/dev` from the CLI's runtime
+dependencies to development metadata removes the stock package from a
+consumer lockfile, but the CLI build then attempts to bundle
+`@prisma/dev` into the CommonJS CLI artifact. That package contains
+top-level-await ESM chunks and runtime assets that the current CLI
+bundle target cannot include. The CLI also imports
+`@prisma/studio-core` directly in backend Studio code and in the
+browser Studio entry.
+
+Violated contract or invariant: the published CLI must keep the
+`prisma init`, local Prisma Postgres classification, and Studio code
+paths functional while resolving only owned prisma-lossless package
+identities. A build workaround that removes those paths or leaves
+stock runtime packages in the consumer graph violates that contract.
+
+Owning layer: workspace package source and CLI imports own these
+runtime identities. The release layer should pack owned
+`@prisma-lossless/dev`, `@prisma-lossless/studio-core`, and
+`@prisma-lossless/streams-local` packages as source inputs, then make
+the CLI depend on those names.
+
+Intended solution: introduce owned workspace packages for the required
+CLI support packages, update their package metadata and internal
+runtime references to lossless package names, add them to the
+immutable release package graph, and update CLI imports, tests, and
+version reporting to use the owned names. `@prisma-lossless/dev`
+remains an external runtime dependency of the CLI rather than being
+bundled into `build/index.js`.
+
+Rejected solution: do not disable the `prisma init` local database URL
+path or the Studio code path to avoid the dependency. Do not keep
+`@prisma/dev` or `@prisma/studio-core` in the published graph and
+attempt to suppress the package-graph QA result. Do not rewrite
+packed tarballs after `pnpm pack`; the source package manifests and
+runtime imports must already be correct before packing starts.
+
+Validation that proves the fix: `@prisma-lossless/cli` builds with
+the owned support packages externalized, focused tests prove the
+release graph includes the support packages and rejects stock
+identities, packed release manifests contain no `prisma` or
+`@prisma/*` dependencies, and a clean consumer lockfile parser fails
+on any stock package identity.
+
+## Pre-Implementation Review: Immutable Version Replacement
+
+Observed problem: the package-graph fix changes the release identity
+from the ten-package `.14` graph to a fifteen-package graph. Keeping
+the same immutable version would let local tooling produce different
+package bytes and dependency metadata under an identity that consumers
+may already have pinned.
+
+Violated contract or invariant: each `7.8.0-lossless.N` version is an
+immutable release identity. A version whose package graph or package
+bytes are already recorded must either reproduce exactly or be marked
+unavailable and replaced by a newly minted version.
+
+Owning layer: source package version metadata, release identity
+fixtures, private-registry integration tests, public publish commands,
+and migration documentation own the immutable release version.
+
+Intended solution: mark `.14` unavailable for consumer adoption,
+replace it with `.15`, update source package versions and release
+commands to `.15`, record a new fifteen-package identity after the
+package-graph source commit exists, and validate the new graph through
+the existing ephemeral registry path.
+
+Rejected solution: do not repack the fifteen-package graph as `.14`,
+do not change only GWEN's lockfile, and do not let the wrapper accept
+multiple artifact byte streams for the same version.
+
+Validation that proves the fix: `.14` must reject through
+`prepareBuiltPrivateReleaseCandidates`, `.15` must reproduce its
+recorded package integrities, and the clean external consumer
+installation must prove CLI generation, engine lifecycle, adapter
+import, generated client import, and `LosslessNumber` behavior from
+the packed `.15` artifacts.
+
+## Post-Implementation Review: Package Graph Independence
+
+Observed result: the release graph now contains fifteen owned
+prisma-lossless packages. The added release packages are
+`@prisma-lossless/query-plan-executor`,
+`@prisma-lossless/streams-local`, `@prisma-lossless/dev`, and
+`@prisma-lossless/studio-core`. The CLI source now imports
+`@prisma-lossless/dev`, `@prisma-lossless/studio-core`, and
+`@prisma-lossless/management-api-sdk` instead of stock Prisma package
+names. `@prisma-lossless/dev` package-internal executable artifacts
+now resolve `@prisma-lossless/get-platform`,
+`@prisma-lossless/query-plan-executor`,
+`@prisma-lossless/streams-local`, `@prisma-lossless/client`, and
+`@prisma-lossless/engines-version`.
+
+Contract review: the fix changes source package manifests, source
+imports, release package selection, release validation, and generated
+lockfile QA. It does not use consumer overrides as the product fix,
+does not suppress the stock package warning, and does not rewrite
+tarballs after `pnpm pack`. Temporary consumer validation used file
+overrides only to prove a local post-build tarball graph before any
+public npm publication.
+
+Rejected wrong-layer solution retained: do not leave
+`@prisma/dev`, `@prisma/studio-core`,
+`@prisma/management-api-sdk`, `@prisma/streams-local`, or
+`@prisma/engines-version` in the consumer-resolved graph. Do not
+solve this in GWEN or another consumer with `pnpm.overrides`.
+
+Validation evidence:
+
+- `pnpm install` passed after adding the owned support packages.
+- `pnpm --filter @prisma-lossless/fetch-engine build` passed.
+- `pnpm --filter @prisma-lossless/engines build` passed.
+- `pnpm --filter @prisma-lossless/client build` passed.
+- `pnpm --filter @prisma-lossless/query-plan-executor build` passed.
+- `pnpm --filter @prisma-lossless/cli build` passed.
+- `pnpm exec vitest run scripts/private-release.test.ts
+scripts/ci/publish.test.ts` passed with 37 tests.
+- `pnpm --filter @prisma-lossless/cli test
+src/__tests__/commands/Version.test.ts src/__tests__/Studio.vitest.ts
+src/__tests__/Init.vitest.ts src/utils/ppgInfo.test.ts` passed with
+  56 tests and 2 snapshots.
+- `pnpm exec prettier --check` passed for the touched source,
+  package, release-tooling, and plan files.
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm exec eslint` passed
+  for touched TypeScript files with 0 errors and 7 existing
+  unsafe-`any` warnings.
+- A post-build executable-artifact scan found no runtime import,
+  dynamic import, `require`, registry lookup, or known package-identity
+  string targeting `prisma` or `@prisma/*` in the checked release
+  artifacts.
+- Fresh post-build local packing produced 15 tarballs under
+  `/tmp/prisma-lossless-pack-qa.wx11cR`, and every packed manifest had
+  no `prisma` or `@prisma/*` dependency, optional dependency, peer
+  dependency, or bundled dependency.
+- A temporary external consumer at
+  `/tmp/prisma-lossless-consumer-qa.DaYPZK` installed a lockfile from
+  those local tarballs with file overrides for the prisma-lossless graph.
+  Its generated `pnpm-lock.yaml` contained no `prisma` package identity
+  and no `@prisma/*` package identity.
+- Sandboxed repo-root `pnpm build` failed with `tsx` IPC `EPERM` under
+  `/var/folders/...`. The same `pnpm build` was rerun outside the
+  sandbox and passed with 44 successful build tasks.
+- No npm publication, branch change, or commit was performed.
+
+## Implementation Steps
+
+1. Inventory every direct stock Prisma package identity in owned
+   package manifests that can affect release, build, generation, or
+   runtime behavior.
+2. Add or rename owned lossless packages for every required stock
+   support package that has no current `@prisma-lossless/*`
+   counterpart.
+3. Replace source manifest dependencies, peer dependencies, optional
+   dependencies, and bundled dependency metadata with exact
+   prisma-lossless names and versions.
+4. Update internal imports, dynamic imports, `require.resolve` calls,
+   generated package templates, CLI studio/dev entry points, engine
+   version imports, and publish tooling to use lossless names.
+5. Extend release package selection and immutable identity fixtures so
+   the complete public lossless graph includes every required
+   lossless-owned package.
+6. Add a package-graph QA helper that reads package identity data from
+   `package.json` files, packed tarball manifests, and a clean
+   consumer lockfile without scanning arbitrary prose.
+7. Add focused unit tests for immediate manifest rejection,
+   transitive lockfile rejection, and successful lossless-only packed
+   graph validation.
+8. Build and pack the complete release locally without publishing.
+9. Install the packed graph into a clean external consumer through an
+   isolated registry or equivalent packed-artifact path.
+10. Validate CLI, generation, migration, adapter, engine, generated
+    client import, and `LosslessNumber` behavior from that clean
+    consumer.
+
+## Acceptance Criteria
+
+- No owned release package manifest contains a dependency,
+  optionalDependency, peerDependency, bundledDependency, or
+  bundleDependency named `prisma` or starting with `@prisma/`.
+- No generated client package manifest requires a stock Prisma
+  package where a lossless package is required.
+- No release package runtime import, dynamic import, or
+  `require.resolve` call targets a stock Prisma package.
+- The complete packed prisma-lossless release graph contains no
+  package identity named `prisma` or starting with `@prisma/`.
+- A clean external consumer install from the packed release graph
+  produces a lockfile with no `prisma` package and no `@prisma/*`
+  package entries.
+- CLI, generation, migration, adapter, engine, and generated-client
+  behavior still passes from the clean consumer installation.
+- The package-graph QA check fails on direct stock dependencies,
+  transitive stock dependencies, and generated package metadata
+  regressions.
+- The package-graph QA check is wired into the local release
+  validation path before public publication.
+- No npm publication, branch change, or commit occurs until the user
+  explicitly authorizes those actions.

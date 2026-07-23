@@ -1,5 +1,5 @@
-import type { ManagementApiSdk } from '@prisma/management-api-sdk'
-import { createManagementApiSdk } from '@prisma/management-api-sdk'
+import type { ManagementApiSdk } from '@prisma-lossless/management-api-sdk'
+import { createManagementApiSdk } from '@prisma-lossless/management-api-sdk'
 
 import { FileTokenStorage } from './token-storage'
 

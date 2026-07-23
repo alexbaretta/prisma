@@ -44,12 +44,25 @@ export type ReleaseManifest = {
 
 type JsonObject = Record<string, unknown>
 type DependencySection = 'dependencies' | 'devDependencies' | 'optionalDependencies' | 'peerDependencies'
+type PackageGraphDependencySection =
+  | 'dependencies'
+  | 'optionalDependencies'
+  | 'peerDependencies'
+  | 'bundledDependencies'
+  | 'bundleDependencies'
 
 const DEPENDENCY_SECTIONS: readonly DependencySection[] = [
   'dependencies',
   'devDependencies',
   'optionalDependencies',
   'peerDependencies',
+]
+const PACKAGE_GRAPH_DEPENDENCY_SECTIONS: readonly PackageGraphDependencySection[] = [
+  'dependencies',
+  'optionalDependencies',
+  'peerDependencies',
+  'bundledDependencies',
+  'bundleDependencies',
 ]
 
 export const RELEASE_PACKAGES: readonly ReleasePackage[] = [
@@ -59,6 +72,11 @@ export const RELEASE_PACKAGES: readonly ReleasePackage[] = [
     sourceDir: 'packages/driver-adapter-utils',
   },
   { name: '@prisma-lossless/get-platform', sourceDir: 'packages/get-platform' },
+  { name: '@prisma-lossless/query-plan-executor', sourceDir: 'packages/query-plan-executor' },
+  { name: '@prisma-lossless/streams-local', sourceDir: 'packages/streams-local' },
+  { name: '@prisma-lossless/dev', sourceDir: 'packages/dev' },
+  { name: '@prisma-lossless/studio-core', sourceDir: 'packages/studio-core' },
+  { name: '@prisma-lossless/engines-version', sourceDir: 'packages/engines-version' },
   { name: '@prisma-lossless/fetch-engine', sourceDir: 'packages/fetch-engine' },
   { name: '@prisma-lossless/engines', sourceDir: 'packages/engines' },
   { name: '@prisma-lossless/config', sourceDir: 'packages/config' },
@@ -93,6 +111,18 @@ const LEGACY_UNSCOPED_CLI_RELEASE_PACKAGE_NAMES: readonly string[] = [
   '@prisma-lossless/adapter-pg',
   '@prisma-lossless/client',
   'prisma-lossless',
+]
+const LEGACY_SCOPED_CLI_RELEASE_PACKAGE_NAMES: readonly string[] = [
+  '@prisma-lossless/debug',
+  '@prisma-lossless/driver-adapter-utils',
+  '@prisma-lossless/get-platform',
+  '@prisma-lossless/fetch-engine',
+  '@prisma-lossless/engines',
+  '@prisma-lossless/config',
+  '@prisma-lossless/client-runtime-utils',
+  '@prisma-lossless/adapter-pg',
+  '@prisma-lossless/client',
+  '@prisma-lossless/cli',
 ]
 const RELEASE_PACKAGE_MTIME = new Date('1985-10-26T08:15:00.000Z')
 const ROOT_LICENSE_FILE = path.join(process.cwd(), 'LICENSE')
@@ -165,6 +195,7 @@ export function validateReleasePackageMetadata(packageJson: JsonObject, version:
   }
 
   assertReleasePackageExternalMetadata(name, packageJson)
+  assertNoStockPrismaPackageGraphDependencies(name, packageJson)
 
   for (const section of DEPENDENCY_SECTIONS) {
     const dependencies = readOptionalStringMap(packageJson[section])
@@ -173,6 +204,113 @@ export function validateReleasePackageMetadata(packageJson: JsonObject, version:
       assertAllowedDependencySpecifier(name, dependencyName, specifier, version)
     }
   }
+}
+
+export function assertNoStockPrismaPackageIdentitiesInPnpmLock(lockfilePath: string): void {
+  const stockPackageNames = Array.from(readPnpmLockPackageIdentities(lockfilePath)).filter(isStockPrismaPackageName)
+
+  if (stockPackageNames.length > 0) {
+    throw new Error(
+      `pnpm lockfile ${lockfilePath} resolves forbidden stock Prisma package identities: ` +
+        stockPackageNames.sort().join(', '),
+    )
+  }
+}
+
+export function readPnpmLockPackageIdentities(lockfilePath: string): ReadonlySet<string> {
+  const packageNames = new Set<string>()
+  const lines = fs.readFileSync(lockfilePath, 'utf-8').split(/\r?\n/)
+
+  for (const line of lines) {
+    const key = readYamlMappingKey(line)
+
+    if (!key) {
+      continue
+    }
+
+    const packageName = parsePnpmPackageIdentityKey(key)
+
+    if (packageName) {
+      packageNames.add(packageName)
+    }
+  }
+
+  return packageNames
+}
+
+function readYamlMappingKey(line: string): string | undefined {
+  const withoutComment = line.replace(/\s+#.*$/, '')
+  const match = /^(\s*)(?:"([^"]+)"|'([^']+)'|([^'":][^:]*)):\s*(?:\S.*)?$/.exec(withoutComment)
+
+  if (!match) {
+    return undefined
+  }
+
+  return (match[2] ?? match[3] ?? match[4])?.trim()
+}
+
+function parsePnpmPackageIdentityKey(key: string): string | undefined {
+  const packageKey = key.startsWith('/') ? key.slice(1) : key
+
+  if (packageKey === 'prisma') {
+    return packageKey
+  }
+
+  if (packageKey.startsWith('@')) {
+    const scopedPackageMatch = /^(@[^/\s]+\/[^@\s(/]+)(?:[@(/].*)?$/.exec(packageKey)
+    return scopedPackageMatch?.[1]
+  }
+
+  const packageMatch = /^([a-zA-Z0-9._-]+)(?:[@(/].*)?$/.exec(packageKey)
+  const packageName = packageMatch?.[1]
+
+  if (packageName === 'prisma' || packageName?.startsWith('prisma-lossless')) {
+    return packageName
+  }
+
+  return undefined
+}
+
+function assertNoStockPrismaPackageGraphDependencies(packageName: string, packageJson: JsonObject): void {
+  for (const section of PACKAGE_GRAPH_DEPENDENCY_SECTIONS) {
+    for (const dependencyName of readPackageGraphDependencyNames(packageJson, section)) {
+      assertNoStockPrismaPackageIdentity(packageName, section, dependencyName)
+    }
+  }
+}
+
+function readPackageGraphDependencyNames(
+  packageJson: JsonObject,
+  section: PackageGraphDependencySection,
+): readonly string[] {
+  const value = packageJson[section]
+
+  if (value === undefined) {
+    return []
+  }
+
+  if (section === 'bundledDependencies' || section === 'bundleDependencies') {
+    return readOptionalStringList(value)
+  }
+
+  return Object.keys(readOptionalStringMap(value))
+}
+
+function assertNoStockPrismaPackageIdentity(
+  packageName: string,
+  section: PackageGraphDependencySection,
+  dependencyName: string,
+): void {
+  if (isStockPrismaPackageName(dependencyName)) {
+    throw new Error(
+      `${packageName} has forbidden stock Prisma package identity ${dependencyName} in ${section}. ` +
+        'Use a prisma-lossless package identity instead.',
+    )
+  }
+}
+
+function isStockPrismaPackageName(packageName: string): boolean {
+  return packageName === 'prisma' || packageName.startsWith('@prisma/')
 }
 
 function assertReleasePackageExternalMetadata(packageName: string, packageJson: JsonObject): void {
@@ -410,14 +548,14 @@ export function validatePrivateReleaseIdentity(releaseIdentity: PrivateReleaseId
     assertPinnedReleaseVersion(releaseIdentity.replacementVersion)
   }
 
-  if (releaseIdentity.packages.length !== RELEASE_PACKAGES.length) {
+  const expectedPackageNames = getExpectedPrivateReleasePackageNames(releaseIdentity)
+
+  if (releaseIdentity.packages.length !== expectedPackageNames.length) {
     throw new Error(
       `Private release ${releaseIdentity.version} records ${releaseIdentity.packages.length} packages; ` +
-        `expected ${RELEASE_PACKAGES.length}`,
+        `expected ${expectedPackageNames.length}`,
     )
   }
-
-  const expectedPackageNames = getExpectedPrivateReleasePackageNames(releaseIdentity)
 
   releaseIdentity.packages.forEach((releasePackage, index) => {
     const expectedName = expectedPackageNames[index]
@@ -441,6 +579,10 @@ function getExpectedPrivateReleasePackageNames(releaseIdentity: PrivateReleaseId
     releaseIdentity.packages[releaseIdentity.packages.length - 1]?.name === 'prisma-lossless'
   ) {
     return LEGACY_UNSCOPED_CLI_RELEASE_PACKAGE_NAMES
+  }
+
+  if (releaseIdentity.packages.length === LEGACY_SCOPED_CLI_RELEASE_PACKAGE_NAMES.length) {
+    return LEGACY_SCOPED_CLI_RELEASE_PACKAGE_NAMES
   }
 
   return RELEASE_PACKAGES.map((releasePackage) => releasePackage.name)
@@ -720,6 +862,18 @@ function readOptionalStringMap(value: unknown): Record<string, string> {
   }
 
   return Object.fromEntries(entries)
+}
+
+function readOptionalStringList(value: unknown): readonly string[] {
+  if (value === undefined) {
+    return []
+  }
+
+  if (!Array.isArray(value) || !value.every((entry): entry is string => typeof entry === 'string')) {
+    throw new Error('Expected bundled dependency metadata to be a string array')
+  }
+
+  return value
 }
 
 function isJsonObject(value: unknown): value is JsonObject {

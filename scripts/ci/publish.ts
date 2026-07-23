@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { dependencies as dependenciesPrismaEnginesPkg } from '@prisma-lossless/engines/package.json'
 import slugify from '@sindresorhus/slugify'
 import { IncomingWebhook } from '@slack/webhook'
 import arg from 'arg'
@@ -12,6 +11,7 @@ import { blue, bold, cyan, dim, magenta, red, underline, yellow } from 'kleur/co
 import pRetry from 'p-retry'
 import semver from 'semver'
 
+import { prisma as enginesVersionMetadata } from '../../packages/engines-version/package.json'
 import {
   assertAvailablePrivateReleaseIdentity,
   readPrivateReleaseIdentity,
@@ -778,11 +778,7 @@ async function addLosslessPublicDefaultDistTags(version: string, dryRun: boolean
 }
 
 function getEnginesCommitHash(): string {
-  const npmEnginesVersion = dependenciesPrismaEnginesPkg['@prisma/engines-version']
-  const sha1Pattern = /\b[0-9a-f]{5,40}\b/
-  const commitHash = npmEnginesVersion.match(sha1Pattern)![0]
-
-  return commitHash
+  return enginesVersionMetadata.enginesVersion
 }
 
 /**
@@ -905,8 +901,8 @@ async function publishPackages(
         continue
       }
 
-      // @prisma/engines-version is published outside of this script
-      const packagesNotToPublish = ['@prisma/engines-version']
+      // @prisma/engines-version is published outside of the upstream script.
+      const packagesNotToPublish = options.staticPackageMetadata ? [] : ['@prisma/engines-version']
       if (packagesNotToPublish.includes(pkgName)) {
         continue
       }

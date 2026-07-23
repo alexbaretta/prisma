@@ -21,7 +21,7 @@ async function main() {
     version = 'latest'
   }
 
-  await run(path.join(__dirname, '..'), `pnpm update -r @prisma/engines-version@${version}`)
+  await run(path.join(__dirname, '..'), `pnpm update -r @prisma-lossless/engines-version@${version}`)
   await run(path.join(__dirname, '..'), `pnpm update -r @prisma/prisma-schema-wasm@${version}`)
   await run(path.join(__dirname, '..'), `pnpm update -r @prisma/query-compiler-wasm@${version}`)
   await run(path.join(__dirname, '..'), `pnpm update -r @prisma/schema-engine-wasm@${version}`)

@@ -16,7 +16,7 @@ import {
   shouldUseLocalTestVersion,
 } from './publish'
 
-function packageFixture(name: string, version = '7.8.0-lossless.14'): Package {
+function packageFixture(name: string, version = '7.8.0-lossless.15'): Package {
   return {
     name,
     path: `packages/${name.replace(/^@prisma-lossless\//, '')}/package.json`,
@@ -36,7 +36,7 @@ function packageFixture(name: string, version = '7.8.0-lossless.14'): Package {
   }
 }
 
-function losslessPublicPackageFixtures(version = '7.8.0-lossless.14'): Record<string, Package> {
+function losslessPublicPackageFixtures(version = '7.8.0-lossless.15'): Record<string, Package> {
   return Object.fromEntries(LOSSLESS_PUBLIC_PACKAGE_NAMES.map((name) => [name, packageFixture(name, version)]))
 }
 
@@ -48,7 +48,7 @@ describe('publish test-only version selection', () => {
         '@prisma-lossless/cli': {
           name: '@prisma-lossless/cli',
           path: 'packages/cli/package.json',
-          version: '7.8.0-lossless.14',
+          version: '7.8.0-lossless.15',
           usedBy: [],
           usedByDev: [],
           uses: [],
@@ -56,7 +56,7 @@ describe('publish test-only version selection', () => {
           packageJson: {},
         },
       }),
-    ).toBe('7.8.0-lossless.14')
+    ).toBe('7.8.0-lossless.15')
   })
 
   test('keeps publish and dry-run flows on remote version selection', () => {
@@ -126,7 +126,7 @@ describe('lossless public publish mode', () => {
 
   test('validates source metadata against the immutable release identity', () => {
     expect(() =>
-      assertLosslessPublicPackageMetadata(losslessPublicPackageFixtures(), '7.8.0-lossless.14'),
+      assertLosslessPublicPackageMetadata(losslessPublicPackageFixtures(), '7.8.0-lossless.15'),
     ).not.toThrow()
     expect(() =>
       assertLosslessPublicPackageMetadata(losslessPublicPackageFixtures('7.8.0-lossless.10'), '7.8.0-lossless.10'),
@@ -137,7 +137,7 @@ describe('lossless public publish mode', () => {
           ...losslessPublicPackageFixtures(),
           '@prisma-lossless/client': packageFixture('@prisma-lossless/client', '7.8.0-lossless.10'),
         },
-        '7.8.0-lossless.14',
+        '7.8.0-lossless.15',
       ),
     ).toThrow(/does not record release version/)
   })
@@ -157,10 +157,10 @@ describe('lossless public publish mode', () => {
   })
 
   test('promotes every public package to the latest dist tag', () => {
-    expect(getNpmDistTagAddCommands(LOSSLESS_PUBLIC_PACKAGE_NAMES, '7.8.0-lossless.14', 'latest')).toEqual(
+    expect(getNpmDistTagAddCommands(LOSSLESS_PUBLIC_PACKAGE_NAMES, '7.8.0-lossless.15', 'latest')).toEqual(
       LOSSLESS_PUBLIC_PACKAGE_NAMES.map(
         (packageName) =>
-          `npm dist-tag add ${packageName}@7.8.0-lossless.14 latest --registry=https://registry.npmjs.org/`,
+          `npm dist-tag add ${packageName}@7.8.0-lossless.15 latest --registry=https://registry.npmjs.org/`,
       ),
     )
   })
@@ -184,10 +184,10 @@ describe('lossless public publish mode', () => {
           'Error running pnpm publish --no-git-checks --access public --tag lossless in packages/debug:' +
             'npm error code E403\n' +
             'npm error 403 403 Forbidden - PUT https://registry.npmjs.org/@prisma-lossless%2fdebug - ' +
-            'You cannot publish over the previously published versions: 7.8.0-lossless.14',
+            'You cannot publish over the previously published versions: 7.8.0-lossless.15',
         ),
         '@prisma-lossless/debug',
-        '7.8.0-lossless.14',
+        '7.8.0-lossless.15',
       ),
     ).toBe(true)
   })
@@ -197,9 +197,9 @@ describe('lossless public publish mode', () => {
       isAlreadyPublishedPackageError(
         new Error('npm error code ENEEDAUTH\nnpm error need auth This command requires you to be logged in.'),
         '@prisma-lossless/debug',
-        '7.8.0-lossless.14',
+        '7.8.0-lossless.15',
       ),
     ).toBe(false)
-    expect(isAlreadyPublishedPackageError('not an error', '@prisma-lossless/debug', '7.8.0-lossless.14')).toBe(false)
+    expect(isAlreadyPublishedPackageError('not an error', '@prisma-lossless/debug', '7.8.0-lossless.15')).toBe(false)
   })
 })

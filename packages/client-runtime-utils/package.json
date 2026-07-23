@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/client-runtime-utils",
-  "version": "7.8.0-lossless.14",
+  "version": "7.8.0-lossless.15",
   "description": "Utility types and singletons used by the Prisma Client.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

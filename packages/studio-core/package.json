@@ -1,0 +1,169 @@
+{
+  "name": "@prisma-lossless/studio-core",
+  "version": "7.8.0-lossless.15",
+  "description": "Modular Prisma Studio components",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./data": {
+      "import": {
+        "types": "./dist/data/index.d.ts",
+        "default": "./dist/data/index.js"
+      },
+      "require": {
+        "types": "./dist/data/index.d.cts",
+        "default": "./dist/data/index.cjs"
+      }
+    },
+    "./data/mysql-core": {
+      "import": {
+        "types": "./dist/data/mysql-core/index.d.ts",
+        "default": "./dist/data/mysql-core/index.js"
+      },
+      "require": {
+        "types": "./dist/data/mysql-core/index.d.cts",
+        "default": "./dist/data/mysql-core/index.cjs"
+      }
+    },
+    "./data/mysql2": {
+      "import": {
+        "types": "./dist/data/mysql2/index.d.ts",
+        "default": "./dist/data/mysql2/index.js"
+      },
+      "require": {
+        "types": "./dist/data/mysql2/index.d.cts",
+        "default": "./dist/data/mysql2/index.cjs"
+      }
+    },
+    "./data/bff": {
+      "import": {
+        "types": "./dist/data/bff/index.d.ts",
+        "default": "./dist/data/bff/index.js"
+      },
+      "require": {
+        "types": "./dist/data/bff/index.d.cts",
+        "default": "./dist/data/bff/index.cjs"
+      }
+    },
+    "./data/node-sqlite": {
+      "import": {
+        "types": "./dist/data/node-sqlite/index.d.ts",
+        "default": "./dist/data/node-sqlite/index.js"
+      },
+      "require": {
+        "types": "./dist/data/node-sqlite/index.d.cts",
+        "default": "./dist/data/node-sqlite/index.cjs"
+      }
+    },
+    "./data/pglite": {
+      "import": {
+        "types": "./dist/data/pglite/index.d.ts",
+        "default": "./dist/data/pglite/index.js"
+      },
+      "require": {
+        "types": "./dist/data/pglite/index.d.cts",
+        "default": "./dist/data/pglite/index.cjs"
+      }
+    },
+    "./data/postgres-core": {
+      "import": {
+        "types": "./dist/data/postgres-core/index.d.ts",
+        "default": "./dist/data/postgres-core/index.js"
+      },
+      "require": {
+        "types": "./dist/data/postgres-core/index.d.cts",
+        "default": "./dist/data/postgres-core/index.cjs"
+      }
+    },
+    "./data/postgresjs": {
+      "import": {
+        "types": "./dist/data/postgresjs/index.d.ts",
+        "default": "./dist/data/postgresjs/index.js"
+      },
+      "require": {
+        "types": "./dist/data/postgresjs/index.d.cts",
+        "default": "./dist/data/postgresjs/index.cjs"
+      }
+    },
+    "./data/sqlite-core": {
+      "import": {
+        "types": "./dist/data/sqlite-core/index.d.ts",
+        "default": "./dist/data/sqlite-core/index.js"
+      },
+      "require": {
+        "types": "./dist/data/sqlite-core/index.d.cts",
+        "default": "./dist/data/sqlite-core/index.cjs"
+      }
+    },
+    "./data/sqljs": {
+      "import": {
+        "types": "./dist/data/sqljs/index.d.ts",
+        "default": "./dist/data/sqljs/index.js"
+      },
+      "require": {
+        "types": "./dist/data/sqljs/index.d.cts",
+        "default": "./dist/data/sqljs/index.cjs"
+      }
+    },
+    "./ui": {
+      "import": {
+        "types": "./dist/ui/index.d.ts",
+        "default": "./dist/ui/index.js"
+      },
+      "require": {
+        "types": "./dist/ui/index.d.cts",
+        "default": "./dist/ui/index.cjs"
+      }
+    },
+    "./ui/index.css": "./dist/ui/index.css"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Igal Klebanov",
+    "url": "https://github.com/igalklebanov",
+    "email": "igalklebanov@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "Igal Klebanov",
+      "url": "https://github.com/igalklebanov",
+      "email": "igalklebanov@gmail.com"
+    },
+    {
+      "name": "Pierre-Antoine Mills",
+      "url": "https://github.com/millsp"
+    },
+    {
+      "name": "Matt Litherland",
+      "url": "https://github.com/uixmat"
+    }
+  ],
+  "license": "Apache-2.0",
+  "files": [
+    "dist",
+    "NOTICE"
+  ],
+  "peerDependencies": {
+    "@types/react": "^18.0.0 || ^19.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "engines": {
+    "node": "^20.19 || ^22.12 || >=24.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-toggle": "1.1.10",
+    "chart.js": "4.5.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexbaretta/prisma.git",
+    "directory": "packages/studio-core"
+  },
+  "bugs": {
+    "url": "https://github.com/alexbaretta/prisma/issues"
+  },
+  "homepage": "https://github.com/alexbaretta/prisma#readme"
+}

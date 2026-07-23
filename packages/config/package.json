@@ -1,6 +1,6 @@
 {
   "name": "@prisma-lossless/config",
-  "version": "7.8.0-lossless.14",
+  "version": "7.8.0-lossless.15",
   "description": "Internal package used to define and read Prisma configuration files",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,8 +18,8 @@
     "empathic": "2.0.0"
   },
   "devDependencies": {
-    "@prisma-lossless/debug": "7.8.0-lossless.14",
-    "@prisma-lossless/get-platform": "7.8.0-lossless.14",
+    "@prisma-lossless/debug": "7.8.0-lossless.15",
+    "@prisma-lossless/get-platform": "7.8.0-lossless.15",
     "dotenv": "17.2.3"
   },
   "scripts": {

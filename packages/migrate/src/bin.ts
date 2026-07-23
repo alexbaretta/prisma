@@ -2,7 +2,7 @@
 
 import path from 'node:path'
 
-import { enginesVersion } from '@prisma/engines-version'
+import { enginesVersion } from '@prisma-lossless/engines-version'
 import { loadConfigFromFile } from '@prisma-lossless/config'
 import Debug from '@prisma-lossless/debug'
 import { arg, handlePanic, HelpError, isError } from '@prisma-lossless/internals'

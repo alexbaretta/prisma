@@ -12,8 +12,8 @@ describe('version', () => {
     const data = await ctx.cli('version')
     expect(data.exitCode).toBe(0)
     expect(cleanSnapshot(data.stdout)).toMatchInlineSnapshot(`
-      "prisma-lossless         : 0.0.0
-      @prisma-lossless/client : 0.0.0
+      "@prisma-lossless/cli    : 7.8.0-lossless.14
+      @prisma-lossless/client : 7.8.0-lossless.14
       Operating System        : OS
       Architecture            : ARCHITECTURE
       Node.js                 : NODEJS_VERSION
@@ -68,10 +68,17 @@ function cleanSnapshot(str: string, versionOverride?: string): string {
   str = str.replace(new RegExp(`(TypeScript\\s+:) ${typeScriptVersion}`, 'g'), '$1 TYPESCRIPT_VERSION')
 
   // replace studio version
-  str = str.replace(packageJson.dependencies['@prisma/studio-core'], 'STUDIO_VERSION')
+  const studioCoreVersion =
+    packageJson.dependencies?.['@prisma-lossless/studio-core'] ??
+    packageJson.devDependencies['@prisma-lossless/studio-core']
+  str = str.replace(new RegExp(`(Studio\\s+:) ${escapeRegExp(studioCoreVersion)}`, 'g'), '$1 STUDIO_VERSION')
 
   // sanitize windows specific engine names
   str = str.replace(/\.exe/g, '')
 
   return str
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }

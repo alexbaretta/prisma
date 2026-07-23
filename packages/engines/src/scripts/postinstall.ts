@@ -1,4 +1,4 @@
-import { enginesVersion } from '@prisma/engines-version'
+import { enginesVersion } from '@prisma-lossless/engines-version'
 import Debug from '@prisma-lossless/debug'
 import { BinaryDownloadConfiguration, BinaryType, download } from '@prisma-lossless/fetch-engine'
 import type { BinaryTarget } from '@prisma-lossless/get-platform'

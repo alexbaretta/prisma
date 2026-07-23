@@ -1,6 +1,6 @@
 import { hostname } from 'node:os'
 
-import type { ManagementApiClient } from '@prisma/management-api-sdk'
+import type { ManagementApiClient } from '@prisma-lossless/management-api-sdk'
 
 export interface ConnectionResult {
   connectionString: string

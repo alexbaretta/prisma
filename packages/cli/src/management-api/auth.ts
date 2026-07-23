@@ -2,8 +2,8 @@ import events from 'node:events'
 import http from 'node:http'
 import { AddressInfo } from 'node:net'
 
-import type { ManagementApiSdk } from '@prisma/management-api-sdk'
-import { AuthError as SDKAuthError, createManagementApiSdk } from '@prisma/management-api-sdk'
+import type { ManagementApiSdk } from '@prisma-lossless/management-api-sdk'
+import { AuthError as SDKAuthError, createManagementApiSdk } from '@prisma-lossless/management-api-sdk'
 import open from 'open'
 
 import { FileTokenStorage } from './token-storage'

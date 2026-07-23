@@ -1,8 +1,8 @@
-import { ServerState } from '@prisma/dev/internal/state'
+import { ServerState } from '@prisma-lossless/dev/internal/state'
 
 import { getPpgInfo } from './ppgInfo'
 
-jest.mock('@prisma/dev/internal/state', () => ({
+jest.mock('@prisma-lossless/dev/internal/state', () => ({
   ServerState: {
     scan: jest.fn(),
   },

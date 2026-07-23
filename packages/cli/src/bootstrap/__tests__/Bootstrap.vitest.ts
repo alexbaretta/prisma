@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { Bootstrap } from '../Bootstrap'
 
-vi.mock('@prisma/management-api-sdk', () => {
+vi.mock('@prisma-lossless/management-api-sdk', () => {
   class AuthErrorMock extends Error {
     name = 'AuthError'
     constructor(

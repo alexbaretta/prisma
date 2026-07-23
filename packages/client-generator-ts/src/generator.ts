@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { enginesVersion } from '@prisma/engines-version'
+import { enginesVersion } from '@prisma-lossless/engines-version'
 import { Generator, GeneratorConfig, GeneratorManifest, GeneratorOptions } from '@prisma-lossless/generator'
 import { parseEnvValue } from '@prisma-lossless/internals'
 import { getTsconfig } from 'get-tsconfig'

@@ -1,4 +1,4 @@
-import type { Tokens, TokenStorage } from '@prisma/management-api-sdk'
+import type { Tokens, TokenStorage } from '@prisma-lossless/management-api-sdk'
 import { CredentialsStore } from '@prisma-lossless/credentials-store'
 import { Debug } from '@prisma-lossless/debug'
 

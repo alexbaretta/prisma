@@ -1,6 +1,6 @@
 import { select } from '@inquirer/prompts'
-import type { ManagementApiClient } from '@prisma/management-api-sdk'
-import { AuthError, createManagementApiClient } from '@prisma/management-api-sdk'
+import type { ManagementApiClient } from '@prisma-lossless/management-api-sdk'
+import { AuthError, createManagementApiClient } from '@prisma-lossless/management-api-sdk'
 import type { PrismaConfigInternal } from '@prisma-lossless/config'
 import type { Command } from '@prisma-lossless/internals'
 import { arg, format, HelpError, isError } from '@prisma-lossless/internals'

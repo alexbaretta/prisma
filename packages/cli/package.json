@@ -1,5 +1,5 @@
 {
-  "version": "7.8.0-lossless.14",
+  "version": "7.8.0-lossless.15",
   "name": "@prisma-lossless/cli",
   "description": "Prisma is an open-source database toolkit. It includes a JavaScript/TypeScript ORM for Node.js, migrations and a modern GUI to view and edit the data in your database. You can use Prisma in new projects or add it to an existing one.",
   "keywords": [
@@ -112,19 +112,18 @@
     "@opentelemetry/api": "1.9.0",
     "@opentelemetry/context-async-hooks": "2.1.0",
     "@opentelemetry/sdk-trace-base": "2.1.0",
-    "@prisma-lossless/adapter-libsql": "7.8.0-lossless.14",
-    "@prisma-lossless/client": "7.8.0-lossless.14",
-    "@prisma-lossless/client-generator-registry": "7.8.0-lossless.14",
-    "@prisma-lossless/credentials-store": "7.8.0-lossless.14",
-    "@prisma-lossless/debug": "7.8.0-lossless.14",
-    "@prisma-lossless/dmmf": "7.8.0-lossless.14",
-    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.14",
-    "@prisma-lossless/fetch-engine": "7.8.0-lossless.14",
-    "@prisma-lossless/generator": "7.8.0-lossless.14",
-    "@prisma-lossless/get-platform": "7.8.0-lossless.14",
-    "@prisma-lossless/internals": "7.8.0-lossless.14",
-    "@prisma/management-api-sdk": "1.12.0",
-    "@prisma-lossless/migrate": "7.8.0-lossless.14",
+    "@prisma-lossless/adapter-libsql": "7.8.0-lossless.15",
+    "@prisma-lossless/client": "7.8.0-lossless.15",
+    "@prisma-lossless/client-generator-registry": "7.8.0-lossless.15",
+    "@prisma-lossless/credentials-store": "7.8.0-lossless.15",
+    "@prisma-lossless/debug": "7.8.0-lossless.15",
+    "@prisma-lossless/dmmf": "7.8.0-lossless.15",
+    "@prisma-lossless/driver-adapter-utils": "7.8.0-lossless.15",
+    "@prisma-lossless/fetch-engine": "7.8.0-lossless.15",
+    "@prisma-lossless/generator": "7.8.0-lossless.15",
+    "@prisma-lossless/get-platform": "7.8.0-lossless.15",
+    "@prisma-lossless/internals": "7.8.0-lossless.15",
+    "@prisma-lossless/migrate": "7.8.0-lossless.15",
     "@swc/core": "1.11.5",
     "@swc/jest": "0.2.37",
     "@types/better-sqlite3": "7.6.12",
@@ -166,7 +165,8 @@
     "ts-pattern": "5.6.2",
     "typescript": "5.4.5",
     "xdg-app-paths": "8.3.0",
-    "zod": "3.24.2"
+    "zod": "3.24.2",
+    "@prisma-lossless/management-api-sdk": "7.8.0-lossless.15"
   },
   "scripts": {
     "prisma": "tsx src/bin.ts",
@@ -182,12 +182,12 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@prisma-lossless/config": "7.8.0-lossless.14",
-    "@prisma/dev": "0.24.14",
-    "@prisma-lossless/engines": "7.8.0-lossless.14",
-    "@prisma/studio-core": "0.27.3",
+    "@prisma-lossless/config": "7.8.0-lossless.15",
+    "@prisma-lossless/engines": "7.8.0-lossless.15",
     "mysql2": "3.15.3",
-    "postgres": "3.4.7"
+    "postgres": "3.4.7",
+    "@prisma-lossless/dev": "7.8.0-lossless.15",
+    "@prisma-lossless/studio-core": "7.8.0-lossless.15"
   },
   "peerDependencies": {
     "better-sqlite3": ">=9.0.0",
